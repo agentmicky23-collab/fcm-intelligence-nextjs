@@ -1,16 +1,18 @@
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { LayoutDashboard, Target, FileText, PieChart, Users, Settings, Activity, AlertTriangle, Mail, Calendar } from "lucide-react";
+import { LayoutDashboard, Target, FileText, PieChart, Users, Settings, Activity, AlertTriangle, Mail, Calendar, Network, Radar, MessageSquare } from "lucide-react";
 import type { AgentHealth } from "@shared/schema";
 
 function DashboardSidebar({ active = "/dashboard" }: { active?: string }) {
   const links = [
     { href: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Overview" },
+    { href: "/dashboard/swarm", icon: <Network size={20} />, label: "Agent Swarm" },
     { href: "/dashboard/opportunities", icon: <Target size={20} />, label: "Opportunities" },
-    { href: "/dashboard/content", icon: <FileText size={20} />, label: "Content" },
+    { href: "/dashboard/market-scan", icon: <Radar size={20} />, label: "Market Scan" },
+    { href: "/dashboard/content", icon: <FileText size={20} />, label: "Content Control" },
     { href: "/dashboard/costs", icon: <PieChart size={20} />, label: "Costs" },
+    { href: "/dashboard/hr", icon: <MessageSquare size={20} />, label: "Ask Harper" },
     { href: "/dashboard/agents", icon: <Activity size={20} />, label: "Agents" },
-    { href: "/dashboard/hr", icon: <Users size={20} />, label: "HR Cases" },
     { href: "/dashboard/settings", icon: <Settings size={20} />, label: "Settings" },
   ];
 

@@ -1,10 +1,15 @@
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import {
-  opportunities, content, agentHealth, costRecords, hrCases, feedbackLog, contactSubmissions,
+  opportunities, content, agentHealth, agentActivity, scanConfig, scanHistory,
+  hrConversations, costRecords, hrCases, feedbackLog, contactSubmissions,
   type InsertOpportunity, type Opportunity,
   type InsertContent, type Content,
   type InsertAgentHealth, type AgentHealth,
+  type InsertAgentActivity, type AgentActivity,
+  type InsertScanConfig, type ScanConfig,
+  type InsertScanHistory, type ScanHistory,
+  type InsertHrConversation, type HrConversation,
   type InsertCostRecord, type CostRecord,
   type InsertHrCase, type HrCase,
   type InsertFeedbackLog, type FeedbackLog,
@@ -12,42 +17,47 @@ import {
 } from "@shared/schema";
 
 export interface IStorage {
-  // Opportunities
   getOpportunities(filters?: { status?: string; businessType?: string; region?: string }): Promise<Opportunity[]>;
   getOpportunity(id: string): Promise<Opportunity | undefined>;
   createOpportunity(data: InsertOpportunity): Promise<Opportunity>;
   updateOpportunity(id: string, data: Partial<InsertOpportunity>): Promise<Opportunity | undefined>;
   getInsiderOpportunities(): Promise<Opportunity[]>;
 
-  // Content
   getContent(filters?: { status?: string; track?: string }): Promise<Content[]>;
   getContentById(id: number): Promise<Content | undefined>;
   createContent(data: InsertContent): Promise<Content>;
   updateContent(id: number, data: Partial<InsertContent>): Promise<Content | undefined>;
   getPublishedContent(track?: string): Promise<Content[]>;
 
-  // Agent Health
   getAgentHealth(): Promise<AgentHealth[]>;
   upsertAgentHealth(data: InsertAgentHealth): Promise<AgentHealth>;
 
-  // Cost Records
+  getAgentActivities(limit?: number): Promise<AgentActivity[]>;
+  createAgentActivity(data: InsertAgentActivity): Promise<AgentActivity>;
+  getAgentDetail(name: string): Promise<{ health: AgentHealth | undefined; activities: AgentActivity[] }>;
+
+  getScanConfig(): Promise<ScanConfig | undefined>;
+  upsertScanConfig(data: Partial<InsertScanConfig>): Promise<ScanConfig>;
+  getScanHistory(): Promise<ScanHistory[]>;
+  createScanHistory(data: InsertScanHistory): Promise<ScanHistory>;
+
+  getHrConversations(): Promise<HrConversation[]>;
+  getHrConversation(id: number): Promise<HrConversation | undefined>;
+  createHrConversation(data: InsertHrConversation): Promise<HrConversation>;
+  updateHrConversation(id: number, data: Partial<InsertHrConversation>): Promise<HrConversation | undefined>;
+
   getCostRecords(days?: number): Promise<CostRecord[]>;
   createCostRecord(data: InsertCostRecord): Promise<CostRecord>;
   getCostSummary(): Promise<{ today: string; week: string; projected: string }>;
 
-  // HR Cases
   getHrCases(): Promise<HrCase[]>;
   getHrCase(id: number): Promise<HrCase | undefined>;
   createHrCase(data: InsertHrCase): Promise<HrCase>;
   updateHrCase(id: number, data: Partial<InsertHrCase>): Promise<HrCase | undefined>;
 
-  // Feedback
   createFeedback(data: InsertFeedbackLog): Promise<FeedbackLog>;
-
-  // Contact
   createContactSubmission(data: InsertContactSubmission): Promise<ContactSubmission>;
 
-  // Dashboard
   getDashboardSummary(): Promise<{
     pipelineCounts: Record<string, number>;
     contentCounts: Record<string, number>;
@@ -58,13 +68,11 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // ─── Opportunities ─────────────────────────
   async getOpportunities(filters?: { status?: string; businessType?: string; region?: string }): Promise<Opportunity[]> {
     const conditions = [];
     if (filters?.status) conditions.push(eq(opportunities.status, filters.status));
     if (filters?.businessType) conditions.push(eq(opportunities.businessType, filters.businessType));
     if (filters?.region) conditions.push(eq(opportunities.region, filters.region));
-
     if (conditions.length > 0) {
       return db.select().from(opportunities).where(and(...conditions)).orderBy(desc(opportunities.createdAt));
     }
@@ -90,12 +98,10 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(opportunities).where(eq(opportunities.insiderVisible, true)).orderBy(desc(opportunities.createdAt));
   }
 
-  // ─── Content ───────────────────────────────
   async getContent(filters?: { status?: string; track?: string }): Promise<Content[]> {
     const conditions = [];
     if (filters?.status) conditions.push(eq(content.status, filters.status));
     if (filters?.track) conditions.push(eq(content.track, filters.track));
-
     if (conditions.length > 0) {
       return db.select().from(content).where(and(...conditions)).orderBy(desc(content.createdAt));
     }
@@ -123,7 +129,6 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(content).where(and(...conditions)).orderBy(desc(content.publishedAt));
   }
 
-  // ─── Agent Health ──────────────────────────
   async getAgentHealth(): Promise<AgentHealth[]> {
     return db.select().from(agentHealth).orderBy(agentHealth.agentName);
   }
@@ -141,7 +146,73 @@ export class DatabaseStorage implements IStorage {
     return row;
   }
 
-  // ─── Cost Records ─────────────────────────
+  async getAgentActivities(limit: number = 50): Promise<AgentActivity[]> {
+    return db.select().from(agentActivity).orderBy(desc(agentActivity.createdAt)).limit(limit);
+  }
+
+  async createAgentActivity(data: InsertAgentActivity): Promise<AgentActivity> {
+    const [row] = await db.insert(agentActivity).values(data).returning();
+    return row;
+  }
+
+  async getAgentDetail(name: string): Promise<{ health: AgentHealth | undefined; activities: AgentActivity[] }> {
+    const [health] = await db.select().from(agentHealth).where(eq(agentHealth.agentName, name));
+    const activities = await db.select().from(agentActivity)
+      .where(eq(agentActivity.agentName, name))
+      .orderBy(desc(agentActivity.createdAt))
+      .limit(20);
+    return { health, activities };
+  }
+
+  async getScanConfig(): Promise<ScanConfig | undefined> {
+    const [row] = await db.select().from(scanConfig).where(eq(scanConfig.name, "default"));
+    return row;
+  }
+
+  async upsertScanConfig(data: Partial<InsertScanConfig>): Promise<ScanConfig> {
+    const existing = await this.getScanConfig();
+    if (existing) {
+      const [row] = await db.update(scanConfig)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(scanConfig.id, existing.id))
+        .returning();
+      return row;
+    }
+    const [row] = await db.insert(scanConfig).values({ ...data, name: "default" }).returning();
+    return row;
+  }
+
+  async getScanHistory(): Promise<ScanHistory[]> {
+    return db.select().from(scanHistory).orderBy(desc(scanHistory.completedAt)).limit(10);
+  }
+
+  async createScanHistory(data: InsertScanHistory): Promise<ScanHistory> {
+    const [row] = await db.insert(scanHistory).values(data).returning();
+    return row;
+  }
+
+  async getHrConversations(): Promise<HrConversation[]> {
+    return db.select().from(hrConversations).orderBy(desc(hrConversations.updatedAt));
+  }
+
+  async getHrConversation(id: number): Promise<HrConversation | undefined> {
+    const [row] = await db.select().from(hrConversations).where(eq(hrConversations.id, id));
+    return row;
+  }
+
+  async createHrConversation(data: InsertHrConversation): Promise<HrConversation> {
+    const [row] = await db.insert(hrConversations).values(data).returning();
+    return row;
+  }
+
+  async updateHrConversation(id: number, data: Partial<InsertHrConversation>): Promise<HrConversation | undefined> {
+    const [row] = await db.update(hrConversations)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(hrConversations.id, id))
+      .returning();
+    return row;
+  }
+
   async getCostRecords(days: number = 30): Promise<CostRecord[]> {
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - days);
@@ -176,7 +247,6 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
-  // ─── HR Cases ──────────────────────────────
   async getHrCases(): Promise<HrCase[]> {
     return db.select().from(hrCases).orderBy(desc(hrCases.createdAt));
   }
@@ -196,19 +266,16 @@ export class DatabaseStorage implements IStorage {
     return row;
   }
 
-  // ─── Feedback ──────────────────────────────
   async createFeedback(data: InsertFeedbackLog): Promise<FeedbackLog> {
     const [row] = await db.insert(feedbackLog).values(data).returning();
     return row;
   }
 
-  // ─── Contact ───────────────────────────────
   async createContactSubmission(data: InsertContactSubmission): Promise<ContactSubmission> {
     const [row] = await db.insert(contactSubmissions).values(data).returning();
     return row;
   }
 
-  // ─── Dashboard ─────────────────────────────
   async getDashboardSummary() {
     const oppRows = await db.select({ status: opportunities.status, count: sql<number>`count(*)::int` })
       .from(opportunities).groupBy(opportunities.status);

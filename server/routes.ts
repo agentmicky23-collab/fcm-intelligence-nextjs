@@ -4,7 +4,8 @@ import { storage } from "./storage";
 import {
   insertOpportunitySchema, insertContentSchema, insertAgentHealthSchema,
   insertCostRecordSchema, insertHrCaseSchema, insertFeedbackLogSchema,
-  insertContactSubmissionSchema,
+  insertContactSubmissionSchema, insertAgentActivitySchema,
+  insertHrConversationSchema,
 } from "@shared/schema";
 import { ZodError } from "zod";
 
@@ -72,6 +73,12 @@ export async function registerRoutes(
     res.json(data);
   });
 
+  app.get("/api/content/calendar", async (req, res) => {
+    const data = await storage.getContent({});
+    const withSchedule = data.filter((c: any) => c.scheduledDate);
+    res.json(withSchedule);
+  });
+
   app.get("/api/content/:id", async (req, res) => {
     const data = await storage.getContentById(parseInt(req.params.id));
     if (!data) return res.status(404).json({ message: "Not found" });
@@ -92,6 +99,57 @@ export async function registerRoutes(
     res.json(data);
   });
 
+  app.get("/api/content/:id/platforms", async (req, res) => {
+    const data = await storage.getContentById(parseInt(req.params.id));
+    if (!data) return res.status(404).json({ message: "Not found" });
+    res.json(data.platformVersions || {});
+  });
+
+  app.post("/api/content/:id/adapt", async (req, res) => {
+    const data = await storage.getContentById(parseInt(req.params.id));
+    if (!data) return res.status(404).json({ message: "Not found" });
+    const { platform } = req.body;
+    const versions = (data.platformVersions as Record<string, any>) || {};
+    versions[platform] = { body: data.body, status: "draft" };
+    const updated = await storage.updateContent(data.id, { platformVersions: versions });
+    res.json(updated);
+  });
+
+  app.patch("/api/content/:id/platform/:platform", async (req, res) => {
+    const data = await storage.getContentById(parseInt(req.params.id));
+    if (!data) return res.status(404).json({ message: "Not found" });
+    const versions = (data.platformVersions as Record<string, any>) || {};
+    versions[req.params.platform] = { ...versions[req.params.platform], ...req.body };
+    const updated = await storage.updateContent(data.id, { platformVersions: versions });
+    res.json(updated);
+  });
+
+  app.post("/api/content/:id/approve", async (req, res) => {
+    const data = await storage.getContentById(parseInt(req.params.id));
+    if (!data) return res.status(404).json({ message: "Not found" });
+    const { platforms } = req.body;
+    const versions = (data.platformVersions as Record<string, any>) || {};
+    for (const p of platforms || []) {
+      if (versions[p]) versions[p].status = "approved";
+    }
+    const updated = await storage.updateContent(data.id, {
+      status: "published",
+      publishedAt: new Date(),
+      platformVersions: versions,
+    });
+    res.json(updated);
+  });
+
+  app.patch("/api/content/:id/schedule", async (req, res) => {
+    const { scheduledDate, scheduledPlatforms } = req.body;
+    const updated = await storage.updateContent(parseInt(req.params.id), {
+      scheduledDate,
+      scheduledPlatforms,
+    });
+    if (!updated) return res.status(404).json({ message: "Not found" });
+    res.json(updated);
+  });
+
   // ─── Agent Health ──────────────────────────
   app.get("/api/agents", async (_req, res) => {
     const data = await storage.getAgentHealth();
@@ -104,6 +162,56 @@ export async function registerRoutes(
       const data = await storage.upsertAgentHealth(parsed);
       res.json(data);
     } catch (e) { handleZodError(res, e); }
+  });
+
+  // ─── Agent Activity ────────────────────────
+  app.get("/api/agents/activity", async (req, res) => {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+    const data = await storage.getAgentActivities(limit);
+    res.json(data);
+  });
+
+  app.post("/api/agents/activity", async (req, res) => {
+    try {
+      const parsed = insertAgentActivitySchema.parse(req.body);
+      const data = await storage.createAgentActivity(parsed);
+      res.status(201).json(data);
+    } catch (e) { handleZodError(res, e); }
+  });
+
+  app.get("/api/agents/:name/detail", async (req, res) => {
+    const data = await storage.getAgentDetail(req.params.name);
+    res.json(data);
+  });
+
+  // ─── Scan Config ───────────────────────────
+  app.get("/api/scan/config", async (_req, res) => {
+    let data = await storage.getScanConfig();
+    if (!data) {
+      data = await storage.upsertScanConfig({});
+    }
+    res.json(data);
+  });
+
+  app.put("/api/scan/config", async (req, res) => {
+    const data = await storage.upsertScanConfig(req.body);
+    res.json(data);
+  });
+
+  app.post("/api/scan/trigger", async (req, res) => {
+    const config = await storage.getScanConfig();
+    const opps = await storage.getOpportunities({});
+    const history = await storage.createScanHistory({
+      triggeredBy: "manual",
+      parameters: config || {},
+      resultsCount: opps.length,
+    });
+    res.json({ message: "Scan triggered successfully", history });
+  });
+
+  app.get("/api/scan/history", async (_req, res) => {
+    const data = await storage.getScanHistory();
+    res.json(data);
   });
 
   // ─── Cost Records ─────────────────────────
@@ -126,6 +234,43 @@ export async function registerRoutes(
     } catch (e) { handleZodError(res, e); }
   });
 
+  // ─── HR Conversations (must be before /api/hr/:id) ──
+  app.get("/api/hr/conversations", async (_req, res) => {
+    const data = await storage.getHrConversations();
+    res.json(data);
+  });
+
+  app.get("/api/hr/conversations/:id", async (req, res) => {
+    const data = await storage.getHrConversation(parseInt(req.params.id));
+    if (!data) return res.status(404).json({ message: "Not found" });
+    res.json(data);
+  });
+
+  app.post("/api/hr/conversations", async (req, res) => {
+    try {
+      const parsed = insertHrConversationSchema.parse(req.body);
+      const data = await storage.createHrConversation(parsed);
+      res.status(201).json(data);
+    } catch (e) { handleZodError(res, e); }
+  });
+
+  app.patch("/api/hr/conversations/:id", async (req, res) => {
+    const data = await storage.updateHrConversation(parseInt(req.params.id), req.body);
+    if (!data) return res.status(404).json({ message: "Not found" });
+    res.json(data);
+  });
+
+  app.post("/api/hr/conversations/:id/save-case", async (req, res) => {
+    const conv = await storage.getHrConversation(parseInt(req.params.id));
+    if (!conv) return res.status(404).json({ message: "Not found" });
+    const hrCase = await storage.createHrCase({
+      caseType: conv.caseType || "General Query",
+      description: conv.title || "HR case from conversation",
+      riskLevel: conv.riskLevel || "medium",
+    });
+    res.status(201).json(hrCase);
+  });
+
   // ─── HR Cases ──────────────────────────────
   app.get("/api/hr", async (_req, res) => {
     const data = await storage.getHrCases();
@@ -133,7 +278,9 @@ export async function registerRoutes(
   });
 
   app.get("/api/hr/:id", async (req, res) => {
-    const data = await storage.getHrCase(parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid id" });
+    const data = await storage.getHrCase(id);
     if (!data) return res.status(404).json({ message: "Not found" });
     res.json(data);
   });

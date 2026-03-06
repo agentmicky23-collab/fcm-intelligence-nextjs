@@ -12,7 +12,9 @@ import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 
 import DashboardHome from "@/pages/dashboard/DashboardHome";
+import AgentSwarm from "@/pages/dashboard/AgentSwarm";
 import DashboardOpportunities from "@/pages/dashboard/Opportunities";
+import MarketScan from "@/pages/dashboard/MarketScan";
 import ContentPipeline from "@/pages/dashboard/ContentPipeline";
 import DashboardCosts from "@/pages/dashboard/Costs";
 import DashboardAgents from "@/pages/dashboard/Agents";
@@ -35,7 +37,9 @@ function Router() {
       <Route path="/contact" component={Contact} />
 
       <Route path="/dashboard" component={DashboardHome} />
+      <Route path="/dashboard/swarm" component={AgentSwarm} />
       <Route path="/dashboard/opportunities" component={DashboardOpportunities} />
+      <Route path="/dashboard/market-scan" component={MarketScan} />
       <Route path="/dashboard/content" component={ContentPipeline} />
       <Route path="/dashboard/costs" component={DashboardCosts} />
       <Route path="/dashboard/agents" component={DashboardAgents} />
