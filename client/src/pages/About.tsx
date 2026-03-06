@@ -10,7 +10,7 @@ export default function About() {
             The Story Behind <span className="text-gold">FCM</span>
           </h1>
           
-          <div className="prose prose-invert prose-lg max-w-none">
+          <div className="max-w-none">
             <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
               Founded by Mikesh Parekh, FCM represents over 17 years of deep, operational experience in the UK retail and Post Office sector. What began as a single branch has evolved into an intelligence-driven network spanning more than 40 locations.
             </p>
@@ -57,8 +57,8 @@ export default function About() {
             <div className="mt-16 p-8 bg-card border border-gold/30 rounded-lg text-center">
               <h3 className="text-2xl font-bold mb-4 text-white">Ready to elevate your operations?</h3>
               <p className="text-muted-foreground mb-6">Connect with us to discuss bespoke support packages.</p>
-              <Link href="/contact">
-                <a className="btn-primary">Contact Our Team</a>
+              <Link href="/contact" className="btn-primary" data-testid="button-contact-cta">
+                Contact Our Team
               </Link>
             </div>
           </div>
