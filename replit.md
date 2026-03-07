@@ -116,11 +116,13 @@ All under `src/app/api/`:
 - `npm run db:push` — Push schema changes to database
 
 ## Hydration Notes
-- The Replit webview proxy injects elements into the HTML document before React hydrates, causing React #418 hydration mismatch errors in the console. This is a known Replit + Next.js issue.
-- `suppressHydrationWarning` on `<html>` and `<body>` in root layout.
-- The #418 error is cosmetic — React recovers by doing a full client-side re-render. App functionality is not affected.
-- SSR content is rendered normally (not suppressed) for SEO and initial load performance.
-- `ClientOnly` component in `src/components/ClientOnly.tsx` available for scoping specific widgets that need client-only rendering.
+- The Replit webview proxy modifies the HTML document before React hydrates, causing React #418 hydration mismatch errors. React 19 treats these as hard errors that crash the app.
+- **Fix**: Three-layer approach in `src/app/layout.tsx`:
+  1. Inline `<script>` in `<head>` suppresses hydration errors at the window level (runs before React loads)
+  2. `suppressHydrationWarning` on `<html>` and `<body>` elements
+  3. `ClientApp` wrapper defers body rendering until client mount (avoids SSR body mismatch)
+- `global-error.tsx` catches any remaining React errors and auto-recovers
+- `ClientOnly` component in `src/components/ClientOnly.tsx` available for scoping specific widgets
 
 ## Config Notes
 - `next.config.ts`: `serverExternalPackages: ["pg"]`, `allowedDevOrigins` for Replit domain, `devIndicators: false`
