@@ -7,3 +7,5 @@ vite.config.ts.*
 node_modules
 # Next.js build output
 .next/
+old-site-*.html
+AGENTS.md
