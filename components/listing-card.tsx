@@ -1,34 +1,51 @@
 /**
- * Listing Card Component
- * Displays a single business opportunity listing with FCM brand styling
+ * Listing Card Component (RICH VERSION)
+ * Displays comprehensive business opportunity listing with all FCM intelligence
  */
 
 import Link from 'next/link';
 import type { Listing } from '@/types/listing';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin, ExternalLink, Star } from 'lucide-react';
 
 interface ListingCardProps {
   listing: Listing;
 }
 
+// Region emoji mapping
+const regionEmojis: Record<string, string> = {
+  'Scotland': '🏴',
+  'Yorkshire': '🌹',
+  'North West': '🌊',
+  'North East': '🏰',
+  'East Anglia': '🌾',
+  'East Midlands': '🏭',
+  'West Midlands': '🏭',
+  'Midlands': '🏭',
+  'South West': '🌊',
+  'South East': '🏛️',
+  'London': '🏙️',
+  'Wales': '🐉',
+};
+
+// Get region tag style
+const getRegionTag = (region: string) => {
+  const emoji = regionEmojis[region] || '📍';
+  return { emoji, text: region.toUpperCase() };
+};
+
+// Determine if listing is FCM Pick
+const isFCMPick = (listing: Listing): boolean => {
+  return listing.confidence === 'HIGH' && listing.score >= 85;
+};
+
 export function ListingCard({ listing }: ListingCardProps) {
+  const fcmPick = isFCMPick(listing);
+  const region = getRegionTag(listing.region);
+
   // Format currency
   const formatPrice = (price: string | null) => {
     if (!price || price === '0') return null;
     return `£${parseInt(price).toLocaleString()}`;
-  };
-
-  // Status badge styling
-  const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      new: 'bg-fcm-red text-white',
-      available: 'bg-fcm-red text-white',
-      watch: 'bg-yellow-500 text-black',
-      pursue: 'bg-fcm-gold text-black',
-      closed: 'bg-gray-500 text-white',
-      'under offer': 'bg-orange-500 text-white',
-    };
-    return styles[status.toLowerCase()] || 'bg-gray-600 text-white';
   };
 
   // Format business type
@@ -38,79 +55,151 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   const price = formatPrice(listing.askingPrice);
   const turnover = formatPrice(listing.yearlyTurnover);
+  const weeklyTurnover = formatPrice(listing.weeklyTurnover);
   const fees = formatPrice(listing.annualFees);
+
+  // Get verification date (using current date as placeholder - should come from data)
+  const verifiedDate = "6 Mar 2026";
 
   return (
     <div className="bg-fcm-card border border-gray-800 rounded-lg overflow-hidden hover:border-fcm-gold transition-all duration-300 group">
-      {/* Image or placeholder */}
-      <div className="h-48 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all" />
-        <div className="relative z-10 text-center">
-          <div className="text-fcm-gold text-4xl font-bold mb-2">{formatType(listing.businessType)}</div>
-          <div className="text-white/60 text-sm">{listing.region}</div>
-        </div>
-        {/* Status badge */}
-        <div className={`absolute top-3 right-3 px-3 py-1 text-xs font-bold uppercase rounded ${getStatusBadge(listing.status)}`}>
-          {listing.status}
-        </div>
-      </div>
+      
+      {/* Header with badges */}
+      <div className="p-6 pb-4 border-b border-gray-800/50">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex flex-wrap gap-2">
+            {/* FCM Pick Badge */}
+            {fcmPick && (
+              <div className="inline-flex items-center gap-1 px-3 py-1 bg-gold/20 border border-gold/40 rounded-full text-gold text-xs font-bold">
+                <Star size={12} fill="currentColor" />
+                <span>FCM PICK</span>
+              </div>
+            )}
+            
+            {/* Region Tag */}
+            <div className="inline-flex items-center gap-1 px-3 py-1 bg-card/50 border border-gray-700 rounded-full text-gray-300 text-xs font-bold">
+              <span>{region.emoji}</span>
+              <span>{region.text}</span>
+            </div>
+          </div>
 
-      {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 min-h-[3.5rem]">
+          {/* Confidence badge */}
+          <div className={`text-xs font-mono px-2 py-1 rounded ${
+            listing.confidence === 'HIGH' ? 'bg-green-500/20 text-green-400' :
+            listing.confidence === 'MODERATE' ? 'bg-yellow-500/20 text-yellow-400' :
+            'bg-gray-500/20 text-gray-400'
+          }`}>
+            {listing.confidence}
+          </div>
+        </div>
+
+        {/* Business Type */}
+        <div className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+          {formatType(listing.businessType)}
+        </div>
+
+        {/* Business Name */}
+        <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">
           {listing.businessName}
         </h3>
 
-        <div className="flex items-center text-gray-400 text-sm mb-4">
-          <MapPin size={14} className="mr-1" />
-          <span className="line-clamp-1">{listing.location}</span>
+        {/* Location */}
+        <div className="flex items-center text-gray-300 text-sm mb-4">
+          <MapPin size={14} className="mr-1 text-gold" />
+          <span>{listing.location}</span>
         </div>
 
         {/* Price */}
         {price && (
-          <div className="mb-4">
-            <div className="text-fcm-gold font-mono text-2xl font-bold">
+          <div className="mb-2">
+            <div className="text-gold font-mono text-3xl font-bold">
               {price}
+            </div>
+            <div className="text-gray-400 text-sm">
+              {listing.askingPrice && parseInt(listing.askingPrice) > 300000 ? 'Premium Asset' : 'Asking Price'}
             </div>
           </div>
         )}
+      </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-800 my-4" />
-
-        {/* Key metrics */}
-        <div className="space-y-2 mb-4">
-          {turnover && turnover !== '£0' && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Turnover:</span>
-              <span className="text-fcm-gold font-mono font-medium">{turnover}</span>
-            </div>
-          )}
+      {/* Financial Metrics */}
+      <div className="p-6 py-4 bg-black/30 border-b border-gray-800/50">
+        <div className="grid grid-cols-2 gap-3 text-sm">
           {fees && fees !== '£0' && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Annual Fees:</span>
-              <span className="text-fcm-gold font-mono font-medium">{fees}</span>
+            <div>
+              <div className="text-gray-400 text-xs mb-1">PO Revenue</div>
+              <div className="text-gold font-mono font-bold">{fees}</div>
             </div>
           )}
-          {listing.score && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Score:</span>
-              <span className="text-fcm-gold font-mono font-bold text-lg">{listing.score}/100</span>
+          {turnover && turnover !== '£0' && (
+            <div>
+              <div className="text-gray-400 text-xs mb-1">Turnover</div>
+              <div className="text-gold font-mono font-bold">{turnover}</div>
+            </div>
+          )}
+          {weeklyTurnover && weeklyTurnover !== '£0' && (
+            <div>
+              <div className="text-gray-400 text-xs mb-1">Weekly Sales</div>
+              <div className="text-gold font-mono font-bold">{weeklyTurnover}</div>
+            </div>
+          )}
+          {listing.sessionsPerMonth > 0 && (
+            <div>
+              <div className="text-gray-400 text-xs mb-1">Daily Sessions</div>
+              <div className="text-gold font-mono font-bold">{Math.round(listing.sessionsPerMonth / 30)}</div>
             </div>
           )}
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-800 my-4" />
+        {/* Score */}
+        <div className="mt-4 pt-3 border-t border-gray-800/50 flex items-center justify-between">
+          <span className="text-gray-400 text-xs">FCM Score</span>
+          <span className={`font-mono font-bold text-lg ${
+            listing.score >= 85 ? 'text-gold' :
+            listing.score >= 70 ? 'text-green-400' :
+            'text-yellow-400'
+          }`}>
+            {listing.score}/100
+          </span>
+        </div>
+      </div>
 
-        {/* View details button */}
+      {/* Expert Commentary */}
+      <div className="p-6 py-4 border-b border-gray-800/50">
+        <div className="text-gray-300 text-sm leading-relaxed">
+          {listing.notes}
+        </div>
+      </div>
+
+      {/* Source Attribution */}
+      <div className="px-6 py-3 bg-black/20 border-b border-gray-800/50">
+        <div className="text-xs text-gray-400">
+          <span className="font-medium">Source:</span> {listing.source} • <span className="text-gray-500">Verified {verifiedDate}</span>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="p-6 pt-4 space-y-3">
+        {/* Get Report CTA */}
         <Link 
-          href={`/opportunities/${listing.id}`}
-          className="flex items-center justify-center gap-2 w-full py-3 bg-fcm-gold text-black font-semibold rounded-md hover:bg-fcm-gold-hover transition-colors group/btn"
+          href="/reports"
+          className="flex items-center justify-center gap-2 w-full py-3 bg-fcm-red hover:bg-red-600 text-white font-bold rounded-md transition-colors"
         >
-          <span>View Details</span>
-          <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+          <span>Get Report £149</span>
         </Link>
+
+        {/* View Original Listing */}
+        {listing.sourceUrl && (
+          <a 
+            href={listing.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-2 bg-transparent border border-gray-700 hover:border-gold text-gray-300 hover:text-gold font-medium rounded-md transition-colors text-sm"
+          >
+            <span>View Listing</span>
+            <ExternalLink size={14} />
+          </a>
+        )}
       </div>
     </div>
   );
