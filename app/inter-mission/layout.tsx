@@ -10,7 +10,7 @@ const mobileNavItems = [
   { href: "/inter-mission/assignments", label: "Assignments", icon: Briefcase },
   { href: "/inter-mission/map", label: "Map", icon: MapPin },
   { href: "/inter-mission/favorites", label: "Favorites", icon: Heart },
-  { href: "/inter-mission/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/", label: "FCM Home", icon: ArrowLeft },
 ];
 
 export default function InterMissionLayout({ children }: { children: React.ReactNode }) {
@@ -59,11 +59,11 @@ export default function InterMissionLayout({ children }: { children: React.React
               Dashboard
             </Link>
             <div className="flex items-center gap-3 ml-4 pl-4 border-l border-[#1A3A25]">
+              <Link href="/" className="text-sm font-semibold text-white hover:text-[#00FF88] transition-colors flex items-center gap-2 px-3 py-1.5 rounded border border-[#1A3A25] hover:border-[#00FF88]">
+                <ArrowLeft size={16} /> FCM Intelligence
+              </Link>
               <Link href="/inter-mission/register" className="im-btn-primary text-sm px-4 py-1.5 min-h-0" data-testid="link-register">
                 Join Network
-              </Link>
-              <Link href="/" className="text-sm text-[#888888] hover:text-white transition-colors flex items-center gap-1">
-                <ArrowLeft size={14} /> FCM
               </Link>
             </div>
           </nav>
