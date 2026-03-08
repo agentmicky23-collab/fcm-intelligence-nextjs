@@ -34,6 +34,10 @@ export function Footer() {
             <li><Link href="/inter-mission" className="text-[#00FF88] hover:text-[#00FF88]/80 text-sm transition-colors">Inter-Mission</Link></li>
             <li><Link href="/business-republic" className="text-muted-foreground hover:text-gold text-sm transition-colors">Business Republic</Link></li>
             <li><a href="https://discord.gg/52MsbGBhyr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-gold text-sm transition-colors">💬 Community</a></li>
+            <li><Link href="/dashboard" className="text-muted-foreground hover:text-gold text-sm transition-colors">Admin Dashboard</Link></li>
+            <li><Link href="/dashboard/opportunities" className="text-muted-foreground hover:text-gold text-sm transition-colors">Opportunities</Link></li>
+            <li><Link href="/dashboard/market-scan" className="text-muted-foreground hover:text-gold text-sm transition-colors">Market Scan</Link></li>
+            <li><Link href="/dashboard/content" className="text-muted-foreground hover:text-gold text-sm transition-colors">Content Control</Link></li>
             <li><a href="https://www.fcmgt.co.uk" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-gold text-sm transition-colors">FC Management</a></li>
           </ul>
         </div>
