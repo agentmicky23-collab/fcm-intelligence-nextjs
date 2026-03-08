@@ -4,6 +4,7 @@
  */
 
 import Link from 'next/link';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { reports } from '@/lib/reports-data';
 
 export const metadata = {
@@ -13,7 +14,8 @@ export const metadata = {
 
 export default function ReportsPage() {
   return (
-    <div className="min-h-screen bg-[var(--fcm-dark)] text-white">
+    <AppLayout>
+      <div className="min-h-screen bg-[var(--fcm-dark)] text-white">
       {/* Hero Section */}
       <section className="py-20 px-4 border-b border-gray-800">
         <div className="max-w-6xl mx-auto text-center">
@@ -91,6 +93,7 @@ export default function ReportsPage() {
         </div>
       </section>
     </div>
+    </AppLayout>
   );
 }
 

@@ -4,6 +4,7 @@
  */
 
 import Link from 'next/link';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { services, advisoryPackages, getServicesByCategory } from '@/lib/services-data';
 
 export const metadata = {
@@ -17,7 +18,8 @@ export default function ServicesPage() {
   const ongoingServices = getServicesByCategory('ongoing');
   
   return (
-    <div className="min-h-screen bg-[var(--fcm-dark)] text-white">
+    <AppLayout>
+      <div className="min-h-screen bg-[var(--fcm-dark)] text-white">
       {/* Hero Section */}
       <section className="py-20 px-4 border-b border-gray-800">
         <div className="max-w-6xl mx-auto text-center">
@@ -158,6 +160,7 @@ export default function ServicesPage() {
         </div>
       </section>
     </div>
+    </AppLayout>
   );
 }
 

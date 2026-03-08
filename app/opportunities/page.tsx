@@ -6,11 +6,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { ListingCard } from '@/components/listing-card';
 import { ListingsFilter, type FilterState } from '@/components/listings-filter';
 import { listings, getUniqueRegions, getUniqueBusinessTypes, filterListings } from '@/lib/listings-data';
 import type { Listing } from '@/types/listing';
-import Image from 'next/image';
 
 export default function OpportunitiesPage() {
   const [filters, setFilters] = useState<FilterState>({
@@ -39,29 +39,7 @@ export default function OpportunitiesPage() {
   }, [filters]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-gray-900 bg-black/95 backdrop-blur sticky top-0 z-40">
-        <div className="container mx-auto px-4 md:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Image 
-                src="/images/logo-transparent.png" 
-                alt="FCM Intelligence" 
-                width={120} 
-                height={40}
-                className="h-10 w-auto"
-              />
-            </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="/" className="text-gray-400 hover:text-fcm-gold transition-colors">Home</a>
-              <a href="/opportunities" className="text-fcm-gold font-semibold">Opportunities</a>
-              <a href="/about" className="text-gray-400 hover:text-fcm-gold transition-colors">About</a>
-              <a href="/contact" className="text-gray-400 hover:text-fcm-gold transition-colors">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <AppLayout>
 
       {/* Hero section */}
       <section className="py-16 md:py-24 bg-gradient-to-b from-black to-gray-950">
@@ -128,30 +106,6 @@ export default function OpportunitiesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-900 py-12 bg-black">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-4">
-              <Image 
-                src="/images/logo-transparent.png" 
-                alt="FCM Intelligence" 
-                width={100} 
-                height={33}
-                className="h-8 w-auto opacity-60"
-              />
-            </div>
-            <div className="text-sm text-gray-500">
-              © {new Date().getFullYear()} FCM Intelligence. All rights reserved.
-            </div>
-            <div className="flex gap-6 text-sm">
-              <a href="/privacy" className="text-gray-400 hover:text-fcm-gold transition-colors">Privacy</a>
-              <a href="/terms" className="text-gray-400 hover:text-fcm-gold transition-colors">Terms</a>
-              <a href="/contact" className="text-gray-400 hover:text-fcm-gold transition-colors">Contact</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </AppLayout>
   );
 }
