@@ -43,7 +43,7 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.slice(0, 6).map((link) => (
+          {navLinks.map((link) => (
             link.external ? (
               <a
                 key={link.href}
@@ -59,7 +59,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-medium px-3 py-2 rounded-md transition-colors hover:text-gold hover:bg-card ${
-                  pathname === link.href ? "text-gold bg-card" : "text-muted-foreground"
+                  pathname === link.href ? "text-gold bg-card" : link.highlight ? "text-[#00FF88]" : "text-muted-foreground"
                 }`}
               >
                 {link.label}
