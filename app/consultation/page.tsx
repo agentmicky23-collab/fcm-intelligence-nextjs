@@ -1,282 +1,258 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { Phone, Mail, Calendar, ArrowRight } from "lucide-react";
+
+interface ConsultationType {
+  id: string;
+  icon: string;
+  name: string;
+  price: string;
+  duration: string;
+  description: string;
+  features: string[];
+  bestValue?: boolean;
+}
+
+const quickSupport: ConsultationType[] = [
+  {
+    id: 'helpline-101',
+    icon: '🆘',
+    name: 'Helpline 101',
+    price: '£101',
+    duration: '20 minutes • One-time',
+    description: 'Urgent help when you need it. Cash discrepancies, compliance issues, immediate guidance.',
+    features: [
+      '20-minute emergency call',
+      'Cash & compliance guidance',
+      'Quick problem resolution',
+      'One-time fee, no commitment',
+    ],
+  },
+  {
+    id: 'discovery-call',
+    icon: '💬',
+    name: 'Discovery Call',
+    price: '£150',
+    duration: '1 hour',
+    description: 'Initial consultation to assess your situation, answer questions, and explore options.',
+    features: [
+      '60-minute video call',
+      'Situation assessment',
+      'Q&A on any topic',
+      'Recommendations & next steps',
+    ],
+  },
+];
+
+const premiumPackages: ConsultationType[] = [
+  {
+    id: 'strategic-session',
+    icon: '🎯',
+    name: 'Strategic Session',
+    price: '£497',
+    duration: '1 hour • Standalone',
+    description: 'Quick validation, red flags check, go/no-go decision on a specific opportunity.',
+    features: [
+      '60-minute deep-dive video call',
+      'Opportunity assessment & viability check',
+      'Initial due diligence guidance',
+      'Q&A on specific concerns',
+      'Follow-up email summary with action points',
+    ],
+  },
+  {
+    id: 'acquisition-advisory',
+    icon: '📊',
+    name: 'Acquisition Advisory',
+    price: '£1,997',
+    duration: 'Premium Report + 3 Hours',
+    description: 'Expert guidance through the entire acquisition process. Includes FCM Intelligence Premium Report.',
+    features: [
+      'FCM Intelligence Premium Report (£449 value)',
+      '3× 60-minute consultation sessions',
+      'Session 1: Pre-acquisition strategy',
+      'Session 2: Due diligence review',
+      'Session 3: Negotiation prep & closing',
+      'Email/WhatsApp support between sessions',
+      'Deal structure recommendations',
+    ],
+    bestValue: true,
+  },
+  {
+    id: 'full-support',
+    icon: '🏆',
+    name: 'Full Acquisition Support',
+    price: '£4,997',
+    duration: 'Elite Package • 3 Months',
+    description: 'Complete hand-holding for first-time buyers or complex acquisitions.',
+    features: [
+      'FCM Intelligence Elite Report included',
+      '6× 60-minute consultation sessions',
+      'Unlimited email/WhatsApp support',
+      'On-site visit option (travel separate)',
+      'Post-acquisition operations planning',
+      '30-day post-acquisition check-in',
+    ],
+  },
+  {
+    id: 'retainer',
+    icon: '🤝',
+    name: 'Advisory Retainer',
+    price: '£997',
+    duration: '/month • 3-month minimum',
+    description: 'Ongoing support for operators building portfolios or wanting continuous expert access.',
+    features: [
+      '2× 60-minute calls per month',
+      'Unlimited email/WhatsApp support',
+      'Portfolio strategy & expansion planning',
+      'Operations troubleshooting',
+      'Exclusive opportunities before public listing',
+    ],
+  },
+];
+
+function ConsultationCard({ item }: { item: ConsultationType }) {
+  return (
+    <div className="pricing-card-old" style={{ textAlign: 'left', position: 'relative' }}>
+      {item.bestValue && (
+        <div className="popular-badge">BEST VALUE</div>
+      )}
+      <div className="text-3xl mb-4">{item.icon}</div>
+      <h3 className="text-xl font-bold mb-2">{item.name}</h3>
+      <div className="font-mono text-3xl font-bold mb-1" style={{ color: '#c9a227' }}>{item.price}</div>
+      <div style={{ color: '#8b949e', fontSize: '0.85rem', marginBottom: '16px' }}>{item.duration}</div>
+      <p style={{ color: '#8b949e', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px' }}>
+        {item.description}
+      </p>
+      <ul>
+        {item.features.map((f, i) => (
+          <li key={i}>{f}</li>
+        ))}
+      </ul>
+      <Link href="/contact" className="btn-primary w-full mt-4" style={{ display: 'flex', justifyContent: 'center' }}>
+        Book Now
+      </Link>
+    </div>
+  );
+}
 
 export default function ConsultationPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    businessInterest: "",
-    message: "",
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Integrate with actual form submission backend
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
     <AppLayout>
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden border-b border-border">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-background to-background -z-10" />
-        
+      {/* Hero */}
+      <section className="pt-32 pb-16" style={{ background: 'linear-gradient(180deg, #1e3a5f 0%, #0d1117 100%)' }}>
         <div className="container mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-gold/30 text-sm mb-8">
-            <span className="flex h-2 w-2 rounded-full bg-gold animate-pulse"></span>
-            <span className="text-gold font-medium">15+ Years Industry Experience</span>
+          <div className="inline-block px-5 py-2 rounded-full mb-6" style={{ background: 'rgba(201, 162, 39, 0.15)', border: '1px solid #c9a227', color: '#c9a227', fontSize: '0.85rem', fontWeight: 600 }}>
+            15+ Years Industry Experience
           </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
-            Expert <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-[#fff0a8]">Consultation</span> Services
+          <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4">
+            Expert <span style={{ color: '#c9a227' }}>Consultation</span> Services
           </h1>
-          
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Get personalized guidance from someone who's operated 40+ branches and built a national portfolio from the ground up.
+          <p className="text-xl" style={{ color: '#8b949e', maxWidth: '700px', margin: '0 auto' }}>
+            Get personalized guidance from someone who&apos;s operated 40+ branches and built a national portfolio from the ground up.
           </p>
-
-          {/* Phone Number - Prominent Display */}
-          <div className="inline-flex items-center gap-3 px-6 py-4 bg-gold/10 border border-gold/30 rounded-lg mb-8">
-            <Phone className="text-gold" size={24} />
-            <div className="text-left">
-              <div className="text-xs text-gray-400 uppercase tracking-wider">Call Direct</div>
-              <a href="tel:+447886152939" className="text-2xl font-bold text-gold hover:text-[#fff0a8] transition-colors font-mono">
-                +44 7886 152939
-              </a>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Why Consult Section */}
-      <section className="py-16 bg-card/30 border-b border-border">
+      {/* Quick Support */}
+      <section className="py-16 container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h3 className="text-sm font-bold tracking-widest uppercase mb-6" style={{ color: '#c9a227' }}>Quick Support</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {quickSupport.map(item => (
+            <ConsultationCard key={item.id} item={item} />
+          ))}
+        </div>
+      </section>
+
+      {/* Premium Packages */}
+      <section className="py-16" style={{ background: '#161b22', borderTop: '1px solid #30363d', borderBottom: '1px solid #30363d' }}>
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Why Get Expert Guidance?</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6">
-                <div className="text-4xl mb-3">🏆</div>
-                <h3 className="font-bold text-lg mb-2">40+ Branches</h3>
-                <p className="text-sm text-muted-foreground">
-                  Real operational experience across the UK
-                </p>
-              </div>
-              
-              <div className="text-center p-6">
-                <div className="text-4xl mb-3">💼</div>
-                <h3 className="font-bold text-lg mb-2">£1M+ Invested</h3>
-                <p className="text-sm text-muted-foreground">
-                  Built from scratch to national scale
-                </p>
-              </div>
-              
-              <div className="text-center p-6">
-                <div className="text-4xl mb-3">📊</div>
-                <h3 className="font-bold text-lg mb-2">Data-Driven</h3>
-                <p className="text-sm text-muted-foreground">
-                  Intelligence-led acquisition strategy
-                </p>
-              </div>
-            </div>
+          <div className="text-center mb-8">
+            <h3 className="text-sm font-bold tracking-widest uppercase mb-6" style={{ color: '#c9a227' }}>Premium Packages</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {premiumPackages.map(item => (
+              <ConsultationCard key={item.id} item={item} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Booking Form Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Book Your Consultation</h2>
-              <p className="text-muted-foreground">
-                Fill out the form below and we'll get back to you within 24 hours
-              </p>
+      {/* Booking Form */}
+      <section className="py-20 container mx-auto px-4" id="book">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">Book Your Session</h2>
+          <p style={{ color: '#8b949e', maxWidth: '600px', margin: '0 auto' }}>
+            Choose a service and we&apos;ll get back to you within 2 hours to confirm your booking.
+          </p>
+        </div>
+        <div className="old-contact-form">
+          <form action="https://formspree.io/f/xblgnqzj" method="POST">
+            <input type="hidden" name="_subject" value="Consultation Booking Request" />
+            <div className="form-group">
+              <label htmlFor="service">Service Type</label>
+              <select id="service" name="service" required>
+                <option value="">Select a service...</option>
+                <option value="helpline-101">Helpline 101 — £101</option>
+                <option value="discovery-call">Discovery Call — £150</option>
+                <option value="strategic-session">Strategic Session — £497</option>
+                <option value="acquisition-advisory">Acquisition Advisory — £1,997</option>
+                <option value="full-support">Full Acquisition Support — £4,997</option>
+                <option value="retainer">Advisory Retainer — £997/month</option>
+              </select>
             </div>
-
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="fcm-card p-8 space-y-6">
-                {/* Name */}
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2 text-white">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent text-white"
-                    placeholder="John Smith"
-                  />
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2 text-white">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent text-white"
-                    placeholder="john@example.com"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium mb-2 text-white">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent text-white"
-                    placeholder="+44 7886 152939"
-                  />
-                </div>
-
-                {/* Business Interest */}
-                <div>
-                  <label htmlFor="businessInterest" className="block text-sm font-medium mb-2 text-white">
-                    What are you interested in? *
-                  </label>
-                  <select
-                    id="businessInterest"
-                    name="businessInterest"
-                    required
-                    value={formData.businessInterest}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent text-white"
-                  >
-                    <option value="">Select an option</option>
-                    <option value="post_office_acquisition">Post Office Acquisition</option>
-                    <option value="convenience_store">Convenience Store</option>
-                    <option value="forecourt">Forecourt / Petrol Station</option>
-                    <option value="due_diligence">Due Diligence Report</option>
-                    <option value="operator_training">Operator Training</option>
-                    <option value="advisory_services">Advisory Services</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2 text-white">
-                    Tell us more about your requirements *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={6}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent text-white resize-none"
-                    placeholder="What specific guidance are you looking for?"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full btn-primary text-lg py-4 flex items-center justify-center gap-2"
-                >
-                  <span>Submit Consultation Request</span>
-                  <ArrowRight size={20} />
-                </button>
-
-                <p className="text-xs text-muted-foreground text-center">
-                  By submitting this form, you agree to be contacted by FCM Intelligence regarding your inquiry.
-                </p>
-              </form>
-            ) : (
-              <div className="fcm-card p-12 text-center">
-                <div className="text-6xl mb-6">✅</div>
-                <h3 className="text-2xl font-bold mb-4 text-gold">Request Submitted!</h3>
-                <p className="text-muted-foreground mb-6">
-                  Thank you for your interest. We'll review your request and get back to you within 24 hours.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Need to speak urgently? Call us directly at{" "}
-                  <a href="tel:+447886152939" className="text-gold hover:underline font-mono">
-                    +44 7886 152939
-                  </a>
-                </p>
-              </div>
-            )}
+            <div className="form-group">
+              <label htmlFor="name">Your Name</label>
+              <input type="text" id="name" name="name" placeholder="Full name" required />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="07xxx xxxxxx" required />
+            </div>
+            <div className="form-group">
+              <label htmlFor="preferred-date">Preferred Date</label>
+              <input type="date" id="preferred-date" name="preferred-date" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="message">Tell us about your situation</label>
+              <textarea id="message" name="message" rows={4} placeholder="What are you looking to achieve? Any specific branches or opportunities you're considering?"></textarea>
+            </div>
+            <button type="submit" className="submit-btn">Request Booking</button>
+          </form>
+          <div className="text-center mt-6">
+            <p style={{ color: '#8b949e', fontSize: '0.9rem' }}>
+              Prefer a quick chat? Call us: <strong className="text-white">020 XXXX XXXX</strong>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Contact Info Section */}
-      <section className="py-16 bg-card/30 border-t border-border">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8 text-center">Other Ways to Reach Us</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 fcm-card">
-                <Phone className="text-gold mx-auto mb-4" size={32} />
-                <h3 className="font-bold mb-2">Phone</h3>
-                <a href="tel:+447886152939" className="text-gold hover:underline font-mono text-sm">
-                  +44 7886 152939
-                </a>
-              </div>
-              
-              <div className="text-center p-6 fcm-card">
-                <Mail className="text-gold mx-auto mb-4" size={32} />
-                <h3 className="font-bold mb-2">Email</h3>
-                <a href="mailto:contact@fcmgt.co.uk" className="text-gold hover:underline text-sm">
-                  contact@fcmgt.co.uk
-                </a>
-              </div>
-              
-              <div className="text-center p-6 fcm-card">
-                <Calendar className="text-gold mx-auto mb-4" size={32} />
-                <h3 className="font-bold mb-2">Response Time</h3>
-                <p className="text-sm text-muted-foreground">
-                  Within 24 hours
-                </p>
-              </div>
-            </div>
+      {/* FAQ */}
+      <section className="py-20" style={{ background: '#161b22', borderTop: '1px solid #30363d' }}>
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+          <div className="space-y-3">
+            {[
+              { q: "What happens after I book?", a: "You'll receive a confirmation email within 2 hours with a video call link, preparation materials, and what to bring to the session." },
+              { q: "Can I reschedule?", a: "Yes, you can reschedule up to 24 hours before your session at no extra charge." },
+              { q: "What if I need more time?", a: "Sessions can be extended at a prorated rate. We'll never cut you off mid-conversation." },
+              { q: "Do you offer refunds?", a: "If you're not satisfied with your consultation, we'll either schedule a follow-up at no charge or refund your payment in full." },
+              { q: "What's the difference between a report and a consultation?", a: "Reports are detailed written documents with data and analysis. Consultations are live video calls where you can ask questions, get personalized advice, and work through decisions in real-time." },
+            ].map((faq, i) => (
+              <details key={i} className="faq-item">
+                <summary className="faq-question">{faq.q}</summary>
+                <div className="faq-answer">{faq.a}</div>
+              </details>
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* Return Home CTA */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 text-center">
-          <a href="/" className="btn-secondary inline-flex items-center gap-2">
-            ← Return to Home
-          </a>
         </div>
       </section>
     </AppLayout>

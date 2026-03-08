@@ -1,157 +1,95 @@
 "use client";
 
+import Link from "next/link";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/api";
-import { useState } from "react";
-import { Mail, Clock, CheckCircle } from "lucide-react";
 
-export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-    reportPackage: "",
-  });
-
-  const mutation = useMutation({
-    mutationFn: (data: typeof form) => apiRequest("POST", "/api/contact", data),
-    onSuccess: () => setSubmitted(true),
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate(form);
-  };
-
-  if (submitted) {
-    return (
-      <AppLayout>
-        <div className="pt-32 pb-20 container mx-auto px-4 text-center">
-          <CheckCircle className="mx-auto text-gold mb-6" size={64} />
-          <h1 className="text-4xl font-bold mb-4">Message Sent</h1>
-          <p className="text-xl text-muted-foreground max-w-lg mx-auto">
-            Thank you for reaching out. We'll be in touch within 24 hours.
-          </p>
-        </div>
-      </AppLayout>
-    );
-  }
-
+export default function ContactPage() {
   return (
     <AppLayout>
-      <div className="pt-32 pb-20 container mx-auto px-4">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
-          <div className="lg:col-span-2">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-              Get in <span className="text-gold">Touch</span>
-            </h1>
-            <p className="text-muted-foreground mb-10 leading-relaxed">
-              Whether you're exploring acquisition support, need operational expertise, or want to discuss a bespoke intelligence package, we're here to help.
-            </p>
+      {/* Hero */}
+      <section className="pt-32 pb-12" style={{ background: 'linear-gradient(180deg, #1e3a5f 0%, #0d1117 100%)' }}>
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4">
+            Ready to Buy <span style={{ color: '#c9a227' }}>Smarter</span>?
+          </h1>
+          <p className="text-xl" style={{ color: '#8b949e', maxWidth: '600px', margin: '0 auto' }}>
+            Tell us which listing interests you, and we&apos;ll deliver actionable intelligence within 48 hours.
+          </p>
+        </div>
+      </section>
 
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-card border border-border rounded-lg">
-                  <Mail className="text-gold" size={20} />
-                </div>
-                <div>
-                  <div className="font-semibold mb-1">Email Us</div>
-                  <a href="mailto:mikesh@interimenterprises.co.uk" className="text-gold hover:underline text-sm">
-                    mikesh@interimenterprises.co.uk
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-card border border-border rounded-lg">
-                  <Clock className="text-gold" size={20} />
-                </div>
-                <div>
-                  <div className="font-semibold mb-1">Response Time</div>
-                  <p className="text-sm text-muted-foreground">Within 24 hours</p>
-                </div>
-              </div>
+      {/* Contact Form */}
+      <section className="py-20 container mx-auto px-4">
+        <div className="old-contact-form">
+          <form action="https://formspree.io/f/xblgnqzj" method="POST">
+            <div className="form-group">
+              <label htmlFor="listing">Branch / Listing of Interest</label>
+              <input type="text" id="listing" name="listing" placeholder="e.g., Keith Post Office, Barnsley Mains..." required />
             </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="lg:col-span-3 fcm-card space-y-5" data-testid="contact-form">
-            <div>
-              <label className="text-sm font-medium block mb-2">Name</label>
-              <input
-                type="text"
-                required
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
-                data-testid="input-name"
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label className="text-sm font-medium block mb-2">Email</label>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
-                  data-testid="input-email"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium block mb-2">Phone</label>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
-                  data-testid="input-phone"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium block mb-2">Report Package</label>
-              <select
-                value={form.reportPackage}
-                onChange={(e) => setForm({ ...form, reportPackage: e.target.value })}
-                className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors"
-                data-testid="select-package"
-              >
-                <option value="">Select a package (optional)</option>
-                <option value="acquisition_support">Acquisition Support</option>
-                <option value="full_management">Full Office Management</option>
-                <option value="audit_compliance">Audit & Compliance</option>
-                <option value="intelligence_report">Intelligence Report</option>
-                <option value="other">Other / General Enquiry</option>
+            <div className="form-group">
+              <label htmlFor="report-type">Report Type</label>
+              <select id="report-type" name="report-type">
+                <option value="standard">Standard Report — £149</option>
+                <option value="quick">Quick Check — £49</option>
+                <option value="premium">Premium Report — £349</option>
+                <option value="enterprise">Enterprise — £599+</option>
+                <option value="consultation">Consultation Call</option>
               </select>
             </div>
-            <div>
-              <label className="text-sm font-medium block mb-2">Message</label>
-              <textarea
-                required
-                rows={5}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-colors resize-none"
-                data-testid="input-message"
-              />
+            <div className="form-group">
+              <label htmlFor="name">Your Name</label>
+              <input type="text" id="name" name="name" placeholder="Full name" required />
             </div>
-            <button
-              type="submit"
-              disabled={mutation.isPending}
-              className="btn-primary w-full text-base py-3"
-              data-testid="button-submit"
-            >
-              {mutation.isPending ? "Sending..." : "Send Message"}
-            </button>
-            {mutation.isError && (
-              <p className="text-red-500 text-sm text-center">Something went wrong. Please try again.</p>
-            )}
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone (optional)</label>
+              <input type="tel" id="phone" name="phone" placeholder="07xxx xxxxxx" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="message">Message</label>
+              <textarea id="message" name="message" rows={4} placeholder="Tell us about your requirements, timeline, and any specific questions..."></textarea>
+            </div>
+            <button type="submit" className="submit-btn">Get Your Report</button>
           </form>
+          <div className="text-center mt-6">
+            <p style={{ color: '#8b949e', fontSize: '0.9rem' }}>
+              Or call us directly: <strong className="text-white">020 XXXX XXXX</strong>
+            </p>
+            <p style={{ color: '#57606a', fontSize: '0.8rem', marginTop: '8px' }}>
+              Average response time: 2 hours during business hours
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Alternative Contact Methods */}
+      <section className="py-16" style={{ background: '#161b22', borderTop: '1px solid #30363d' }}>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-center">
+            <div className="feature-card-old">
+              <div className="icon">📞</div>
+              <h3>Call Us</h3>
+              <p>Speak directly with our team during business hours (Mon-Fri, 9am-6pm).</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">💬</div>
+              <h3>Discord Community</h3>
+              <p>Join our community for real-time discussions and networking.</p>
+              <a href="https://discord.gg/52MsbGBhyr" target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-sm font-semibold" style={{ color: '#c9a227' }}>
+                Join Discord →
+              </a>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">📧</div>
+              <h3>Email</h3>
+              <p>Send us a detailed inquiry and we&apos;ll respond within 2 business hours.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </AppLayout>
   );
 }

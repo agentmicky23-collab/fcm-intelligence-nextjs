@@ -3,6 +3,11 @@
  * TypeScript interfaces for business opportunity listings
  */
 
+export interface ListingDetail {
+  label: string;
+  value: string;
+}
+
 export interface Listing {
   id: string;
   businessName: string;
@@ -21,6 +26,21 @@ export interface Listing {
   sourceUrl: string;
   notes: string;
   insiderVisible: boolean;
+  // Enriched fields from old site (optional for backwards compat)
+  badge?: string;
+  priceLabel?: string;
+  priceDisplay?: string;
+  headerGradient?: string;
+  headerEmoji?: string;
+  headerTag?: string;
+  headerTagBg?: string;
+  details?: ListingDetail[];
+  summary?: string;
+  originalUrl?: string;
+  originalUrlLabel?: string;
+  originalUrlDisabled?: boolean;
+  sourceAttribution?: string;
+  verifiedDate?: string;
 }
 
 export type BusinessType = Listing['businessType'];

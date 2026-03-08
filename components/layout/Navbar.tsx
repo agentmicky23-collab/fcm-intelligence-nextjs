@@ -15,12 +15,11 @@ export function Navbar() {
     { href: "/opportunities", label: "Live Listings" },
     { href: "/blog", label: "Blog" },
     { href: "/consultation", label: "Consultation" },
-    { href: "https://discord.gg/52MsbGBhyr", label: "Community", external: true },
-    { href: "/insiders", label: "Insider" },
     { href: "/reports", label: "Reports" },
-    { href: "/services", label: "Services" },
-    { href: "/business-republic", label: "Business Republic" },
+    { href: "/insiders", label: "⭐ Insider", gold: true },
     { href: "/inter-mission", label: "Inter-Mission", highlight: true },
+    { href: "/business-republic", label: "Business Republic" },
+    { href: "https://discord.gg/52MsbGBhyr", label: "💬 Community", external: true },
   ];
 
   return (
@@ -30,7 +29,7 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-3">
           <div className="relative w-8 h-8">
             <Image 
-              src="/logo-transparent.png" 
+              src="/assets/logos/logo-transparent.png" 
               alt="FCM Intelligence Logo" 
               fill
               className="object-contain"
@@ -59,7 +58,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-medium px-3 py-2 rounded-md transition-colors hover:text-gold hover:bg-card ${
-                  pathname === link.href ? "text-gold bg-card" : link.highlight ? "text-[#00FF88]" : "text-muted-foreground"
+                  pathname === link.href ? "text-gold bg-card" : 
+                  link.highlight ? "text-[#00FF88]" : 
+                  link.gold ? "text-gold" :
+                  "text-muted-foreground"
                 }`}
               >
                 {link.label}
@@ -67,13 +69,13 @@ export function Navbar() {
             )
           ))}
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
             <Link
-              href="/reports"
+              href="/contact"
               className="btn-primary py-1.5 px-4 min-h-0 text-sm font-semibold"
             >
-              Get Your Report
+              Get Report
             </Link>
           </div>
         </div>
@@ -98,11 +100,7 @@ export function Navbar() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`text-base font-medium py-2 px-3 rounded-md ${
-                    link.highlight 
-                      ? "text-[#00FF88] bg-[#00FF88]/10 border border-[#00FF88]/30" 
-                      : "text-muted-foreground hover:text-white hover:bg-background"
-                  }`}
+                  className="text-base font-medium py-2 px-3 rounded-md text-muted-foreground hover:text-white hover:bg-background"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -116,6 +114,8 @@ export function Navbar() {
                       ? "text-gold bg-background" 
                       : link.highlight
                       ? "text-[#00FF88] bg-[#00FF88]/10 border border-[#00FF88]/30"
+                      : link.gold
+                      ? "text-gold"
                       : "text-muted-foreground hover:text-white hover:bg-background"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -128,7 +128,7 @@ export function Navbar() {
             {/* Mobile CTA */}
             <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
               <Link 
-                href="/reports" 
+                href="/contact" 
                 className="btn-primary w-full text-center font-semibold" 
                 onClick={() => setIsMobileMenuOpen(false)}
               >

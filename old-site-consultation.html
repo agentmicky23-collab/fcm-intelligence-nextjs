@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Consultation | FCM Intelligence</title>
+    <meta name="description" content="Get expert guidance on Post Office acquisitions, operations, and franchise management. Book your consultation with 15+ years industry experience.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fcm-intelligence.vercel.app/consultation.html">
+    <meta property="og:title" content="Book a Consultation | FCM Intelligence">
+    <meta property="og:description" content="Get expert guidance on Post Office acquisitions, operations, and franchise management. 15+ years industry experience.">
+    <meta property="og:image" content="https://fcm-intelligence.vercel.app/assets/logos/fcm-logo-original.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logos/fcm-logo-original.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fcm-navy: #1e3a5f;
+            --fcm-gold: #c9a227;
+            --fcm-gold-light: #e8d48a;
+            --fcm-gold-dark: #9a7b1a;
+            --fcm-accent: #2d5a87;
+            --dark-bg: #0d1117;
+            --dark-card: #161b22;
+            --dark-border: #30363d;
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+            --text-muted: #57606a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--dark-border);
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-fcm {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-style: italic;
+            color: #FF0000;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .logo-sub {
+            font-size: 0.45rem;
+            font-weight: 700;
+            color: #FF0000;
+            letter-spacing: 1.5px;
+        }
+
+        .logo-intelligence {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: var(--fcm-gold);
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--fcm-gold);
+        }
+
+        .nav-cta {
+            background: var(--fcm-gold);
+            color: var(--dark-bg);
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--fcm-gold-light);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 0 80px;
+            background: linear-gradient(180deg, var(--fcm-navy) 0%, var(--dark-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(201, 162, 39, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(201, 162, 39, 0.15);
+            border: 1px solid var(--fcm-gold);
+            color: var(--fcm-gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 .highlight {
+            color: var(--fcm-gold);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        /* Consultation Types */
+        .consultation-types {
+            padding: 80px 0;
+            background: var(--dark-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-label {
+            color: var(--fcm-gold);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .type-card {
+            background: var(--dark-card);
+            border: 2px solid var(--dark-border);
+            border-radius: 16px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .type-card:hover {
+            border-color: var(--fcm-gold);
+            transform: translateY(-4px);
+        }
+
+        .type-card.selected {
+            border-color: var(--fcm-gold);
+            background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, var(--dark-card) 100%);
+        }
+
+        .type-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: var(--fcm-gold);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .type-card.featured {
+            border-color: var(--fcm-gold);
+            background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, var(--dark-card) 100%);
+            transform: scale(1.02);
+        }
+
+        .type-card.featured:hover {
+            transform: scale(1.04);
+        }
+
+        .type-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .type-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .type-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--fcm-gold);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .type-duration {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .type-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .type-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .type-features li {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .type-features li::before {
+            content: '✓';
+            color: var(--fcm-gold);
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+        }
+
+        /* Booking Section */
+        .booking-section {
+            padding: 80px 0;
+            background: linear-gradient(180deg, #0a0d12 0%, var(--dark-bg) 100%);
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .booking-info {
+            position: sticky;
+            top: 120px;
+        }
+
+        .booking-info h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 24px;
+        }
+
+        .booking-info p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .booking-details {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .booking-details h4 {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: var(--fcm-gold);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .detail-value.price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--fcm-gold);
+        }
+
+        /* Booking Form */
+        .booking-form {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 20px;
+            padding: 48px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-header {
+            margin-bottom: 32px;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(201, 162, 39, 0.15);
+            border: 2px solid var(--fcm-gold);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            font-weight: 700;
+            color: var(--fcm-gold);
+            margin-bottom: 16px;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--fcm-gold);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Calendar */
+        .calendar-container {
+            margin-bottom: 32px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .calendar-month {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav button {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-nav button:hover {
+            border-color: var(--fcm-gold);
+            color: var(--fcm-gold);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 8px;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .calendar-day:hover:not(.disabled):not(.selected) {
+            border-color: var(--fcm-gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.selected {
+            background: var(--fcm-gold);
+            color: var(--dark-bg);
+            font-weight: 700;
+            border-color: var(--fcm-gold);
+        }
+
+        .calendar-day.today {
+            border-color: var(--fcm-accent);
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .time-slot {
+            padding: 16px;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .time-slot:hover:not(.disabled) {
+            border-color: var(--fcm-gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .time-slot.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .time-slot.selected {
+            background: var(--fcm-gold);
+            color: var(--dark-bg);
+            font-weight: 700;
+            border-color: var(--fcm-gold);
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--fcm-gold);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--fcm-gold-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--dark-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--fcm-gold);
+            color: var(--fcm-gold);
+        }
+
+        /* Success Message */
+        .success-message {
+            text-align: center;
+            padding: 60px 40px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 24px;
+        }
+
+        .success-message h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--fcm-gold);
+        }
+
+        .success-message p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        .confirmation-details {
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .confirmation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .confirmation-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 40px;
+            border-top: 1px solid var(--dark-border);
+            background: var(--dark-bg);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-info {
+                position: static;
+            }
+
+            .types-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-slots {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-form {
+                padding: 32px 24px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/logo-transparent.png" alt="FCM Intelligence - Post Office Acquisition Reports">
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#opportunities">Listings</a>
+                <a href="blog.html">Blog</a>
+                <a href="consultation.html" style="color: var(--fcm-gold);">Consultation</a>
+                <a href="https://discord.gg/52MsbGBhyr" target="_blank">💬 Community</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">15+ Years Industry Experience</div>
+                <h1>Expert <span class="highlight">Consultation</span> Services</h1>
+                <p>Get personalized guidance from someone who's operated 40+ branches and built a national portfolio from the ground up.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Types -->
+    <section class="consultation-types">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Choose Your Service</div>
+                <h2>What Do You Need Help With?</h2>
+                <p>Select the consultation type that best fits your needs. All sessions are one-on-one via video call.</p>
+            </div>
+
+            <!-- Quick Support Options -->
+            <div style="margin-bottom: 48px;">
+                <h3 style="text-align: center; color: var(--fcm-gold); font-size: 1.1rem; margin-bottom: 24px; letter-spacing: 2px; text-transform: uppercase;">Quick Support</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 700px; margin: 0 auto;">
+                    
+                    <!-- Helpline 101 -->
+                    <div class="type-card" onclick="selectType('helpline-101', 101, 20)" style="padding: 32px;">
+                        <div class="type-icon" style="font-size: 2.5rem;">🆘</div>
+                        <h3 style="font-size: 1.25rem;">Helpline 101</h3>
+                        <div class="type-price" style="font-size: 1.75rem;">£101</div>
+                        <div class="type-duration">20 minutes • One-time</div>
+                        <p style="font-size: 0.9rem;">Urgent help when you need it. Cash discrepancies, compliance issues, immediate guidance.</p>
+                        <ul class="type-features" style="font-size: 0.85rem;">
+                            <li>20-minute emergency call</li>
+                            <li>Cash & compliance guidance</li>
+                            <li>Quick problem resolution</li>
+                            <li>One-time fee, no commitment</li>
+                        </ul>
+                    </div>
+
+                    <!-- Discovery Call -->
+                    <div class="type-card" onclick="selectType('discovery-call', 150, 60)" style="padding: 32px;">
+                        <div class="type-icon" style="font-size: 2.5rem;">💬</div>
+                        <h3 style="font-size: 1.25rem;">Discovery Call</h3>
+                        <div class="type-price" style="font-size: 1.75rem;">£150</div>
+                        <div class="type-duration">1 hour</div>
+                        <p style="font-size: 0.9rem;">Initial consultation to assess your situation, answer questions, and explore options.</p>
+                        <ul class="type-features" style="font-size: 0.85rem;">
+                            <li>60-minute video call</li>
+                            <li>Situation assessment</li>
+                            <li>Q&A on any topic</li>
+                            <li>Recommendations & next steps</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Packages -->
+            <h3 style="text-align: center; color: var(--fcm-gold); font-size: 1.1rem; margin-bottom: 24px; letter-spacing: 2px; text-transform: uppercase;">Premium Packages</h3>
+            <div class="types-grid">
+                <!-- Strategic Session -->
+                <div class="type-card" onclick="selectType('strategic-session', 497, 60)">
+                    <div class="type-icon">🎯</div>
+                    <h3>Strategic Session</h3>
+                    <div class="type-price">£497</div>
+                    <div class="type-duration">1 hour • Standalone</div>
+                    <p>Quick validation, red flags check, go/no-go decision on a specific opportunity.</p>
+                    <ul class="type-features">
+                        <li>60-minute deep-dive video call</li>
+                        <li>Opportunity assessment & viability check</li>
+                        <li>Initial due diligence guidance</li>
+                        <li>Q&A on specific concerns</li>
+                        <li>Follow-up email summary with action points</li>
+                    </ul>
+                </div>
+
+                <!-- Acquisition Advisory -->
+                <div class="type-card featured" onclick="selectType('acquisition-advisory', 1997, 180)">
+                    <div style="position: absolute; top: -12px; right: 20px; background: var(--fcm-gold); color: var(--dark-bg); padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">BEST VALUE</div>
+                    <div class="type-icon">📊</div>
+                    <h3>Acquisition Advisory</h3>
+                    <div class="type-price">£1,997</div>
+                    <div class="type-duration">Premium Report + 3 Hours</div>
+                    <p>Expert guidance through the entire acquisition process. Includes FCM Intelligence Premium Report.</p>
+                    <ul class="type-features">
+                        <li>FCM Intelligence Premium Report (£449 value)</li>
+                        <li>3× 60-minute consultation sessions</li>
+                        <li>Session 1: Pre-acquisition strategy</li>
+                        <li>Session 2: Due diligence review</li>
+                        <li>Session 3: Negotiation prep & closing</li>
+                        <li>Email/WhatsApp support between sessions</li>
+                        <li>Deal structure recommendations</li>
+                    </ul>
+                </div>
+
+                <!-- Full Acquisition Support -->
+                <div class="type-card" onclick="selectType('full-support', 4997, 360)">
+                    <div class="type-icon">🏆</div>
+                    <h3>Full Acquisition Support</h3>
+                    <div class="type-price">£4,997</div>
+                    <div class="type-duration">Elite Package • 3 Months</div>
+                    <p>Complete hand-holding for first-time buyers or complex acquisitions.</p>
+                    <ul class="type-features">
+                        <li>FCM Intelligence Elite Report included</li>
+                        <li>6× 60-minute consultation sessions</li>
+                        <li>Unlimited email/WhatsApp support</li>
+                        <li>On-site visit option (travel separate)</li>
+                        <li>Post-acquisition operations planning</li>
+                        <li>30-day post-acquisition check-in</li>
+                    </ul>
+                </div>
+
+                <!-- Advisory Retainer -->
+                <div class="type-card" onclick="selectType('retainer', 997, 120)">
+                    <div class="type-icon">🤝</div>
+                    <h3>Advisory Retainer</h3>
+                    <div class="type-price">£997<span style="font-size: 1rem; font-weight: normal;">/month</span></div>
+                    <div class="type-duration">3-month minimum</div>
+                    <p>Ongoing support for operators building portfolios or wanting continuous expert access.</p>
+                    <ul class="type-features">
+                        <li>2× 60-minute calls per month</li>
+                        <li>Unlimited email/WhatsApp support</li>
+                        <li>Portfolio strategy & expansion planning</li>
+                        <li>Operations troubleshooting</li>
+                        <li>Exclusive opportunities before public listing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section class="booking-section">
+        <div class="container">
+            <div class="booking-grid">
+                <!-- Booking Info (Sticky Sidebar) -->
+                <div class="booking-info">
+                    <h2>Book Your Session</h2>
+                    <p>Choose a time that works for you. You'll receive a confirmation email with video call details and preparation materials.</p>
+                    
+                    <div class="booking-details">
+                        <h4>Your Selection</h4>
+                        <div class="detail-row">
+                            <span class="detail-label">Service</span>
+                            <span class="detail-value" id="selected-service">Not selected</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value" id="selected-duration">—</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Date & Time</span>
+                            <span class="detail-value" id="selected-datetime">—</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total</span>
+                            <span class="detail-value price" id="selected-price">£0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Form -->
+                <div class="booking-form">
+                    <!-- Step 1: Select Date & Time -->
+                    <div class="form-step active" id="step-1">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Select Date & Time</h3>
+                            <p class="step-description">Choose a date and time that works for you. All times are shown in UK time (GMT/BST).</p>
+                        </div>
+
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <div class="calendar-month" id="calendar-month">March 2026</div>
+                                <div class="calendar-nav">
+                                    <button onclick="changeMonth(-1)">←</button>
+                                    <button onclick="changeMonth(1)">→</button>
+                                </div>
+                            </div>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Calendar generated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div id="time-slots-container" style="display: none;">
+                            <h4 style="margin-bottom: 16px; font-size: 1.1rem;">Available Times</h4>
+                            <div class="time-slots" id="time-slots">
+                                <!-- Time slots generated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+                            <button class="btn btn-primary" onclick="nextStep(2)" id="step-1-next" disabled>Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Your Details -->
+                    <div class="form-step" id="step-2">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Your Details</h3>
+                            <p class="step-description">Tell us about yourself so we can prepare for your consultation.</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first-name">First Name *</label>
+                                <input type="text" id="first-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name *</label>
+                                <input type="text" id="last-name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="business-type">Current Situation *</label>
+                            <select id="business-type" required>
+                                <option value="">Select...</option>
+                                <option value="prospective">Prospective Buyer (researching)</option>
+                                <option value="active-search">Active Search (ready to buy)</option>
+                                <option value="new-operator">New Operator (0-2 branches)</option>
+                                <option value="established">Established Operator (3-10 branches)</option>
+                                <option value="large-portfolio">Large Portfolio (10+ branches)</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="consultation-notes">What would you like to discuss? *</label>
+                            <textarea id="consultation-notes" required placeholder="Tell us what you'd like help with. The more detail you provide, the better prepared we can be."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="prevStep(1)">Back</button>
+                            <button class="btn btn-primary" onclick="submitBooking()">💳 Proceed to Payment</button>
+                        </div>
+                    </div>
+
+                    <!-- Success Message (Standard Bookings) -->
+                    <div class="success-message" id="success-message">
+                        <div class="success-icon">✓</div>
+                        <h3>Booking Confirmed!</h3>
+                        <p>Your consultation has been scheduled. Check your email for confirmation and video call details.</p>
+                        
+                        <div class="confirmation-details">
+                            <div class="confirmation-row">
+                                <span style="color: var(--text-secondary);">Service</span>
+                                <strong id="confirm-service">—</strong>
+                            </div>
+                            <div class="confirmation-row">
+                                <span style="color: var(--text-secondary);">Date & Time</span>
+                                <strong id="confirm-datetime">—</strong>
+                            </div>
+                            <div class="confirmation-row">
+                                <span style="color: var(--text-secondary);">Confirmation sent to</span>
+                                <strong id="confirm-email">—</strong>
+                            </div>
+                        </div>
+
+                        <a href="index.html" class="btn btn-primary">Return to Home</a>
+                    </div>
+
+                    <!-- Helpline 101 Success (Instant Access) -->
+                    <div class="success-message" id="helpline-success">
+                        <div class="success-icon">📞</div>
+                        <h3>Helpline Access Granted!</h3>
+                        <p>Your payment has been confirmed. Call now for immediate expert assistance.</p>
+                        
+                        <div class="confirmation-details" style="background: linear-gradient(135deg, rgba(201, 162, 39, 0.2) 0%, rgba(201, 162, 39, 0.05) 100%); border-color: var(--fcm-gold);">
+                            <div style="text-align: center; padding: 24px 0;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">Call this number now:</div>
+                                <a href="tel:+447886152939" style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--fcm-gold); font-weight: 700; text-decoration: none; display: block;">+44 7886 152939</a>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 12px;">Available Mon-Fri, 9am-6pm UK time</div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--dark-bg); border: 1px solid var(--dark-border); border-radius: 12px; padding: 20px; margin-top: 24px; text-align: left;">
+                            <h4 style="font-size: 1rem; margin-bottom: 12px; color: var(--fcm-gold);">Before You Call</h4>
+                            <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8; padding-left: 20px;">
+                                <li>Have your branch name/FAD code ready</li>
+                                <li>Note down the specific issue or question</li>
+                                <li>Have any relevant documents to hand</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin-top: 32px;">
+                            <a href="index.html" class="btn btn-secondary" style="margin-right: 12px;">Return to Home</a>
+                            <a href="tel:+447886152939" class="btn btn-primary">📞 Call Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo-text">
+                    <span style="color: var(--text-primary);">FCM</span>
+                    <span style="display: block; font-size: 0.6rem; color: var(--fcm-gold); letter-spacing: 2px; font-family: 'Inter', sans-serif; font-weight: 600;">INTELLIGENCE</span>
+                </div>
+                <div class="footer-copyright">
+                    © 2026 FCM Intelligence. Part of <a href="https://fcm-intelligence.vercel.app" style="text-decoration: none;">First Class Managerial</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Booking State
+        let bookingData = {
+            serviceType: null,
+            serviceName: null,
+            price: 0,
+            duration: 0,
+            selectedDate: null,
+            selectedTime: null
+        };
+
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Select consultation type
+        function selectType(type, price, duration) {
+            const types = {
+                'helpline-101': 'Helpline 101',
+                'discovery-call': 'Discovery Call',
+                'strategic-session': 'Strategic Session',
+                'acquisition-advisory': 'Acquisition Advisory',
+                'full-support': 'Full Acquisition Support',
+                'retainer': 'Advisory Retainer'
+            };
+
+            const durations = {
+                'helpline-101': '20 minutes',
+                'discovery-call': '1 hour',
+                'strategic-session': '1 hour',
+                'acquisition-advisory': '3 hours (3 sessions)',
+                'full-support': '6 hours (over 3 months)',
+                'retainer': '2 hours/month'
+            };
+
+            bookingData.serviceType = type;
+            bookingData.serviceName = types[type];
+            bookingData.price = price;
+            bookingData.duration = duration;
+
+            // Update UI
+            document.getElementById('selected-service').textContent = types[type];
+            document.getElementById('selected-duration').textContent = durations[type];
+            
+            // Handle retainer pricing display
+            if (type === 'retainer') {
+                document.getElementById('selected-price').textContent = '£' + price + '/month';
+            } else {
+                document.getElementById('selected-price').textContent = '£' + price.toLocaleString();
+            }
+
+            // Highlight selected card
+            document.querySelectorAll('.type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Special handling for Helpline 101 - skip calendar, go straight to contact/payment
+            if (type === 'helpline-101') {
+                // Hide calendar step, show contact step directly
+                document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                document.getElementById('step-2').classList.add('active');
+                
+                // Update step 2 header for helpline
+                document.querySelector('#step-2 .step-title').textContent = 'Your Details & Payment';
+                document.querySelector('#step-2 .step-description').textContent = 'Enter your details to get instant access to the helpline.';
+                
+                // Update sidebar to show "Instant Access" instead of date/time
+                document.getElementById('selected-datetime').textContent = 'Instant Access';
+                
+                // Scroll to booking section
+                document.querySelector('.booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // Normal flow - scroll to booking section (calendar)
+                document.querySelector('.booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Initialize calendar
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            // Day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+
+            // Update month display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendar-month').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // First day of month
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            
+            // Days in month
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            // Day cells
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                cell.textContent = day;
+
+                const cellDate = new Date(currentYear, currentMonth, day);
+                cellDate.setHours(0, 0, 0, 0);
+
+                // Disable past dates and weekends
+                if (cellDate < today || cellDate.getDay() === 0 || cellDate.getDay() === 6) {
+                    cell.classList.add('disabled');
+                } else {
+                    cell.onclick = () => selectDate(day);
+                }
+
+                // Highlight today
+                if (cellDate.getTime() === today.getTime()) {
+                    cell.classList.add('today');
+                }
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function selectDate(day) {
+            const selectedDate = new Date(currentYear, currentMonth, day);
+            bookingData.selectedDate = selectedDate;
+
+            // Update UI
+            document.querySelectorAll('.calendar-day').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Show time slots
+            renderTimeSlots(selectedDate);
+            document.getElementById('time-slots-container').style.display = 'block';
+        }
+
+        function renderTimeSlots(date) {
+            const container = document.getElementById('time-slots');
+            container.innerHTML = '';
+
+            // Available times (9am - 5pm, excluding lunch 12-1pm)
+            const times = [
+                '09:00', '10:00', '11:00',
+                '13:00', '14:00', '15:00', '16:00', '17:00'
+            ];
+
+            times.forEach(time => {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = time;
+                
+                // Randomly disable some slots (simulate booked times)
+                if (Math.random() > 0.7) {
+                    slot.classList.add('disabled');
+                    slot.textContent += ' (Booked)';
+                } else {
+                    slot.onclick = () => selectTime(time);
+                }
+
+                container.appendChild(slot);
+            });
+        }
+
+        function selectTime(time) {
+            bookingData.selectedTime = time;
+
+            // Update UI
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Update sidebar
+            const dateStr = bookingData.selectedDate.toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+            document.getElementById('selected-datetime').textContent = `${dateStr} at ${time}`;
+
+            // Enable next button
+            document.getElementById('step-1-next').disabled = false;
+        }
+
+        function nextStep(step) {
+            // Validate current step
+            if (!bookingData.serviceType) {
+                alert('Please select a consultation type first');
+                return;
+            }
+
+            // Skip date/time validation for Helpline 101 (instant access)
+            if (step === 2 && bookingData.serviceType !== 'helpline-101' && (!bookingData.selectedDate || !bookingData.selectedTime)) {
+                alert('Please select a date and time');
+                return;
+            }
+
+            // Hide current step
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            
+            // Show next step
+            document.getElementById(`step-${step}`).classList.add('active');
+        }
+
+        function prevStep(step) {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            
+            // For Helpline 101, going back should scroll to service selection
+            if (bookingData.serviceType === 'helpline-101' && step === 1) {
+                document.querySelector('.consultation-types').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Reset step 2 header back to normal
+                document.querySelector('#step-2 .step-title').textContent = 'Your Details';
+                document.querySelector('#step-2 .step-description').textContent = 'Tell us about yourself so we can prepare for your consultation.';
+            }
+            
+            document.getElementById(`step-${step}`).classList.add('active');
+        }
+
+        async function submitBooking() {
+            // Validate form
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('email').value;
+            const businessType = document.getElementById('business-type').value;
+            const notes = document.getElementById('consultation-notes').value;
+
+            // Notes are optional for Helpline 101 (emergency call)
+            const notesRequired = bookingData.serviceType !== 'helpline-101';
+            
+            if (!firstName || !lastName || !email || !businessType || (notesRequired && !notes)) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Prepare booking data
+            const booking = {
+                ...bookingData,
+                firstName,
+                lastName,
+                email,
+                phone: document.getElementById('phone').value,
+                businessType,
+                notes,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save booking data to localStorage (retrieve after Stripe redirect)
+            localStorage.setItem('fcm_booking', JSON.stringify(booking));
+
+            // Show loading state
+            const submitBtn = event.target;
+            submitBtn.textContent = 'Redirecting to payment...';
+            submitBtn.disabled = true;
+
+            try {
+                // Create Stripe Checkout session
+                const response = await fetch('/api/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        serviceType: bookingData.serviceType,
+                        customerEmail: email,
+                        customerName: `${firstName} ${lastName}`,
+                        bookingData: {
+                            selectedDate: bookingData.selectedDate,
+                            selectedTime: bookingData.selectedTime,
+                            phone: document.getElementById('phone').value,
+                            businessType,
+                            notes
+                        }
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = result.url;
+                } else {
+                    throw new Error(result.error || 'Failed to create checkout session');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Sorry, there was an error processing your request. Please try again or email us directly at agentmicky23@gmail.com');
+                
+                // Reset button
+                submitBtn.textContent = 'Proceed to Payment';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Initialize calendar on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCalendar();
+        });
+    </script>
+</body>
+</html>

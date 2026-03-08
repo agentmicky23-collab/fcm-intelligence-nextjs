@@ -1,181 +1,212 @@
-/**
- * Reports Page
- * Due diligence reports and intelligence products
- */
+"use client";
 
-import Link from 'next/link';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { reports } from '@/lib/reports-data';
-
-export const metadata = {
-  title: 'Due Diligence Reports | FCM Intelligence',
-  description: 'Professional business intelligence and location analysis reports for franchise buyers',
-};
+import Link from "next/link";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 export default function ReportsPage() {
   return (
     <AppLayout>
-      <div className="min-h-screen bg-[var(--fcm-dark)] text-white">
-      {/* Hero Section */}
-      <section className="py-20 px-4 border-b border-gray-800">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Due Diligence <span className="text-[var(--fcm-gold)]">Reports</span>
+      {/* Hero */}
+      <section className="pt-32 pb-12" style={{ background: 'linear-gradient(180deg, #1e3a5f 0%, #0d1117 100%)' }}>
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="font-playfair text-4xl md:text-6xl font-bold mb-4">
+            Intelligence <span style={{ color: '#c9a227' }}>Reports</span>
           </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-            Professional intelligence and analysis before you commit. 
-            From quick sanity checks to comprehensive acquisition reports.
+          <p className="text-xl" style={{ color: '#8b949e' }}>
+            Data-driven insight for every stage of your acquisition journey.
           </p>
         </div>
       </section>
 
-      {/* Reports Grid */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      {/* Pricing Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">Choose Your Level of Insight</h2>
+            <p style={{ color: '#8b949e' }} className="max-w-2xl mx-auto">
+              From quick viability checks to full portfolio analysis. Pick the depth that matches your decision.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {/* Quick Check */}
+            <div className="pricing-card-old">
+              <h3 className="text-lg font-bold mb-2">Quick Check</h3>
+              <div className="price-display">£49</div>
+              <div className="price-subtitle">Viability Snapshot</div>
+              <ul>
+                <li>Postcode check</li>
+                <li>Basic competition scan</li>
+                <li>Quick risk flags</li>
+                <li>Delivered same day</li>
+              </ul>
+              <Link href="/contact" className="btn-primary w-full">Get Quick Check</Link>
+            </div>
+            {/* Standard - Most Popular */}
+            <div className="pricing-card-old popular">
+              <div className="popular-badge">Most Popular</div>
+              <h3 className="text-lg font-bold mb-2">Standard Report</h3>
+              <div className="price-display">£149</div>
+              <div className="price-subtitle">Full Intelligence</div>
+              <ul>
+                <li>Everything in Quick Check</li>
+                <li>Detailed financial analysis</li>
+                <li>Location scoring</li>
+                <li>Competition mapping</li>
+                <li>Revenue forecasting</li>
+                <li>Risk assessment</li>
+                <li>Delivered in 48 hours</li>
+              </ul>
+              <Link href="/contact" className="btn-primary w-full">Get Standard Report</Link>
+            </div>
+            {/* Premium */}
+            <div className="pricing-card-old">
+              <h3 className="text-lg font-bold mb-2">Premium Report</h3>
+              <div className="price-display">£349</div>
+              <div className="price-subtitle">Deep Dive</div>
+              <ul>
+                <li>Everything in Standard</li>
+                <li>On-site area assessment</li>
+                <li>Customer survey data</li>
+                <li>Comparable sales analysis</li>
+                <li>Growth projection model</li>
+                <li>Personal consultation call</li>
+                <li>Delivered in 5-7 days</li>
+              </ul>
+              <Link href="/contact" className="btn-primary w-full">Get Premium Report</Link>
+            </div>
+            {/* Enterprise */}
+            <div className="pricing-card-old">
+              <h3 className="text-lg font-bold mb-2">Enterprise</h3>
+              <div className="price-display">£599+</div>
+              <div className="price-subtitle">Portfolio Analysis</div>
+              <ul>
+                <li>Everything in Premium</li>
+                <li>Multi-branch analysis</li>
+                <li>Portfolio strategy</li>
+                <li>Negotiation support</li>
+                <li>Ongoing advisory</li>
+                <li>Custom reporting</li>
+              </ul>
+              <Link href="/contact" className="btn-primary w-full">Contact Us</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What's Included */}
+      <section className="py-20" style={{ background: '#161b22', borderTop: '1px solid #30363d', borderBottom: '1px solid #30363d' }}>
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">What&apos;s Included</h2>
+            <p style={{ color: '#8b949e' }} className="max-w-2xl mx-auto">
+              Every report covers these core areas of intelligence.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="feature-card-old">
+              <div className="icon">💰</div>
+              <h3>Financial Deep-Dive</h3>
+              <p>Revenue analysis, profit margins, cash flow projections, and hidden cost identification.</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">📍</div>
+              <h3>Location Intelligence</h3>
+              <p>Footfall data, demographic analysis, parking, accessibility, and local economic factors.</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">🏪</div>
+              <h3>Competition Mapping</h3>
+              <p>Nearby Post Offices, convenience stores, and services that could impact your business.</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">📈</div>
+              <h3>Revenue Forecasting</h3>
+              <p>Growth potential analysis based on local development plans and market trends.</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">⚠️</div>
+              <h3>Risk Assessment</h3>
+              <p>Lease risks, regulatory changes, technology shifts, and operational vulnerabilities.</p>
+            </div>
+            <div className="feature-card-old">
+              <div className="icon">🚪</div>
+              <h3>Exit Strategy</h3>
+              <p>Resale potential, asset valuation, and timeline considerations for your exit plan.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sample Report */}
+      <section className="py-20 container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">See What You Get</h2>
+        </div>
+        <div className="max-w-4xl mx-auto" style={{ background: '#161b22', border: '1px solid #30363d', borderRadius: '16px', padding: '40px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, right: 0, background: '#c9a227', color: '#0d1117', padding: '8px 24px', borderRadius: '0 0 0 16px', fontWeight: 700, fontSize: '0.8rem' }}>
+            SAMPLE
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {reports.map(report => (
-              <ReportCard key={report.id} report={report} />
-            ))}
+            <div>
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#c9a227' }}>Executive Summary</h3>
+              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '16px' }}>
+                <div className="flex justify-between mb-2">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>FCM Score</span>
+                  <span className="font-mono font-bold" style={{ color: '#c9a227' }}>87/100</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>Confidence</span>
+                  <span className="font-mono font-bold" style={{ color: '#22c55e' }}>HIGH</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>Recommendation</span>
+                  <span className="font-mono font-bold" style={{ color: '#c9a227' }}>PURSUE</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#c9a227' }}>Financial Snapshot</h3>
+              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '16px' }}>
+                <div className="flex justify-between mb-2">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>Asking Price</span>
+                  <span className="font-mono font-bold text-white">£195,000</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>Est. Annual Revenue</span>
+                  <span className="font-mono font-bold text-white">£142,000</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>ROI (Year 1)</span>
+                  <span className="font-mono font-bold" style={{ color: '#22c55e' }}>18.4%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#8b949e', fontSize: '0.85rem' }}>Payback Period</span>
+                  <span className="font-mono font-bold text-white">3.2 years</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <p style={{ color: '#8b949e', fontSize: '0.9rem', marginBottom: '16px' }}>
+              Full reports include 15-25 pages of detailed analysis.
+            </p>
+            <Link href="/contact" className="btn-primary px-8 py-3">Get Your Full Report</Link>
           </div>
         </div>
       </section>
 
-      {/* Why FCM Reports Section */}
-      <section className="py-16 px-4 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            Why <span className="text-[var(--fcm-gold)]">FCM Intelligence</span> Reports?
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-4xl mb-4">🎯</div>
-              <h3 className="font-semibold text-lg mb-2">Operator Perspective</h3>
-              <p className="text-sm text-gray-400">
-                Written by operators running 40+ branches, not consultants who've never run one
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-4xl mb-4">📊</div>
-              <h3 className="font-semibold text-lg mb-2">Data-Driven Analysis</h3>
-              <p className="text-sm text-gray-400">
-                Real market comparables, location intelligence, and financial deep-dives
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-4xl mb-4">⚡</div>
-              <h3 className="font-semibold text-lg mb-2">Fast Turnaround</h3>
-              <p className="text-sm text-gray-400">
-                Most reports delivered within 3-5 business days, not weeks
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 border-t border-gray-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Not sure which report you need?
-          </h2>
-          <p className="text-xl text-gray-400 mb-8">
-            Get in touch and we'll recommend the right level of analysis for your situation
+      {/* CTA */}
+      <section className="py-16 text-center" style={{ background: 'linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(30, 58, 95, 0.2) 100%)', borderTop: '1px solid rgba(201,162,39,0.3)' }}>
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+          <p style={{ color: '#8b949e' }} className="mb-8 max-w-xl mx-auto">
+            Tell us which listing interests you, and we&apos;ll deliver actionable intelligence within 48 hours.
           </p>
-          <Link 
-            href="/contact"
-            className="inline-block px-8 py-4 bg-[var(--fcm-gold)] text-[var(--fcm-dark)] font-semibold rounded-lg hover:bg-[var(--fcm-gold-hover)] transition-colors"
-          >
-            Contact Us
+          <Link href="/contact" className="btn-primary text-lg px-10 py-4">
+            Order Your Report
           </Link>
         </div>
       </section>
-    </div>
     </AppLayout>
-  );
-}
-
-function ReportCard({ report }: { report: any }) {
-  return (
-    <Link
-      href={`/reports/${report.slug}`}
-      className={`
-        group block p-8 rounded-lg border transition-all
-        ${report.mostPopular 
-          ? 'bg-[var(--fcm-gold)]/5 border-[var(--fcm-gold)] ring-2 ring-[var(--fcm-gold)]/20' 
-          : 'bg-[var(--fcm-card)] border-gray-800 hover:border-[var(--fcm-gold)]'
-        }
-      `}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          {report.mostPopular && (
-            <div className="inline-block px-3 py-1 bg-[var(--fcm-gold)] text-[var(--fcm-dark)] text-xs font-bold uppercase rounded mb-3">
-              Most Popular
-            </div>
-          )}
-          <h3 className="text-2xl font-bold mb-2 group-hover:text-[var(--fcm-gold)] transition-colors">
-            {report.title}
-          </h3>
-          <p className="text-sm text-gray-400">
-            {report.description}
-          </p>
-        </div>
-      </div>
-      
-      {/* Price */}
-      <div className="mb-6 pb-6 border-b border-gray-700">
-        <div className="flex items-baseline gap-2">
-          <span className="font-mono text-4xl font-bold text-[var(--fcm-gold)]">
-            £{report.price}
-          </span>
-          <span className="text-gray-500">one-time</span>
-        </div>
-        {report.bundleDiscount && (
-          <div className="text-sm text-green-400 mt-2">
-            ✓ {report.bundleDiscount}
-          </div>
-        )}
-      </div>
-      
-      {/* Features */}
-      <div className="space-y-3 mb-6">
-        {report.features.map((feature: string, i: number) => (
-          <div key={i} className="flex items-start gap-2 text-sm">
-            <span className="text-[var(--fcm-gold)] mt-1">✓</span>
-            <span className="text-gray-300">{feature}</span>
-          </div>
-        ))}
-      </div>
-      
-      {/* Metadata */}
-      <div className="flex items-center gap-4 text-xs text-gray-500 mb-6">
-        {report.pageCount && (
-          <span>{report.pageCount} pages</span>
-        )}
-        {report.consultationIncluded && (
-          <span>• {report.consultationMinutes} min consultation</span>
-        )}
-        <span>• {report.deliveryFormat}</span>
-      </div>
-      
-      {/* Best For */}
-      {report.bestFor && (
-        <div className="p-4 bg-[var(--fcm-dark)] rounded-lg border border-gray-700">
-          <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Best For</div>
-          <div className="text-sm text-gray-300">{report.bestFor}</div>
-        </div>
-      )}
-      
-      {/* CTA */}
-      <div className="mt-6">
-        <div className="text-[var(--fcm-gold)] font-semibold group-hover:underline">
-          View Details →
-        </div>
-      </div>
-    </Link>
   );
 }

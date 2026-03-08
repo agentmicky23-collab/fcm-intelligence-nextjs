@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Insights | FCM Intelligence</title>
+    <meta name="description" content="Expert insights from 15 years of Post Office operations. Real-world advice on acquisitions, operations, and maximizing profitability.">
+    <meta property="og:title" content="Blog & Insights | FCM Intelligence">
+    <meta property="og:description" content="Expert insights from 15 years of Post Office operations.">
+    <meta property="og:url" content="https://fcm-intelligence.vercel.app/blog.html">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="assets/logos/fcm-logo-original.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fcm-dark: #000000;
+            --fcm-gold: #FFD700;
+            --fcm-red: #FF0000;
+            --fcm-white: #FFFFFF;
+            --fcm-card: #1A1A1A;
+            --fcm-muted: #888888;
+            --fcm-gold-hover: #E6C200;
+            --dark-border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--fcm-dark);
+            color: var(--fcm-white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--dark-border);
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-fcm {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-style: italic;
+            color: var(--fcm-red);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .logo-fcm-sub {
+            font-size: 0.45rem;
+            font-weight: 700;
+            color: var(--fcm-red);
+            letter-spacing: 1.5px;
+        }
+
+        .logo-intelligence {
+            font-size: 0.45rem;
+            font-weight: 700;
+            color: var(--fcm-gold);
+            letter-spacing: 1.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--fcm-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--fcm-gold);
+        }
+
+        .nav-links a.active {
+            color: var(--fcm-gold);
+            border-bottom: 2px solid var(--fcm-gold);
+        }
+
+        .nav-cta {
+            background: var(--fcm-gold);
+            color: var(--fcm-dark);
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--fcm-gold-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .blog-hero {
+            padding: 140px 0 80px;
+            background: linear-gradient(180deg, var(--fcm-dark) 0%, #0a0a0a 100%);
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid var(--fcm-gold);
+            color: var(--fcm-gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .blog-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .blog-hero p {
+            font-size: 1.25rem;
+            color: var(--fcm-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Category Filters */
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: var(--fcm-card);
+            border: 1px solid var(--dark-border);
+            color: var(--fcm-muted);
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .category-btn:hover {
+            border-color: var(--fcm-gold);
+            color: var(--fcm-gold);
+        }
+
+        .category-btn.active {
+            background: var(--fcm-gold);
+            border-color: var(--fcm-gold);
+            color: var(--fcm-dark);
+            font-weight: 600;
+        }
+
+        /* Blog Grid */
+        .blog-section {
+            padding: 60px 0 100px;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: var(--fcm-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            border-color: var(--fcm-gold);
+            transform: translateY(-4px);
+        }
+
+        .blog-card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .blog-card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .blog-category.po-insider {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--fcm-gold);
+            border: 1px solid var(--fcm-gold);
+        }
+
+        .blog-category.uk-strategy {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid #3b82f6;
+        }
+
+        .blog-category.wild-card {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid #a855f7;
+        }
+
+        .blog-date {
+            font-size: 0.85rem;
+            color: var(--fcm-muted);
+        }
+
+        .blog-card h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .blog-card-excerpt {
+            color: var(--fcm-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .blog-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .read-time {
+            font-size: 0.85rem;
+            color: var(--fcm-muted);
+        }
+
+        .read-more {
+            color: var(--fcm-gold);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.3s;
+        }
+
+        .read-more:hover {
+            gap: 10px;
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .coming-soon-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .coming-soon h3 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+        }
+
+        .coming-soon p {
+            color: var(--fcm-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .notify-btn {
+            background: var(--fcm-gold);
+            color: var(--fcm-dark);
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .notify-btn:hover {
+            background: var(--fcm-gold-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 40px;
+            border-top: 1px solid var(--dark-border);
+            background: var(--fcm-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-logo-text .fcm {
+            font-size: 1.75rem;
+            font-weight: 800;
+            font-style: italic;
+            color: var(--fcm-red);
+        }
+
+        .footer-logo-text .fcm-sub {
+            display: block;
+            font-size: 0.45rem;
+            font-weight: 700;
+            color: var(--fcm-red);
+            letter-spacing: 1.5px;
+        }
+
+        .footer-logo-text .intelligence {
+            display: block;
+            font-size: 0.45rem;
+            font-weight: 700;
+            color: var(--fcm-gold);
+            letter-spacing: 1.5px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .footer-links a {
+            color: var(--fcm-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--fcm-gold);
+        }
+
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            color: var(--fcm-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .footer-copyright a {
+            color: var(--fcm-gold);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/logo-transparent.png" alt="FCM Intelligence - Post Office Acquisition Reports">
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#opportunities">Live Listings</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="consultation.html">Consultation</a>
+                <a href="index.html#insider" style="color: var(--fcm-gold);">⭐ Insider</a>
+                <a href="index.html#contact" class="nav-cta">Get Report</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="blog-hero">
+        <div class="container">
+            <div class="hero-badge">Real Insights from 40 Branches</div>
+            <h1>Post Office Intelligence</h1>
+            <p>Expert advice from 15 years of operations. No theory. Just what actually works.</p>
+        </div>
+    </section>
+
+    <!-- Category Filters -->
+    <section class="container">
+        <div class="category-filters">
+            <button class="category-btn active" onclick="filterPosts('all')">All Posts</button>
+            <button class="category-btn" onclick="filterPosts('po-insider')">PO Insider</button>
+            <button class="category-btn" onclick="filterPosts('uk-strategy')">UK Business Strategy</button>
+            <button class="category-btn" onclick="filterPosts('wild-card')">Wild Card</button>
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-grid">
+                
+                <!-- Post 1 -->
+                <article class="blog-card" data-category="uk-strategy">
+                    <div class="blog-card-image">💼</div>
+                    <div class="blog-card-content">
+                        <div class="blog-card-meta">
+                            <span class="blog-category uk-strategy">UK Business Strategy</span>
+                            <span class="blog-date">Mar 5, 2026</span>
+                        </div>
+                        <h3>Why I Turned Down an 850-Site Partnership</h3>
+                        <p class="blog-card-excerpt">When the numbers look incredible but the fundamentals don't stack up. The real story behind walking away from a "once in a lifetime" opportunity.</p>
+                        <div class="blog-card-footer">
+                            <span class="read-time">6 min read</span>
+                            <a href="blog-post-1.html" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="blog-card" data-category="po-insider">
+                    <div class="blog-card-image">💷</div>
+                    <div class="blog-card-content">
+                        <div class="blog-card-meta">
+                            <span class="blog-category po-insider">PO Insider</span>
+                            <span class="blog-date">Mar 3, 2026</span>
+                        </div>
+                        <h3>The Real Cost of Running a Post Office Branch</h3>
+                        <p class="blog-card-excerpt">Beyond the broker's listing. The hidden costs every first-time buyer underestimates — and how to budget properly.</p>
+                        <div class="blog-card-footer">
+                            <span class="read-time">8 min read</span>
+                            <a href="blog-post-2.html" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 3 -->
+                <article class="blog-card" data-category="uk-strategy">
+                    <div class="blog-card-image">🔍</div>
+                    <div class="blog-card-content">
+                        <div class="blog-card-meta">
+                            <span class="blog-category uk-strategy">UK Business Strategy</span>
+                            <span class="blog-date">Mar 1, 2026</span>
+                        </div>
+                        <h3>5 Things Every Acquisition Due Diligence Misses</h3>
+                        <p class="blog-card-excerpt">The accountant checks the books. The surveyor checks the building. But who checks the things that actually kill businesses?</p>
+                        <div class="blog-card-footer">
+                            <span class="read-time">10 min read</span>
+                            <a href="blog-post-3.html" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post 4 -->
+                <article class="blog-card" data-category="po-insider">
+                    <div class="blog-card-image">🚀</div>
+                    <div class="blog-card-content">
+                        <div class="blog-card-meta">
+                            <span class="blog-category po-insider">PO Insider</span>
+                            <span class="blog-date">Feb 28, 2026</span>
+                        </div>
+                        <h3>Post Office Modernisation: What's Actually Changing in 2026</h3>
+                        <p class="blog-card-excerpt">New remuneration structure, branch transformation plans, and what it means for operators. The changes no one's talking about.</p>
+                        <div class="blog-card-footer">
+                            <span class="read-time">12 min read</span>
+                            <a href="blog-post-4.html" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Coming Soon Section -->
+            <div class="coming-soon">
+                <div class="coming-soon-icon">📝</div>
+                <h3>More Content Coming Soon</h3>
+                <p>We're building out the FCM Intelligence blog with real-world insights from 40+ branches. Get notified when new posts go live.</p>
+                <a href="index.html#contact" class="notify-btn">Notify Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="footer-logo-text">
+                        <span class="fcm">FCM</span>
+                        <span class="fcm-sub">FIRST CLASS MANAGERIAL</span>
+                        <span class="intelligence">INTELLIGENCE</span>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#opportunities">Live Listings</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="consultation.html">Consultation</a>
+                    <a href="index.html#insider" style="color: var(--fcm-gold);">⭐ Insider</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="https://www.fcmgt.co.uk" target="_blank">FC Management</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © 2026 FCM Intelligence. A division of <a href="https://www.fcmgt.co.uk" target="_blank">First Class Managerial Ltd</a>. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Category filter functionality
+        function filterPosts(category) {
+            const cards = document.querySelectorAll('.blog-card');
+            const buttons = document.querySelectorAll('.category-btn');
+
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter cards
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,111 +1,209 @@
 /**
  * Opportunities Listing Page
- * Public-facing page showing all 35 business opportunities
+ * Matches old site listing section exactly
  */
 
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { ListingCard } from '@/components/listing-card';
-import { ListingsFilter, type FilterState } from '@/components/listings-filter';
 import { listings, getUniqueRegions, getUniqueBusinessTypes, filterListings } from '@/lib/listings-data';
-import type { Listing } from '@/types/listing';
+
+type CategoryFilter = 'all' | 'post-office' | 'forecourt' | 'convenience' | 'newsagent';
 
 export default function OpportunitiesPage() {
-  const [filters, setFilters] = useState<FilterState>({
-    searchQuery: '',
-    region: '',
-    businessType: '',
-    status: '',
-    minPrice: '',
-    maxPrice: '',
-  });
+  const [category, setCategory] = useState<CategoryFilter>('all');
+  const [region, setRegion] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [insiderOnly, setInsiderOnly] = useState(false);
 
-  // Get unique values for filters
   const regions = useMemo(() => getUniqueRegions(), []);
   const businessTypes = useMemo(() => getUniqueBusinessTypes(), []);
 
-  // Filter listings based on current filters
   const filteredListings = useMemo(() => {
-    return filterListings({
-      region: filters.region || undefined,
-      businessType: filters.businessType || undefined,
-      status: filters.status || undefined,
-      minPrice: filters.minPrice ? parseInt(filters.minPrice) : undefined,
-      maxPrice: filters.maxPrice ? parseInt(filters.maxPrice) : undefined,
-      searchQuery: filters.searchQuery || undefined,
-    });
-  }, [filters]);
+    let filtered = [...listings];
+
+    // Category filter
+    if (category !== 'all') {
+      const typeMap: Record<string, string> = {
+        'post-office': 'post_office',
+        'forecourt': 'forecourt',
+        'convenience': 'convenience_store',
+        'newsagent': 'newsagent',
+      };
+      filtered = filtered.filter(l => l.businessType === typeMap[category]);
+    }
+
+    // Region filter
+    if (region) {
+      filtered = filtered.filter(l => l.region === region);
+    }
+
+    // Insider filter
+    if (insiderOnly) {
+      filtered = filtered.filter(l => l.insiderVisible);
+    }
+
+    // Search
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(l =>
+        l.businessName.toLowerCase().includes(q) ||
+        l.location.toLowerCase().includes(q) ||
+        l.notes.toLowerCase().includes(q)
+      );
+    }
+
+    return filtered;
+  }, [category, region, insiderOnly, searchQuery]);
+
+  const allCategories: { value: CategoryFilter; label: string; count: number }[] = [
+    { value: 'all' as CategoryFilter, label: 'All', count: listings.length },
+    { value: 'post-office' as CategoryFilter, label: 'Post Office', count: listings.filter(l => l.businessType === 'post_office').length },
+    { value: 'forecourt' as CategoryFilter, label: 'Forecourt', count: listings.filter(l => l.businessType === 'forecourt').length },
+    { value: 'convenience' as CategoryFilter, label: 'Convenience Store', count: listings.filter(l => l.businessType === 'convenience_store').length },
+    { value: 'newsagent' as CategoryFilter, label: 'Newsagent', count: listings.filter(l => l.businessType === 'newsagent').length },
+  ];
+  const categories = allCategories.filter(c => c.count > 0);
 
   return (
     <AppLayout>
+      {/* Hero */}
+      <section className="pt-32 pb-12" style={{ background: 'linear-gradient(180deg, #1e3a5f 0%, #0d1117 100%)' }}>
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">🔥 Live Opportunities</h1>
+          <p className="text-xl mb-2" style={{ color: '#8b949e' }}>Businesses For Sale Now</p>
+        </div>
+      </section>
 
-      {/* Hero section */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-black to-gray-950">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-              Business Opportunities
-            </h1>
-            <p className="text-xl text-gray-400 mb-8">
-              Explore {listings.length} curated franchise and business opportunities across the UK. 
-              From Post Offices to convenience stores, find your next acquisition.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <div className="bg-fcm-card border border-gray-800 rounded-lg px-6 py-4">
-                <div className="text-3xl font-bold text-fcm-gold font-mono">{listings.length}</div>
-                <div className="text-sm text-gray-400">Active Listings</div>
-              </div>
-              <div className="bg-fcm-card border border-gray-800 rounded-lg px-6 py-4">
-                <div className="text-3xl font-bold text-fcm-gold font-mono">{regions.length}</div>
-                <div className="text-sm text-gray-400">Regions</div>
-              </div>
-              <div className="bg-fcm-card border border-gray-800 rounded-lg px-6 py-4">
-                <div className="text-3xl font-bold text-fcm-gold font-mono">{businessTypes.length}</div>
-                <div className="text-sm text-gray-400">Business Types</div>
-              </div>
-            </div>
+      {/* Curation Explainer */}
+      <section className="py-12 container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="feature-card-old" style={{ padding: '20px' }}>
+            <div className="icon" style={{ fontSize: '1.5rem' }}>🔍</div>
+            <h3 style={{ fontSize: '0.95rem' }}>Daily Scanning</h3>
+            <p style={{ fontSize: '0.8rem' }}>Daltons, RightBiz, BusinessesForSale, private sellers — monitored daily.</p>
+          </div>
+          <div className="feature-card-old" style={{ padding: '20px' }}>
+            <div className="icon" style={{ fontSize: '1.5rem' }}>✅</div>
+            <h3 style={{ fontSize: '0.95rem' }}>Verified Active</h3>
+            <p style={{ fontSize: '0.8rem' }}>Every listing checked to confirm availability. No dead links.</p>
+          </div>
+          <div className="feature-card-old" style={{ padding: '20px' }}>
+            <div className="icon" style={{ fontSize: '1.5rem' }}>🎯</div>
+            <h3 style={{ fontSize: '0.95rem' }}>Quality Filtered</h3>
+            <p style={{ fontSize: '0.8rem' }}>Only viable listings. No overpriced duds or money pits.</p>
+          </div>
+          <div className="feature-card-old" style={{ padding: '20px' }}>
+            <div className="icon" style={{ fontSize: '1.5rem' }}>📊</div>
+            <h3 style={{ fontSize: '0.95rem' }}>Expert Context</h3>
+            <p style={{ fontSize: '0.8rem' }}>Each listing gets our quick assessment and FCM Score.</p>
           </div>
         </div>
       </section>
 
-      {/* Main content */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-8">
-          {/* Filters */}
-          <ListingsFilter 
-            regions={regions}
-            businessTypes={businessTypes}
-            onFilterChange={setFilters}
+      {/* Disclaimer */}
+      <section className="py-4" style={{ background: 'rgba(22,27,34,0.5)', borderTop: '1px solid #30363d', borderBottom: '1px solid #30363d' }}>
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm" style={{ color: '#8b949e' }}>
+            <strong className="text-white">Important:</strong> Listings sourced from third-party sites. Verify availability before proceeding. SOLD listings are removed.
+          </p>
+        </div>
+      </section>
+
+      {/* Filters + Listings */}
+      <section className="py-12 container mx-auto px-4">
+        {/* Category Filters */}
+        <div className="flex flex-wrap gap-3 mb-6 justify-center">
+          {categories.map(cat => (
+            <button
+              key={cat.value}
+              onClick={() => setCategory(cat.value)}
+              className={`filter-btn-old ${category === cat.value ? 'active' : ''}`}
+            >
+              {cat.label} ({cat.count})
+            </button>
+          ))}
+        </div>
+
+        {/* Advanced Filters */}
+        <div className="flex flex-wrap gap-4 mb-8 justify-center items-center">
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="px-4 py-2 rounded-lg text-sm"
+            style={{ background: '#161b22', border: '1px solid #30363d', color: '#e6edf3' }}
+          >
+            <option value="">All Regions</option>
+            {regions.map(r => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            placeholder="Search listings..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-4 py-2 rounded-lg text-sm"
+            style={{ background: '#161b22', border: '1px solid #30363d', color: '#e6edf3', minWidth: '200px' }}
           />
 
-          {/* Results count */}
-          <div className="mb-6 text-gray-400">
-            {filteredListings.length === listings.length ? (
-              <p>Showing all {listings.length} opportunities</p>
-            ) : (
-              <p>Found {filteredListings.length} of {listings.length} opportunities</p>
-            )}
-          </div>
+          <button
+            onClick={() => setInsiderOnly(!insiderOnly)}
+            className={`filter-btn-old ${insiderOnly ? 'active' : ''}`}
+          >
+            ⭐ FCM Insider Picks
+          </button>
 
-          {/* Listings grid */}
-          {filteredListings.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-white mb-2">No listings found</h3>
-              <p className="text-gray-400">Try adjusting your filters or search criteria</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredListings.map(listing => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-          )}
+          <button
+            onClick={() => { setCategory('all'); setRegion(''); setSearchQuery(''); setInsiderOnly(false); }}
+            className="text-sm font-medium px-3 py-2"
+            style={{ color: '#8b949e' }}
+          >
+            Reset Filters
+          </button>
+        </div>
+
+        {/* Count */}
+        <div className="text-center mb-8" style={{ color: '#57606a' }}>
+          Showing {filteredListings.length} of {listings.length} opportunities
+        </div>
+
+        {/* Listings Grid */}
+        {filteredListings.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-2xl font-bold text-white mb-2">No listings found</h3>
+            <p style={{ color: '#8b949e' }}>Try adjusting your filters or search criteria</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredListings.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} />
+            ))}
+          </div>
+        )}
+
+        {/* More Listings CTA */}
+        <div className="mt-12 text-center" style={{ background: '#161b22', borderRadius: '16px', border: '1px solid #30363d', padding: '40px' }}>
+          <h3 className="text-xl font-bold mb-3">Want More Opportunities?</h3>
+          <p style={{ color: '#8b949e', maxWidth: '500px', margin: '0 auto 24px' }}>
+            New listings added weekly. Set up alerts for your specific criteria — region, price range, business type — and we&apos;ll notify you when matches appear.
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/contact" className="btn-primary">🔔 Set Up Alerts</Link>
+            <a href="https://www.rightbiz.co.uk/post-offices-for-sale-in-uk.html" target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              Browse 218+ on RightBiz →
+            </a>
+          </div>
+          <p style={{ color: '#57606a', fontSize: '0.8rem', marginTop: '16px' }}>
+            Last updated: 6 March 2026 • {listings.length} verified listings
+          </p>
         </div>
       </section>
-
     </AppLayout>
   );
 }
