@@ -283,6 +283,12 @@
       "namedRegex": "^/api/inter\\-mission/earnings(?:/)?$"
     },
     {
+      "page": "/api/inter-mission/favorites",
+      "regex": "^/api/inter\\-mission/favorites(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/inter\\-mission/favorites(?:/)?$"
+    },
+    {
       "page": "/api/inter-mission/map-data",
       "regex": "^/api/inter\\-mission/map\\-data(?:/)?$",
       "routeKeys": {},
@@ -521,6 +527,12 @@
       "regex": "^/inter\\-mission/dashboard/settings(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/inter\\-mission/dashboard/settings(?:/)?$"
+    },
+    {
+      "page": "/inter-mission/favorites",
+      "regex": "^/inter\\-mission/favorites(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/inter\\-mission/favorites(?:/)?$"
     },
     {
       "page": "/inter-mission/map",

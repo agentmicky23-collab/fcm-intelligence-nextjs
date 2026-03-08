@@ -424,3 +424,18 @@ export const insertImSavedManagerSchema = createInsertSchema(imSavedManagers).om
 });
 export type InsertImSavedManager = z.infer<typeof insertImSavedManagerSchema>;
 export type ImSavedManager = typeof imSavedManagers.$inferSelect;
+
+export const imFavorites = pgTable("im_favorites", {
+  id: serial("id").primaryKey(),
+  profileId: integer("profile_id").notNull(),
+  targetType: text("target_type").notNull(),
+  targetId: integer("target_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertImFavoriteSchema = createInsertSchema(imFavorites).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertImFavorite = z.infer<typeof insertImFavoriteSchema>;
+export type ImFavorite = typeof imFavorites.$inferSelect;

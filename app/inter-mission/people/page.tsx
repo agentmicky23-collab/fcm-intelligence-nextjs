@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { EXPERTISE_TRACKS } from "@/lib/im-constants";
-import { MapPin, Star, Search, SlidersHorizontal, X, ArrowUpDown } from "lucide-react";
+import { MapPin, Star, Search, SlidersHorizontal, X, ArrowUpDown, Heart } from "lucide-react";
 
 interface Profile {
   id: number;
@@ -39,6 +39,50 @@ function PeopleContent() {
   const [minExperience, setMinExperience] = useState("");
   const [sort, setSort] = useState("newest");
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [favoritedIds, setFavoritedIds] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    fetch("/api/inter-mission/people?userType=operator&limit=1")
+      .then((r) => r.json())
+      .then((profiles) => {
+        if (Array.isArray(profiles) && profiles[0]) {
+          const uid = profiles[0].id;
+          setCurrentUserId(uid);
+          fetch(`/api/inter-mission/favorites?profileId=${uid}`)
+            .then((r) => r.json())
+            .then((data) => {
+              const ids = new Set<number>((data.favorites || []).filter((f: any) => f.targetType === "profile").map((f: any) => f.targetId));
+              setFavoritedIds(ids);
+            })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const toggleFavorite = (e: React.MouseEvent, profileId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!currentUserId) return;
+    const wasFavorited = favoritedIds.has(profileId);
+    setFavoritedIds((prev) => {
+      const next = new Set(prev);
+      if (wasFavorited) next.delete(profileId); else next.add(profileId);
+      return next;
+    });
+    fetch("/api/inter-mission/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ profileId: currentUserId, targetType: "profile", targetId: profileId }),
+    }).catch(() => {
+      setFavoritedIds((prev) => {
+        const next = new Set(prev);
+        if (wasFavorited) next.add(profileId); else next.delete(profileId);
+        return next;
+      });
+    });
+  };
 
   const fetchProfiles = useCallback(() => {
     setLoading(true);
@@ -218,8 +262,16 @@ function PeopleContent() {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {profiles.map((p) => (
-            <Link key={p.id} href={`/inter-mission/people/${p.id}`} className="im-card group" data-testid={`card-person-${p.id}`}>
-              <div className="flex items-start gap-3 mb-3">
+            <Link key={p.id} href={`/inter-mission/people/${p.id}`} className="im-card group relative" data-testid={`card-person-${p.id}`}>
+              <button
+                onClick={(e) => toggleFavorite(e, p.id)}
+                className={`absolute top-3 right-3 p-1.5 rounded-full transition-all z-10 ${favoritedIds.has(p.id) ? "text-[#FF4466] bg-[#FF444620]" : "text-[#555] hover:text-[#FF4466] hover:bg-[#FF444610]"}`}
+                data-testid={`button-favorite-person-${p.id}`}
+                aria-label={favoritedIds.has(p.id) ? "Remove from favorites" : "Add to favorites"}
+              >
+                <Heart size={16} fill={favoritedIds.has(p.id) ? "#FF4466" : "none"} />
+              </button>
+              <div className="flex items-start gap-3 mb-3 pr-8">
                 <div className="w-12 h-12 rounded-full bg-[#1A3A25] flex items-center justify-center text-[#00FF88] font-bold text-lg flex-shrink-0">
                   {p.stealthMode ? "?" : p.name.charAt(0)}
                 </div>

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Briefcase, MapPin, LayoutDashboard, ArrowLeft, Menu, X } from "lucide-react";
+import { Home, Briefcase, MapPin, LayoutDashboard, ArrowLeft, Menu, X, Heart } from "lucide-react";
 import { useState } from "react";
 
 const mobileNavItems = [
   { href: "/inter-mission", label: "Home", icon: Home },
   { href: "/inter-mission/assignments", label: "Assignments", icon: Briefcase },
   { href: "/inter-mission/map", label: "Map", icon: MapPin },
+  { href: "/inter-mission/favorites", label: "Favorites", icon: Heart },
   { href: "/inter-mission/dashboard", label: "Dashboard", icon: LayoutDashboard },
 ];
 
@@ -44,6 +45,12 @@ export default function InterMissionLayout({ children }: { children: React.React
               className={`text-sm font-medium transition-colors hover:text-[#00FF88] ${pathname === "/inter-mission/map" ? "text-[#00FF88]" : "text-[#888888]"}`}
             >
               Map
+            </Link>
+            <Link
+              href="/inter-mission/favorites"
+              className={`text-sm font-medium transition-colors hover:text-[#00FF88] ${pathname?.startsWith("/inter-mission/favorites") ? "text-[#FF4466]" : "text-[#888888]"}`}
+            >
+              <Heart size={16} className={pathname?.startsWith("/inter-mission/favorites") ? "inline fill-[#FF4466]" : "inline"} />
             </Link>
             <Link
               href="/inter-mission/dashboard"

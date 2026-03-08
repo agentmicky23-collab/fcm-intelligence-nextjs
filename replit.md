@@ -39,17 +39,19 @@ app/                    # Next.js App Router pages + API routes
     assignments/        # Browse, detail [id], post assignments
     people/             # Browse profiles, profile detail [id]
     map/                # UK region map
+    favorites/          # Saved profiles & assignments
     dashboard/          # User dashboard (overview, assignments, reviews, earnings, settings)
   api/                  # Next.js API Route Handlers
     agents/, content/, costs/, dashboard/, feedback/,
     hr/, opportunities/, scan/, contact/
-    inter-mission/      # 18 IM API routes
+    inter-mission/      # 19 IM API routes
       register/, profile/, people/, people/[id]/,
       assignments/, assignments/[id]/, proposals/,
       proposals/[id]/, reviews/, reviews/[profileId]/,
       earnings/, stats/, map-data/, activity/,
       vetting/skip/, availability/[id]/,
-      stealth/subscribe/, stealth/cancel/
+      stealth/subscribe/, stealth/cancel/,
+      favorites/
 components/             # React components
   layout/               # Navbar, Footer, AppLayout, Sidebars, MobileBottomNav
   ui/                   # 55 shadcn/ui components
@@ -60,12 +62,12 @@ lib/                    # Utilities
 hooks/                  # React hooks
   use-mobile.tsx, use-toast.ts
 shared/                 # Shared between client & server
-  schema.ts             # 19 Drizzle table definitions + Zod schemas
+  schema.ts             # 20 Drizzle table definitions + Zod schemas
 scripts/
   seed-inter-mission.ts # Seed IM with 15 managers, 5 operators, 8 assignments, etc.
 ```
 
-## Database Tables (19 total)
+## Database Tables (20 total)
 ### FCM Intelligence (11 tables)
 - `opportunities` — Business acquisition pipeline
 - `content` — Content pipeline with platform versions, scheduling, tone/style
@@ -88,6 +90,7 @@ scripts/
 - `im_earnings` — Earnings log for managers
 - `im_vetting_queue` — Verification queue (standard + priority £3.99 skip)
 - `im_saved_managers` — Operator saved/bookmarked managers
+- `im_favorites` — User favorited profiles and assignments
 
 ## Inter-Mission Network Command (Map Page)
 - **Interactive SVG Map**: Custom UK outline with 12 clickable/hoverable regions, green intensity fill based on activity

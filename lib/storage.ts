@@ -4,7 +4,7 @@ import {
   opportunities, content, agentHealth, agentActivity, scanConfig, scanHistory,
   hrConversations, costRecords, hrCases, feedbackLog, contactSubmissions,
   imProfiles, imAvailability, imAssignments, imProposals, imReviews,
-  imEarnings, imVettingQueue, imSavedManagers,
+  imEarnings, imVettingQueue, imSavedManagers, imFavorites,
   type InsertOpportunity, type Opportunity,
   type InsertContent, type Content,
   type InsertAgentHealth, type AgentHealth,
@@ -24,6 +24,7 @@ import {
   type InsertImEarning, type ImEarning,
   type InsertImVettingQueue, type ImVettingQueue,
   type InsertImSavedManager, type ImSavedManager,
+  type InsertImFavorite, type ImFavorite,
 } from "@/shared/schema";
 
 export class DatabaseStorage {
@@ -563,6 +564,67 @@ export class DatabaseStorage {
       costToday: costs.today,
       costWeek: costs.week,
       costProjected: costs.projected,
+    };
+  }
+
+  async addFavorite(data: InsertImFavorite): Promise<ImFavorite> {
+    const existing = await db.select().from(imFavorites).where(
+      and(
+        eq(imFavorites.profileId, data.profileId),
+        eq(imFavorites.targetType, data.targetType),
+        eq(imFavorites.targetId, data.targetId),
+      )
+    );
+    if (existing.length > 0) return existing[0];
+    const [row] = await db.insert(imFavorites).values(data).returning();
+    return row;
+  }
+
+  async removeFavorite(profileId: number, targetType: string, targetId: number): Promise<void> {
+    await db.delete(imFavorites).where(
+      and(
+        eq(imFavorites.profileId, profileId),
+        eq(imFavorites.targetType, targetType),
+        eq(imFavorites.targetId, targetId),
+      )
+    );
+  }
+
+  async getFavorites(profileId: number, targetType?: string): Promise<ImFavorite[]> {
+    const conditions = [eq(imFavorites.profileId, profileId)];
+    if (targetType) conditions.push(eq(imFavorites.targetType, targetType));
+    return db.select().from(imFavorites).where(and(...conditions)).orderBy(desc(imFavorites.createdAt));
+  }
+
+  async getFavoritesWithDetails(profileId: number) {
+    const favs = await this.getFavorites(profileId);
+    const profileFavs = favs.filter(f => f.targetType === "profile");
+    const assignmentFavs = favs.filter(f => f.targetType === "assignment");
+
+    const profiles = profileFavs.length > 0
+      ? await db.select().from(imProfiles).where(
+          or(...profileFavs.map(f => eq(imProfiles.id, f.targetId)))
+        )
+      : [];
+
+    const assignments = assignmentFavs.length > 0
+      ? await db.select().from(imAssignments).where(
+          or(...assignmentFavs.map(f => eq(imAssignments.id, f.targetId)))
+        )
+      : [];
+
+    return {
+      favorites: favs,
+      profiles: profiles.map(p => ({
+        ...p,
+        favoriteId: profileFavs.find(f => f.targetId === p.id)?.id,
+        favoritedAt: profileFavs.find(f => f.targetId === p.id)?.createdAt,
+      })),
+      assignments: assignments.map(a => ({
+        ...a,
+        favoriteId: assignmentFavs.find(f => f.targetId === a.id)?.id,
+        favoritedAt: assignmentFavs.find(f => f.targetId === a.id)?.createdAt,
+      })),
     };
   }
 }

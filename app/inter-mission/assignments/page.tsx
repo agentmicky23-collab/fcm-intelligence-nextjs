@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { EXPERTISE_TRACKS, DURATION_TYPES } from "@/lib/im-constants";
-import { MapPin, Calendar, AlertTriangle, Plus, Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, Send, Star, Edit3, Clock, Briefcase, Home, ExternalLink } from "lucide-react";
+import { MapPin, Calendar, AlertTriangle, Plus, Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, Send, Star, Edit3, Clock, Briefcase, Home, ExternalLink, Heart } from "lucide-react";
 
 interface Assignment {
   id: number;
@@ -77,17 +77,52 @@ function AssignmentsContent() {
   const [proposalMessage, setProposalMessage] = useState("");
   const [showProposalForm, setShowProposalForm] = useState(false);
   const [submittingProposal, setSubmittingProposal] = useState(false);
+  const [favoritedAssignmentIds, setFavoritedAssignmentIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetch("/api/inter-mission/people?userType=operator&limit=1")
       .then((r) => r.json())
-      .then((profiles) => { if (Array.isArray(profiles) && profiles[0]) setDemoOperatorId(profiles[0].id); })
+      .then((profiles) => {
+        if (Array.isArray(profiles) && profiles[0]) {
+          setDemoOperatorId(profiles[0].id);
+          fetch(`/api/inter-mission/favorites?profileId=${profiles[0].id}`)
+            .then((r) => r.json())
+            .then((data) => {
+              const ids = new Set<number>((data.favorites || []).filter((f: any) => f.targetType === "assignment").map((f: any) => f.targetId));
+              setFavoritedAssignmentIds(ids);
+            })
+            .catch(() => {});
+        }
+      })
       .catch(() => {});
     fetch("/api/inter-mission/people?userType=manager&limit=1")
       .then((r) => r.json())
       .then((profiles) => { if (Array.isArray(profiles) && profiles[0]) setDemoManagerId(profiles[0].id); })
       .catch(() => {});
   }, []);
+
+  const toggleAssignmentFavorite = (e: React.MouseEvent, assignmentId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!demoOperatorId) return;
+    const wasFav = favoritedAssignmentIds.has(assignmentId);
+    setFavoritedAssignmentIds((prev) => {
+      const next = new Set(prev);
+      if (wasFav) next.delete(assignmentId); else next.add(assignmentId);
+      return next;
+    });
+    fetch("/api/inter-mission/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ profileId: demoOperatorId, targetType: "assignment", targetId: assignmentId }),
+    }).catch(() => {
+      setFavoritedAssignmentIds((prev) => {
+        const next = new Set(prev);
+        if (wasFav) next.add(assignmentId); else next.delete(assignmentId);
+        return next;
+      });
+    });
+  };
 
   const fetchAssignments = useCallback(() => {
     setLoading(true);
@@ -563,9 +598,19 @@ function AssignmentsContent() {
                             <span className="text-[#555]">{days} day{days !== 1 ? "s" : ""}</span>
                           </div>
                         </div>
-                        <div className="text-right shrink-0">
-                          <span className="im-font-financial text-lg">{a.dailyBudget ? `£${parseFloat(a.dailyBudget).toFixed(0)}` : "Open"}</span>
-                          <span className="text-[#888888] text-xs block">/day</span>
+                        <div className="text-right shrink-0 flex flex-col items-end gap-2">
+                          <button
+                            onClick={(e) => toggleAssignmentFavorite(e, a.id)}
+                            className={`p-1.5 rounded-full transition-all ${favoritedAssignmentIds.has(a.id) ? "text-[#FF4466] bg-[#FF444620]" : "text-[#555] hover:text-[#FF4466] hover:bg-[#FF444610]"}`}
+                            data-testid={`button-favorite-assignment-${a.id}`}
+                            aria-label={favoritedAssignmentIds.has(a.id) ? "Remove from favorites" : "Add to favorites"}
+                          >
+                            <Heart size={16} fill={favoritedAssignmentIds.has(a.id) ? "#FF4466" : "none"} />
+                          </button>
+                          <div>
+                            <span className="im-font-financial text-lg">{a.dailyBudget ? `£${parseFloat(a.dailyBudget).toFixed(0)}` : "Open"}</span>
+                            <span className="text-[#888888] text-xs block">/day</span>
+                          </div>
                         </div>
                       </div>
                     </button>
@@ -606,7 +651,17 @@ function AssignmentsContent() {
                       {detailData.assignment.status}
                     </span>
                   </div>
-                  <button onClick={() => { setShowDetail(false); setDetailData(null); }} className="text-[#888888] hover:text-white p-1" data-testid="button-close-detail"><X size={20} /></button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => toggleAssignmentFavorite(e, detailData.assignment.id)}
+                      className={`p-1.5 rounded-full transition-all ${favoritedAssignmentIds.has(detailData.assignment.id) ? "text-[#FF4466] bg-[#FF444620]" : "text-[#555] hover:text-[#FF4466] hover:bg-[#FF444610]"}`}
+                      data-testid="button-favorite-detail"
+                      aria-label={favoritedAssignmentIds.has(detailData.assignment.id) ? "Remove from favorites" : "Add to favorites"}
+                    >
+                      <Heart size={18} fill={favoritedAssignmentIds.has(detailData.assignment.id) ? "#FF4466" : "none"} />
+                    </button>
+                    <button onClick={() => { setShowDetail(false); setDetailData(null); }} className="text-[#888888] hover:text-white p-1" data-testid="button-close-detail"><X size={20} /></button>
+                  </div>
                 </div>
 
                 <h2 className="text-xl font-bold text-white mb-2" data-testid="text-detail-title">{detailData.assignment.title}</h2>
