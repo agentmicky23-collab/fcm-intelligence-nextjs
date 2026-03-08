@@ -9,6 +9,9 @@ export async function GET(request: NextRequest) {
       expertiseTrack: params.get("expertiseTrack") || undefined,
       verificationStatus: params.get("verificationStatus") || undefined,
       search: params.get("search") || undefined,
+      minRating: params.get("minRating") ? Number(params.get("minRating")) : undefined,
+      minExperience: params.get("minExperience") ? Number(params.get("minExperience")) : undefined,
+      sort: params.get("sort") || undefined,
     });
     const limit = params.get("limit");
     return NextResponse.json(limit ? profiles.slice(0, parseInt(limit)) : profiles);

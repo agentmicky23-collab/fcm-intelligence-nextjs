@@ -9,6 +9,11 @@ export async function GET(request: NextRequest) {
       expertiseTrack: params.get("expertiseTrack") || undefined,
       urgency: params.get("urgency") || undefined,
       status: params.get("status") || undefined,
+      search: params.get("search") || undefined,
+      durationType: params.get("durationType") || undefined,
+      minBudget: params.get("minBudget") ? Number(params.get("minBudget")) : undefined,
+      maxBudget: params.get("maxBudget") ? Number(params.get("maxBudget")) : undefined,
+      sort: params.get("sort") || undefined,
     });
     return NextResponse.json(assignments);
   } catch (error: any) {

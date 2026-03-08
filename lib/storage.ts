@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { eq, desc, and, gte, lte, sql, ilike, or, ne } from "drizzle-orm";
+import { eq, desc, asc, and, gte, lte, sql, ilike, or, ne } from "drizzle-orm";
 import {
   opportunities, content, agentHealth, agentActivity, scanConfig, scanHistory,
   hrConversations, costRecords, hrCases, feedbackLog, contactSubmissions,
@@ -263,17 +263,29 @@ export class DatabaseStorage {
     return row;
   }
 
-  async getImProfiles(filters?: { userType?: string; expertiseTrack?: string; verificationStatus?: string; search?: string }): Promise<ImProfile[]> {
+  async getImProfiles(filters?: { userType?: string; expertiseTrack?: string; verificationStatus?: string; search?: string; minRating?: number; minExperience?: number; sort?: string }): Promise<ImProfile[]> {
     const conditions = [];
     if (filters?.userType) conditions.push(eq(imProfiles.userType, filters.userType));
-    if (filters?.expertiseTrack) conditions.push(sql`${imProfiles.expertiseTracks} @> ARRAY[${filters.expertiseTrack}]::text[]`);
+    if (filters?.expertiseTrack) conditions.push(sql`${imProfiles.expertiseTracks}::jsonb @> ${JSON.stringify([filters.expertiseTrack])}::jsonb`);
     if (filters?.verificationStatus) conditions.push(eq(imProfiles.verificationStatus, filters.verificationStatus));
-    if (filters?.search) conditions.push(or(ilike(imProfiles.name, `%${filters.search}%`), ilike(imProfiles.locationPostcode, `%${filters.search}%`)));
+    if (filters?.search) conditions.push(or(ilike(imProfiles.name, `%${filters.search}%`), ilike(imProfiles.locationPostcode, `%${filters.search}%`), ilike(imProfiles.branchName, `%${filters.search}%`)));
+    if (filters?.minRating !== undefined && filters.minRating !== null) conditions.push(gte(imProfiles.averageRating, String(filters.minRating)));
+    if (filters?.minExperience !== undefined && filters.minExperience !== null) conditions.push(gte(imProfiles.yearsExperience, filters.minExperience));
     conditions.push(ne(imProfiles.verificationStatus, "blocked"));
-    if (conditions.length > 0) {
-      return db.select().from(imProfiles).where(and(...conditions)).orderBy(desc(imProfiles.createdAt));
+
+    let orderBy;
+    switch (filters?.sort) {
+      case "rating_high": orderBy = desc(imProfiles.averageRating); break;
+      case "experience_high": orderBy = desc(imProfiles.yearsExperience); break;
+      case "rate_low": orderBy = asc(imProfiles.dailyRate); break;
+      case "rate_high": orderBy = desc(imProfiles.dailyRate); break;
+      default: orderBy = desc(imProfiles.createdAt);
     }
-    return db.select().from(imProfiles).orderBy(desc(imProfiles.createdAt));
+
+    if (conditions.length > 0) {
+      return db.select().from(imProfiles).where(and(...conditions)).orderBy(orderBy);
+    }
+    return db.select().from(imProfiles).orderBy(orderBy);
   }
 
   async createImAssignment(data: InsertImAssignment): Promise<ImAssignment> {
@@ -286,15 +298,28 @@ export class DatabaseStorage {
     return row;
   }
 
-  async getImAssignments(filters?: { expertiseTrack?: string; urgency?: string; status?: string }): Promise<ImAssignment[]> {
+  async getImAssignments(filters?: { expertiseTrack?: string; urgency?: string; status?: string; search?: string; durationType?: string; minBudget?: number; maxBudget?: number; sort?: string }): Promise<ImAssignment[]> {
     const conditions = [];
     if (filters?.expertiseTrack) conditions.push(eq(imAssignments.expertiseTrack, filters.expertiseTrack));
     if (filters?.urgency) conditions.push(eq(imAssignments.urgency, filters.urgency));
     if (filters?.status) conditions.push(eq(imAssignments.status, filters.status));
-    if (conditions.length > 0) {
-      return db.select().from(imAssignments).where(and(...conditions)).orderBy(desc(imAssignments.createdAt));
+    if (filters?.durationType) conditions.push(eq(imAssignments.durationType, filters.durationType));
+    if (filters?.search) conditions.push(or(ilike(imAssignments.title, `%${filters.search}%`), ilike(imAssignments.locationPostcode, `%${filters.search}%`), ilike(imAssignments.branchName, `%${filters.search}%`)));
+    if (filters?.minBudget !== undefined && filters.minBudget !== null) conditions.push(gte(imAssignments.dailyBudget, String(filters.minBudget)));
+    if (filters?.maxBudget !== undefined && filters.maxBudget !== null) conditions.push(lte(imAssignments.dailyBudget, String(filters.maxBudget)));
+
+    let orderBy;
+    switch (filters?.sort) {
+      case "budget_high": orderBy = desc(imAssignments.dailyBudget); break;
+      case "budget_low": orderBy = asc(imAssignments.dailyBudget); break;
+      case "start_date": orderBy = asc(imAssignments.startDate); break;
+      default: orderBy = desc(imAssignments.createdAt);
     }
-    return db.select().from(imAssignments).orderBy(desc(imAssignments.createdAt));
+
+    if (conditions.length > 0) {
+      return db.select().from(imAssignments).where(and(...conditions)).orderBy(orderBy);
+    }
+    return db.select().from(imAssignments).orderBy(orderBy);
   }
 
   async updateImAssignment(id: number, data: Partial<InsertImAssignment>): Promise<ImAssignment | undefined> {
