@@ -319,46 +319,63 @@ export default function MapPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
-        {regionData
-          .sort((a, b) => (b.managers + b.assignments) - (a.managers + a.assignments))
-          .map((region) => {
-            const status = getRegionStatus(region);
-            const total = region.managers + region.assignments;
-            const isActive = activeRegionId === region.id;
-            return (
-              <button
-                key={region.id}
-                onClick={() => handleRegionClick(region.id)}
-                onMouseEnter={() => setHoveredRegion(region.id)}
-                onMouseLeave={() => setHoveredRegion(null)}
-                className={`im-card !p-3 text-left transition-all ${isActive ? "!border-[#00FF88] im-glow" : ""}`}
-                data-testid={`region-card-${region.id}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white text-xs font-semibold truncate">{region.name}</span>
-                  <span className="text-[10px]" style={{ color: status.color }}>{status.icon}</span>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div className="flex gap-3">
-                    <div>
-                      <span className="im-font-financial text-lg">{region.managers}</span>
-                      <span className="text-[#888888] text-[10px] block">mgrs</span>
-                    </div>
-                    <div>
-                      <span className="text-lg font-bold text-orange-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{region.assignments}</span>
-                      <span className="text-[#888888] text-[10px] block">jobs</span>
-                    </div>
+      <div className="mb-8">
+        {selectedRegion && (
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[#888888] text-xs uppercase tracking-wider">
+              Showing <span className="text-[#00FF88] font-semibold">{regionData.find((r) => r.id === selectedRegion)?.name}</span> only
+            </span>
+            <button
+              onClick={() => setSelectedRegion(null)}
+              className="text-[#00FF88] text-xs hover:underline"
+              data-testid="button-show-all-regions"
+            >
+              Show all regions
+            </button>
+          </div>
+        )}
+        <div className={`grid gap-3 ${selectedRegion ? "grid-cols-1 max-w-sm" : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
+          {regionData
+            .filter((r) => !selectedRegion || r.id === selectedRegion)
+            .sort((a, b) => (b.managers + b.assignments) - (a.managers + a.assignments))
+            .map((region) => {
+              const status = getRegionStatus(region);
+              const total = region.managers + region.assignments;
+              const isActive = activeRegionId === region.id;
+              return (
+                <button
+                  key={region.id}
+                  onClick={() => handleRegionClick(region.id)}
+                  onMouseEnter={() => setHoveredRegion(region.id)}
+                  onMouseLeave={() => setHoveredRegion(null)}
+                  className={`im-card !p-3 text-left transition-all ${isActive ? "!border-[#00FF88] im-glow" : ""}`}
+                  data-testid={`region-card-${region.id}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white text-xs font-semibold truncate">{region.name}</span>
+                    <span className="text-[10px]" style={{ color: status.color }}>{status.icon}</span>
                   </div>
-                  {total > 0 && (
-                    <div className="w-8 h-8 rounded-full border border-[#1A3A25] flex items-center justify-center">
-                      <span className="im-font-financial text-[10px]">{total}</span>
+                  <div className="flex items-end justify-between">
+                    <div className="flex gap-3">
+                      <div>
+                        <span className="im-font-financial text-lg">{region.managers}</span>
+                        <span className="text-[#888888] text-[10px] block">mgrs</span>
+                      </div>
+                      <div>
+                        <span className="text-lg font-bold text-orange-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{region.assignments}</span>
+                        <span className="text-[#888888] text-[10px] block">jobs</span>
+                      </div>
                     </div>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+                    {total > 0 && (
+                      <div className="w-8 h-8 rounded-full border border-[#1A3A25] flex items-center justify-center">
+                        <span className="im-font-financial text-[10px]">{total}</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+        </div>
       </div>
 
       <div className="im-card" data-testid="panel-achievements">
