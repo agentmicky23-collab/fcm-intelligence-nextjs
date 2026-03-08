@@ -13,6 +13,8 @@ export function Navbar() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
+    { href: "/reports", label: "Reports" },
+    { href: "/business-republic", label: "Marketplace" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
   ];
