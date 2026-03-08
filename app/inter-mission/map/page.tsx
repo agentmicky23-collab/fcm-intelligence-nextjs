@@ -76,9 +76,10 @@ export default function MapPage() {
   const networkScore = totalManagers * 10 + totalAssignments * 15 + activeRegions * 25;
 
   const activeRegionId = hoveredRegion || selectedRegion;
-  const activeRegionData = activeRegionId ? regionData.find((r) => r.id === activeRegionId) : null;
-  const activeRegionManagers = activeRegionId ? data?.managers?.filter((m) => getRegionForPostcode(m.locationPostcode) === activeRegionId) || [] : [];
-  const activeRegionAssignments = activeRegionId ? data?.assignments?.filter((a) => getRegionForPostcode(a.locationPostcode) === activeRegionId) || [] : [];
+  const panelRegionId = selectedRegion;
+  const panelRegionData = panelRegionId ? regionData.find((r) => r.id === panelRegionId) : null;
+  const activeRegionManagers = panelRegionId ? data?.managers?.filter((m) => getRegionForPostcode(m.locationPostcode) === panelRegionId) || [] : [];
+  const activeRegionAssignments = panelRegionId ? data?.assignments?.filter((a) => getRegionForPostcode(a.locationPostcode) === panelRegionId) || [] : [];
 
   const getRegionStatus = (r: RegionData) => {
     const total = r.managers + r.assignments;
@@ -225,31 +226,31 @@ export default function MapPage() {
         </div>
 
         <div className="lg:col-span-2">
-          {activeRegionData ? (
+          {panelRegionData ? (
             <div className="im-card im-glow im-animate-in" data-testid="panel-region-detail">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white font-bold text-lg">{activeRegionData.name}</h3>
+                <h3 className="text-white font-bold text-lg">{panelRegionData.name}</h3>
                 <span
                   className="text-xs px-2 py-1 rounded-full font-medium"
-                  style={{ backgroundColor: `${getRegionStatus(activeRegionData).color}20`, color: getRegionStatus(activeRegionData).color }}
+                  style={{ backgroundColor: `${getRegionStatus(panelRegionData).color}20`, color: getRegionStatus(panelRegionData).color }}
                 >
-                  {getRegionStatus(activeRegionData).icon} {getRegionStatus(activeRegionData).label}
+                  {getRegionStatus(panelRegionData).icon} {getRegionStatus(panelRegionData).label}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-[#0A1A0F] rounded-lg p-3 text-center">
-                  <div className="im-font-financial text-2xl">{activeRegionData.managers}</div>
+                  <div className="im-font-financial text-2xl">{panelRegionData.managers}</div>
                   <div className="text-[#888888] text-xs flex items-center justify-center gap-1 mt-1"><Users size={11} /> Managers</div>
                   <div className="h-1 bg-[#1A3A25] rounded-full mt-2 overflow-hidden">
-                    <div className="h-full bg-[#00FF88] rounded-full transition-all duration-500" style={{ width: `${Math.min((activeRegionData.managers / Math.max(totalManagers, 1)) * 100 * 3, 100)}%` }} />
+                    <div className="h-full bg-[#00FF88] rounded-full transition-all duration-500" style={{ width: `${Math.min((panelRegionData.managers / Math.max(totalManagers, 1)) * 100 * 3, 100)}%` }} />
                   </div>
                 </div>
                 <div className="bg-[#0A1A0F] rounded-lg p-3 text-center">
-                  <div className="text-2xl font-bold text-orange-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{activeRegionData.assignments}</div>
+                  <div className="text-2xl font-bold text-orange-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{panelRegionData.assignments}</div>
                   <div className="text-[#888888] text-xs flex items-center justify-center gap-1 mt-1"><Briefcase size={11} /> Assignments</div>
                   <div className="h-1 bg-[#1A3A25] rounded-full mt-2 overflow-hidden">
-                    <div className="h-full bg-orange-400 rounded-full transition-all duration-500" style={{ width: `${Math.min((activeRegionData.assignments / Math.max(totalAssignments, 1)) * 100 * 3, 100)}%` }} />
+                    <div className="h-full bg-orange-400 rounded-full transition-all duration-500" style={{ width: `${Math.min((panelRegionData.assignments / Math.max(totalAssignments, 1)) * 100 * 3, 100)}%` }} />
                   </div>
                 </div>
               </div>
@@ -304,7 +305,7 @@ export default function MapPage() {
                 className="im-btn-primary w-full text-center text-sm py-2"
                 data-testid="button-explore-region"
               >
-                Explore {activeRegionData.name} <ChevronRight size={16} className="ml-1 inline" />
+                Explore {panelRegionData.name} <ChevronRight size={16} className="ml-1 inline" />
               </Link>
             </div>
           ) : (
