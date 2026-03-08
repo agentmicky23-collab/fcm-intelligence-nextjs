@@ -29,10 +29,10 @@ export default function ContactPage() {
             <div className="form-group">
               <label htmlFor="report-type">Report Type</label>
               <select id="report-type" name="report-type">
-                <option value="standard">Standard Report — £149</option>
-                <option value="quick">Quick Check — £49</option>
-                <option value="premium">Premium Report — £349</option>
-                <option value="enterprise">Enterprise — £599+</option>
+                <option value="premium">Premium Report — £449</option>
+                <option value="professional">Professional Report — £249</option>
+                <option value="basic">Basic Report — £149</option>
+                <option value="location">Location Intelligence — £99</option>
                 <option value="consultation">Consultation Call</option>
               </select>
             </div>
