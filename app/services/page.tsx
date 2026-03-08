@@ -9,8 +9,22 @@ import Link from 'next/link';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useState, useEffect } from 'react';
 
+// Consultation type interface
+interface ConsultationType {
+  name: string;
+  price: number;
+  duration: number;
+  durationText: string;
+  icon: string;
+  description: string;
+  features: string[];
+  category: string;
+  priceDisplay?: string;
+  featured?: boolean;
+}
+
 // Consultation types data
-const CONSULTATION_TYPES = {
+const CONSULTATION_TYPES: Record<string, ConsultationType> = {
   'helpline-101': {
     name: 'Helpline 101',
     price: 101,
@@ -284,7 +298,7 @@ export default function ConsultationPage() {
 
     setIsSubmitting(true);
 
-    const typeData = selectedType ? CONSULTATION_TYPES[selectedType as keyof typeof CONSULTATION_TYPES] : null;
+    const typeData = selectedType ? CONSULTATION_TYPES[selectedType] : null;
     
     const booking = {
       serviceType: selectedType,
@@ -336,8 +350,8 @@ export default function ConsultationPage() {
     }
   };
 
-  const typeData = selectedType ? CONSULTATION_TYPES[selectedType as keyof typeof CONSULTATION_TYPES] : null;
-  const priceDisplay = typeData?.priceDisplay || (typeData ? `£${typeData.price.toLocaleString()}` : '£0');
+  const typeData = selectedType ? CONSULTATION_TYPES[selectedType] : null;
+  const priceDisplay = typeData ? `£${typeData.price.toLocaleString()}` : '£0';
 
   return (
     <AppLayout>

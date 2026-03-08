@@ -7,10 +7,10 @@
 
 import Link from 'next/link';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function BookingSuccessPage() {
+function BookingSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams?.get('session_id');
   const [bookingData, setBookingData] = useState<any>(null);
@@ -300,5 +300,19 @@ export default function BookingSuccessPage() {
         `}</style>
       </div>
     </AppLayout>
+  );
+}
+
+export default function BookingSuccessPage() {
+  return (
+    <Suspense fallback={
+      <AppLayout>
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--fcm-dark)', color: 'white' }}>
+          <p>Loading...</p>
+        </div>
+      </AppLayout>
+    }>
+      <BookingSuccessContent />
+    </Suspense>
   );
 }
