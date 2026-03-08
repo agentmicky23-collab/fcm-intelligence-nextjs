@@ -89,6 +89,15 @@ scripts/
 - `im_vetting_queue` — Verification queue (standard + priority £3.99 skip)
 - `im_saved_managers` — Operator saved/bookmarked managers
 
+## Inter-Mission Assignments Page Features
+- **Calendar View**: Monthly grid with colour-coded assignment bars spanning date ranges
+- **Expanded Day Panel**: Click a day with assignments → slides open a panel listing all assignments for that day with details
+- **Full Detail Modal**: Click any assignment (calendar/expanded day/list) → fetches full data from API → shows all fields, proposals, operator info
+- **Role-Based Actions**: Operator who posted sees "Edit Assignment"; Managers see "Send Proposal" with inline form (rate + message)
+- **Assignment List**: Always visible below the calendar showing all filtered assignments as cards, sorted by start date
+- **Post Assignment**: Click "+" on any day or click an empty day to open the post form
+- **Demo Role Detection**: Uses first operator/manager profiles from DB (no real auth yet); `operatorId` comparison determines ownership
+
 ## Inter-Mission Design Rules ("Sport Mode")
 - **ONLY** within `/inter-mission/*` pages — rest of site stays gold
 - Background: #000000, Cards: #0A1A0F, Primary: #00FF88, Hover: #00CC6A
