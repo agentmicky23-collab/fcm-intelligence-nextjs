@@ -12,9 +12,10 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/opportunities", label: "Opportunities" },
     { href: "/services", label: "Services" },
     { href: "/reports", label: "Reports" },
-    { href: "/business-republic", label: "Marketplace" },
+    { href: "/business-republic", label: "Business Republic" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
   ];
