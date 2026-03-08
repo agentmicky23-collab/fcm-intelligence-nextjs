@@ -105,6 +105,42 @@
 }
 
 @layer utilities {
+  /* FCM Brand Colors */
+  .text-fcm-dark {
+    color: #000000;
+  }
+  .bg-fcm-dark {
+    background-color: #000000;
+  }
+  .text-fcm-gold {
+    color: #FFD700;
+  }
+  .bg-fcm-gold {
+    background-color: #FFD700;
+  }
+  .border-fcm-gold {
+    border-color: #FFD700;
+  }
+  .text-fcm-red {
+    color: #FF0000;
+  }
+  .bg-fcm-red {
+    background-color: #FF0000;
+  }
+  .bg-fcm-card {
+    background-color: #1A1A1A;
+  }
+  .text-fcm-muted {
+    color: #888888;
+  }
+  .bg-fcm-gold-hover {
+    background-color: #E6C200;
+  }
+  .bg-fcm-red-hover {
+    background-color: #CC0000;
+  }
+  
+  /* Legacy aliases for existing code */
   .text-gold {
     @apply text-primary;
   }
