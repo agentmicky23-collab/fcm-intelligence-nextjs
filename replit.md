@@ -89,6 +89,16 @@ scripts/
 - `im_vetting_queue` — Verification queue (standard + priority £3.99 skip)
 - `im_saved_managers` — Operator saved/bookmarked managers
 
+## Inter-Mission Network Command (Map Page)
+- **Interactive SVG Map**: Custom UK outline with 12 clickable/hoverable regions, green intensity fill based on activity
+- **Region Detail Panel**: Shows managers, assignments, top people, open jobs for selected region
+- **Gamification**: Network Score (animated counter), Coverage Progress Bar, 6 Achievement Badges (First Region, 5 Regions, Full Coverage, Squad Up, In Demand, Hotspot)
+- **Live Stats Bar**: Total managers, assignments, active regions, coverage percentage with animated counting
+- **Region Status Badges**: Hotspot (5+), Growing (2+), Active (1+), Needs Coverage (0)
+- **Region Cards Grid**: All 12 regions as sortable cards below map with manager/assignment counts
+- **Accessibility**: SVG regions have keyboard focus, ARIA labels, Enter/Space activation
+- **Files**: `components/inter-mission/UKMap.tsx` (SVG component), `app/inter-mission/map/page.tsx` (full page)
+
 ## Inter-Mission Assignments Page Features
 - **Calendar View**: Monthly grid with colour-coded assignment bars spanning date ranges
 - **Expanded Day Panel**: Click a day with assignments → slides open a panel listing all assignments for that day with details

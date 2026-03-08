@@ -250,3 +250,74 @@
 .im-animate-in {
   animation: im-count-up 0.6s ease-out forwards;
 }
+
+@keyframes im-map-pulse {
+  0% { r: 5; opacity: 0.6; }
+  50% { r: 12; opacity: 0; }
+  100% { r: 5; opacity: 0.6; }
+}
+
+@keyframes im-map-dot-idle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes im-progress-fill {
+  from { width: 0%; }
+}
+
+@keyframes im-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes im-score-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+  50% { text-shadow: 0 0 25px rgba(0, 255, 136, 0.9), 0 0 50px rgba(0, 255, 136, 0.3); }
+}
+
+@keyframes im-badge-unlock {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes im-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+.im-map-pulse-dot {
+  animation: im-map-pulse 2s ease-in-out infinite;
+}
+
+.im-map-dot {
+  animation: im-map-dot-idle 3s ease-in-out infinite;
+}
+
+.im-progress-bar {
+  animation: im-progress-fill 1.5s ease-out forwards;
+}
+
+.im-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 136, 0.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: im-shimmer 3s ease-in-out infinite;
+}
+
+.im-score-glow {
+  animation: im-score-glow 2s ease-in-out infinite;
+}
+
+.im-badge {
+  animation: im-badge-unlock 0.6s ease-out forwards;
+}
+
+.im-float {
+  animation: im-float 3s ease-in-out infinite;
+}
+
+.im-region-tooltip {
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
