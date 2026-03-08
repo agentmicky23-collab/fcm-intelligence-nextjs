@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { users, accounts, sessions, verificationTokens } from "@/shared/schema";
 
 export const authConfig: NextAuthConfig = {
+  // @ts-ignore - Type mismatch between NextAuth beta and Drizzle adapter versions
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -33,7 +34,7 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
         token.role = (user as any).role || "insider";
       }
@@ -43,7 +44,7 @@ export const authConfig: NextAuthConfig = {
   events: {
     async createUser({ user }) {
       // Assign role based on email
-      if (user.email === "mikeshparekh@gmail.com") {
+      if (user.email === "mikeshparekh@gmail.com" && user.id) {
         await db
           .update(users)
           .set({ role: "admin" })
@@ -56,6 +57,7 @@ export const authConfig: NextAuthConfig = {
   },
 };
 
-const handler = NextAuth(authConfig);
+const { auth, handlers } = NextAuth(authConfig);
 
-export { handler as GET, handler as POST };
+export const GET = handlers.GET;
+export const POST = handlers.POST;
