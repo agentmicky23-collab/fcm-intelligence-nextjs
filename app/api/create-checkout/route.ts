@@ -7,10 +7,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 // Initialize Stripe (will need STRIPE_SECRET_KEY in .env.local)
+// @ts-ignore - Stripe API version type mismatch
 const stripe = process.env.STRIPE_SECRET_KEY 
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-12-18.acacia',
-    })
+  ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
 
 // Consultation pricing mapping
@@ -82,10 +81,11 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe checkout error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to create checkout session';
     return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
+      { error: message },
       { status: 500 }
     );
   }
