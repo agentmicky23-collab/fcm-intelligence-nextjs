@@ -1,0 +1,149 @@
+{
+  "services": [
+    {
+      "id": "SVC-BUSINESS-PLAN",
+      "title": "Business Plan & Forecasts",
+      "category": "preparation",
+      "description": "Professional 3-year business plan with forecasted management accounts. Required for Post Office Ltd vetting and approval.",
+      "price": 850,
+      "currency": "GBP",
+      "priceType": "one-time",
+      "features": [
+        "3-year business plan",
+        "Forecasted management accounts",
+        "Post Office Ltd compliance ready",
+        "Professional presentation"
+      ],
+      "deliveryFormat": "PDF + Excel",
+      "turnaroundDays": 5
+    },
+    {
+      "id": "SVC-INTERVIEW-PREP",
+      "title": "Interview Preparation",
+      "category": "preparation",
+      "description": "Post Office Ltd vets all new operators. Get mock interviews, coaching, and preparation to ace your approval interview.",
+      "price": 450,
+      "currency": "GBP",
+      "priceType": "one-time",
+      "altPricing": "£250 per session",
+      "features": [
+        "Mock interview session",
+        "Coaching and feedback",
+        "Approval interview preparation",
+        "Interview strategy guidance"
+      ],
+      "sessions": 1,
+      "turnaroundDays": 3
+    },
+    {
+      "id": "SVC-OPERATOR-TRAINING",
+      "title": "Operator Training",
+      "category": "onboarding",
+      "description": "Learn to run a Post Office from operators with 40+ branches. Online, at our location, or on-site at your branch.",
+      "price": "500-1500",
+      "currency": "GBP",
+      "priceType": "one-time",
+      "deliveryModes": [
+        "Online",
+        "Offsite (our location)",
+        "Onsite (your branch)"
+      ],
+      "features": [
+        "Post Office operations training",
+        "Systems and procedures",
+        "Customer service excellence",
+        "Financial management",
+        "Compliance and reporting"
+      ],
+      "instructors": "40+ branch operators",
+      "customized": true
+    },
+    {
+      "id": "SVC-SETUP-BUNDLE",
+      "title": "Business Setup Bundle",
+      "category": "onboarding",
+      "description": "Complete package covering company formation, bank account, insurance, utilities, EPOS setup - everything you need to open the doors.",
+      "price": 750,
+      "currency": "GBP",
+      "priceType": "one-time",
+      "features": [
+        "Company formation",
+        "Bank account setup",
+        "Insurance arrangement",
+        "Utilities setup",
+        "EPOS system configuration",
+        "Licenses and permits"
+      ],
+      "includedServices": [
+        "Legal entity setup",
+        "Financial accounts",
+        "Insurance policies",
+        "IT infrastructure",
+        "Payment processing"
+      ]
+    },
+    {
+      "id": "SVC-ADVISORY-BASIC",
+      "title": "Advisory Support",
+      "category": "ongoing",
+      "description": "Ongoing email support and monthly calls. Get expert guidance as you navigate your first months of operation.",
+      "price": 200,
+      "currency": "GBP",
+      "priceType": "monthly",
+      "billingPeriod": "month",
+      "cancellable": true,
+      "features": [
+        "Email support (priority response)",
+        "Monthly consultation calls",
+        "Expert guidance",
+        "Operational advice",
+        "Troubleshooting support"
+      ],
+      "responseTime": "24 hours"
+    },
+    {
+      "id": "SVC-ADVISORY-PRO",
+      "title": "Advisory Pro",
+      "category": "ongoing",
+      "description": "Everything in Basic plus compliance checks, management reporting, and priority response times.",
+      "price": 400,
+      "currency": "GBP",
+      "priceType": "monthly",
+      "billingPeriod": "month",
+      "cancellable": true,
+      "features": [
+        "Everything in Advisory Support",
+        "Compliance checks",
+        "Management reporting",
+        "Priority response",
+        "Strategic planning",
+        "Performance analysis"
+      ],
+      "responseTime": "4 hours",
+      "reportingFrequency": "monthly"
+    }
+  ],
+  "advisoryPackages": [
+    {
+      "id": "PKG-DUE-DILIGENCE",
+      "title": "Due Diligence Report",
+      "category": "advisory",
+      "priceRange": "£2,500-5,000",
+      "description": "Comprehensive due diligence analysis for acquisition evaluation"
+    },
+    {
+      "id": "PKG-MONTHLY-RETAINER",
+      "title": "Monthly Retainer",
+      "category": "advisory",
+      "priceRange": "£1,500-3,000/mo",
+      "description": "Ongoing operational and strategic advisory"
+    },
+    {
+      "id": "PKG-MANAGEMENT-SERVICES",
+      "title": "Management Services",
+      "category": "advisory",
+      "priceRange": "Custom quote",
+      "description": "Full or partial management of Post Office operations"
+    }
+  ]
+}

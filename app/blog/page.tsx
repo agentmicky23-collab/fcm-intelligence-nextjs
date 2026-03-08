@@ -1,24 +1,10 @@
 "use client";
 
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import type { Content } from "@/shared/schema";
+import { Calendar, User, ArrowRight } from "lucide-react";
+import blogPosts from "@/migration-data/blog-posts.json";
 
 export default function Blog() {
-  const [trackFilter, setTrackFilter] = useState<string | null>(null);
-
-  const { data: posts = [], isLoading } = useQuery<Content[]>({
-    queryKey: ["/api/content/published", trackFilter],
-    queryFn: async () => {
-      const url = trackFilter
-        ? `/api/content/published?track=${trackFilter}`
-        : "/api/content/published";
-      const res = await fetch(url);
-      return res.json();
-    },
-  });
-
   return (
     <AppLayout>
       <div className="pt-32 pb-20 container mx-auto px-4">
@@ -27,78 +13,86 @@ export default function Blog() {
             Insights & <span className="text-gold">Intelligence</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-10">
-            Thought leadership and market analysis from the FCM network.
+            Real operator insights from 40+ branches. No theory, just experience.
           </p>
 
-          <div className="flex gap-3 mb-10" data-testid="blog-filters">
-            <button
-              onClick={() => setTrackFilter(null)}
-              className={`text-sm px-4 py-2 rounded-md font-medium transition-colors ${
-                !trackFilter ? "bg-gold text-black" : "bg-card border border-border text-muted-foreground hover:text-white"
-              }`}
-              data-testid="filter-all"
-            >
-              All
-            </button>
-            <button
-              onClick={() => setTrackFilter("po_insider")}
-              className={`text-sm px-4 py-2 rounded-md font-medium transition-colors ${
-                trackFilter === "po_insider" ? "bg-gold text-black" : "bg-card border border-border text-muted-foreground hover:text-white"
-              }`}
-              data-testid="filter-po-insider"
-            >
-              PO Insider
-            </button>
-            <button
-              onClick={() => setTrackFilter("uk_business_strategy")}
-              className={`text-sm px-4 py-2 rounded-md font-medium transition-colors ${
-                trackFilter === "uk_business_strategy" ? "bg-gold text-black" : "bg-card border border-border text-muted-foreground hover:text-white"
-              }`}
-              data-testid="filter-uk-strategy"
-            >
-              UK Business Strategy
-            </button>
+          <div className="space-y-8">
+            {blogPosts.map((post) => (
+              <article 
+                key={post.slug} 
+                className="fcm-card group hover:border-gold transition-colors"
+              >
+                {/* Category Badge */}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="inline-block px-3 py-1 bg-gold/20 border border-gold/40 rounded-full text-gold text-xs font-bold uppercase tracking-wider">
+                    {post.category}
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar size={12} />
+                    {new Date(post.publishedAt).toLocaleDateString("en-GB", { 
+                      day: "numeric", 
+                      month: "short", 
+                      year: "numeric" 
+                    })}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-gold transition-colors">
+                  {post.title}
+                </h2>
+
+                {/* Excerpt */}
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  {post.excerpt}
+                </p>
+
+                {/* Author & Tags */}
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User size={14} />
+                    <span>{post.author}</span>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.slice(0, 3).map((tag) => (
+                      <span 
+                        key={tag} 
+                        className="text-xs px-2 py-1 bg-card border border-border rounded text-gray-400"
+                      >
+                        {tag.replace(/_/g, " ")}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Read More Link */}
+                <div className="mt-4 pt-4 border-t border-border">
+                  <a 
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-gold hover:text-[#fff0a8] font-semibold text-sm transition-colors"
+                  >
+                    <span>Read Full Article</span>
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+              </article>
+            ))}
           </div>
 
-          {isLoading ? (
-            <div className="space-y-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="fcm-card animate-pulse h-48" />
-              ))}
-            </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
-              No published articles yet.
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {posts.map((post) => (
-                <article key={post.id} className="fcm-card group cursor-pointer" data-testid={`blog-post-${post.id}`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs font-mono font-bold text-gold uppercase tracking-wider">
-                      {post.track === "po_insider" ? "PO Insider" : "UK Business Strategy"}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {post.contentType === "linkedin" ? "LinkedIn" : "Blog"}
-                    </span>
-                  </div>
-                  <h2 className="text-2xl font-bold mb-3 group-hover:text-gold transition-colors" data-testid={`blog-title-${post.id}`}>
-                    {post.title}
-                  </h2>
-                  <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-3">
-                    {post.body?.substring(0, 250)}...
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span>By {post.author}</span>
-                    {post.publishedAt && (
-                      <span>{new Date(post.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
-                    )}
-                    <span>{Math.ceil((post.body?.length || 0) / 1000)} min read</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
+          {/* CTA Section */}
+          <div className="mt-16 fcm-card text-center p-12 bg-gold/5 border-gold/30">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Want More <span className="text-gold">Insights</span>?
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Join FCM Insider for exclusive operator intelligence, market analysis, and early access to premium listings.
+            </p>
+            <a href="/insiders" className="btn-primary inline-flex items-center gap-2">
+              <span>Become an Insider</span>
+              <ArrowRight size={18} />
+            </a>
+          </div>
         </div>
       </div>
     </AppLayout>
