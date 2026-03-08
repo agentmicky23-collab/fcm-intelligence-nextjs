@@ -3,6 +3,9 @@ import { storage } from "@/lib/storage";
 import { insertContactSubmissionSchema } from "@/shared/schema";
 import { ZodError } from "zod";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

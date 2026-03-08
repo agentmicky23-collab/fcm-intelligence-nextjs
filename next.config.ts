@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     "localhost",
   ],
   devIndicators: false,
+  output: "standalone",
 };
 
 export default nextConfig;
