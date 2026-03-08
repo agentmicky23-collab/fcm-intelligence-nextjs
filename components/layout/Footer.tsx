@@ -34,16 +34,6 @@ export function Footer() {
             <li><Link href="/inter-mission" className="text-[#00FF88] hover:text-[#00FF88]/80 text-sm transition-colors">Inter-Mission</Link></li>
             <li><Link href="/business-republic" className="text-muted-foreground hover:text-gold text-sm transition-colors">Business Republic</Link></li>
             <li><a href="https://discord.gg/52MsbGBhyr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-gold text-sm transition-colors">💬 Community</a></li>
-            <li><Link href="/dashboard" className="text-muted-foreground hover:text-gold text-sm font-semibold transition-colors">🔧 Admin Dashboard</Link></li>
-            <li><Link href="/dashboard" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Overview</Link></li>
-            <li><Link href="/dashboard/swarm" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Agent Swarm</Link></li>
-            <li><Link href="/dashboard/opportunities" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Opportunities</Link></li>
-            <li><Link href="/dashboard/market-scan" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Market Scan</Link></li>
-            <li><Link href="/dashboard/content" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Content Control</Link></li>
-            <li><Link href="/dashboard/costs" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Costs</Link></li>
-            <li><Link href="/dashboard/hr" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Ask Harper</Link></li>
-            <li><Link href="/dashboard/agents" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Agents</Link></li>
-            <li><Link href="/dashboard/settings" className="text-muted-foreground hover:text-gold text-sm transition-colors pl-2">↳ Settings</Link></li>
             <li><a href="https://www.fcmgt.co.uk" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-gold text-sm transition-colors">FC Management</a></li>
           </ul>
         </div>
