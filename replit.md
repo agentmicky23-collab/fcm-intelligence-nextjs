@@ -4,69 +4,63 @@
 A full-stack Progressive Web App for a UK Post Office franchise operator (40+ branches). Features a premium dark theme with gold (#FFD700) accent, using Inter and JetBrains Mono fonts.
 
 ## Architecture
-- **Framework**: Next.js 16 App Router (Turbopack)
+- **Framework**: Next.js 16 App Router (Turbopack) — created with `create-next-app --no-src-dir`
 - **Frontend**: React 19 + Tailwind CSS v4 + Recharts + React Query
 - **Backend**: Next.js API Route Handlers + Drizzle ORM + PostgreSQL
 - **Shared**: `shared/schema.ts` defines all data models with Drizzle + Zod validation
-- **Path aliases**: `@/*` → `./src/*`, `@shared/*` → `./shared/*`
+- **Path alias**: `@/*` → `./*` (root-level mapping, no `src/` directory)
 
 ## Three-Layer Access
 1. **Public Pages** (`/`, `/about`, `/services`, `/blog`, `/contact`) — No auth required
 2. **Admin Dashboard** (`/dashboard/*`) — For admin (mikeshparekh@gmail.com)
 3. **FCM Insiders** (`/insiders/*`) — For authenticated members
 
+## Project Structure
+```
+app/                    # Next.js App Router pages + API routes
+  page.tsx              # Home
+  layout.tsx            # Root layout
+  providers.tsx         # React Query + UI providers
+  globals.css           # Tailwind v4 + dark theme design system
+  about/page.tsx
+  blog/page.tsx
+  contact/page.tsx
+  services/page.tsx
+  dashboard/            # Admin dashboard pages
+    page.tsx, agents/, content/, costs/, hr/,
+    market-scan/, opportunities/, settings/, swarm/
+  insiders/             # FCM Insiders portal pages
+    page.tsx, insights/, listings/, market/, profile/
+  api/                  # Next.js API Route Handlers
+    agents/, content/, costs/, dashboard/, feedback/,
+    hr/, opportunities/, scan/, contact/
+components/             # React components
+  layout/               # Navbar, Footer, AppLayout, Sidebars, MobileBottomNav
+  ui/                   # 55 shadcn/ui components
+  ClientOnly.tsx        # Hydration mismatch fix
+lib/                    # Utilities
+  api.ts, db.ts, queryClient.ts, storage.ts, utils.ts
+hooks/                  # React hooks
+  use-mobile.tsx, use-toast.ts
+shared/                 # Shared between client & server
+  schema.ts             # 11 Drizzle table definitions + Zod schemas
+```
+
 ## Database Tables
 - `opportunities` — Business acquisition pipeline
 - `content` — Content pipeline with platform versions, scheduling, tone/style
 - `agent_health` — Agent health monitoring
-- `agent_activity` — Agent swarm activity feed (actions, handoffs, errors)
+- `agent_activity` — Agent swarm activity feed
 - `scan_config` — Market scan parameter configuration
 - `scan_history` — Market scan execution history
-- `hr_conversations` — Ask Harper chat conversations with structured messages
+- `hr_conversations` — Ask Harper chat conversations
 - `hr_cases` — Formal HR case records
 - `cost_records` — Daily cost tracking by model and agent
 - `feedback_log` — Feedback signal logging
 - `contact_submissions` — Public contact form submissions
 
-## Key Files
-- `shared/schema.ts` — All 11 database table schemas with Drizzle + Zod
-- `src/lib/db.ts` — Database connection (pg Pool + Drizzle)
-- `src/lib/storage.ts` — DatabaseStorage class with all CRUD methods
-- `src/lib/queryClient.ts` — React Query client + apiRequest helper
-- `src/app/layout.tsx` — Root layout with fonts, dark theme, providers
-- `src/app/globals.css` — Design system (dark theme, gold accent, custom utilities)
-- `src/components/layout/` — Navbar, Footer, AppLayout, DashboardSidebar, InsidersSidebar, MobileBottomNav
-- `src/components/ui/` — 55 shadcn/ui components
-- `src/app/api/` — All API route handlers
-
-## Page Structure
-### Public
-- `src/app/page.tsx` — Home
-- `src/app/about/page.tsx` — About
-- `src/app/services/page.tsx` — Services
-- `src/app/blog/page.tsx` — Blog
-- `src/app/contact/page.tsx` — Contact
-
-### Dashboard
-- `src/app/dashboard/page.tsx` — Overview (DashboardHome)
-- `src/app/dashboard/swarm/page.tsx` — Agent Swarm visualization
-- `src/app/dashboard/opportunities/page.tsx` — Pipeline Kanban
-- `src/app/dashboard/market-scan/page.tsx` — Market Scan parameters
-- `src/app/dashboard/content/page.tsx` — Content Mission Control
-- `src/app/dashboard/costs/page.tsx` — Cost Analytics (Recharts)
-- `src/app/dashboard/hr/page.tsx` — Ask Harper chat
-- `src/app/dashboard/agents/page.tsx` — Agent detail cards
-- `src/app/dashboard/settings/page.tsx` — Settings
-
-### Insiders
-- `src/app/insiders/page.tsx` — Insiders Home
-- `src/app/insiders/listings/page.tsx` — Opportunity Listings
-- `src/app/insiders/market/page.tsx` — Market Data
-- `src/app/insiders/insights/page.tsx` — Insights
-- `src/app/insiders/profile/page.tsx` — Profile
-
 ## API Endpoints (Next.js Route Handlers)
-All under `src/app/api/`:
+All under `app/api/`:
 - `opportunities/route.ts` — GET, POST
 - `opportunities/insider/route.ts` — GET
 - `opportunities/[id]/route.ts` — GET, PATCH
@@ -96,13 +90,6 @@ All under `src/app/api/`:
 - `contact/route.ts` — POST
 - `dashboard/route.ts` — GET
 
-## Mobile Navigation
-- `DashboardMobileNav` and `InsidersMobileNav` in `src/components/layout/MobileBottomNav.tsx`
-- Fixed bottom bar on mobile (<768px), #1A1A1A bg, gold active indicator, 44px min touch targets
-- Dashboard: Overview, Swarm, Pipeline, Content tabs + "More" overlay
-- Insiders: Feed, Listings, Market, Insights, Profile tabs
-- All pages include `pb-20 md:pb-8` on `<main>` to prevent content overlap
-
 ## Brand Rules
 - Background: #000000, Cards: #1A1A1A, Border: #333333
 - Gold accent: #FFD700 (hover: #E6C200)
@@ -110,20 +97,19 @@ All under `src/app/api/`:
 - No light mode. Dark theme only.
 
 ## Development
-- **Workflow**: `npx next build && npx next start -p 5000` — Production build + start (avoids hydration errors from Replit proxy)
-- `npx next dev --webpack -p 5000` — Dev server (use `--webpack` to avoid Turbopack infinite HMR loop on Replit)
-- `npx next build` — Production build
+- **Workflow**: `npx next build && npx next start -p 5000`
+- `npm run dev` — Dev server on port 5000
+- `npm run build` — Production build
 - `npm run db:push` — Push schema changes to database
 
 ## Hydration Notes
-- The Replit webview proxy modifies the HTML document before React hydrates, causing React #418 hydration mismatch errors. React 19 treats these as hard errors that crash the app.
-- **Fix**: Three-layer approach in `src/app/layout.tsx`:
-  1. Inline `<script>` in `<head>` suppresses hydration errors at the window level (runs before React loads)
-  2. `suppressHydrationWarning` on `<html>` and `<body>` elements
-  3. `ClientApp` wrapper defers body rendering until client mount (avoids SSR body mismatch)
-- `global-error.tsx` catches any remaining React errors and auto-recovers
-- `ClientOnly` component in `src/components/ClientOnly.tsx` available for scoping specific widgets
+- Replit webview proxy can cause React #418 hydration mismatch errors
+- `ClientApp` wrapper in `components/ClientOnly.tsx` defers rendering until client mount
+- Inline suppression script in layout.tsx `<head>` catches errors before React loads
+- `suppressHydrationWarning` on `<html>` and `<body>` in root layout
+- `global-error.tsx` catches remaining errors and auto-recovers
 
-## Config Notes
-- `next.config.ts`: `serverExternalPackages: ["pg"]`, `allowedDevOrigins` for Replit domain, `devIndicators: false`
-- `postcss.config.mjs` uses `@tailwindcss/postcss` (Tailwind v4)
+## Config
+- `next.config.ts`: `serverExternalPackages: ["pg"]`, `allowedDevOrigins`, `devIndicators: false`
+- `postcss.config.mjs`: `@tailwindcss/postcss` (Tailwind v4)
+- `tsconfig.json`: `@/*` → `./*` (root-level, no src/ directory)

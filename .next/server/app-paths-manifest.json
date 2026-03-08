@@ -41,6 +41,7 @@
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/settings/page": "app/dashboard/settings/page.js",
   "/dashboard/swarm/page": "app/dashboard/swarm/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/insiders/insights/page": "app/insiders/insights/page.js",
   "/insiders/listings/page": "app/insiders/listings/page.js",
   "/insiders/market/page": "app/insiders/market/page.js",

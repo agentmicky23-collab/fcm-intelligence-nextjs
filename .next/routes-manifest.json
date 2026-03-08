@@ -305,6 +305,12 @@
       "namedRegex": "^/dashboard/swarm(?:/)?$"
     },
     {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
       "page": "/insiders",
       "regex": "^/insiders(?:/)?$",
       "routeKeys": {},

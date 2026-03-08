@@ -41,6 +41,7 @@
   "/dashboard/page": "/dashboard",
   "/dashboard/settings/page": "/dashboard/settings",
   "/dashboard/swarm/page": "/dashboard/swarm",
+  "/favicon.ico/route": "/favicon.ico",
   "/insiders/insights/page": "/insiders/insights",
   "/insiders/listings/page": "/insiders/listings",
   "/insiders/market/page": "/insiders/market",
