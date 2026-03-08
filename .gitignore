@@ -5,3 +5,5 @@ server/public
 vite.config.ts.*
 *.tar.gz.next
 node_modules
+# Next.js build output
+.next/

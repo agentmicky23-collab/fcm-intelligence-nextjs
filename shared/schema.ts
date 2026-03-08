@@ -1,7 +1,78 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, serial, integer, decimal, boolean, timestamp, date, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, decimal, boolean, timestamp, date, jsonb, uuid, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// ═══════════════════════════════════════════════════════════════
+// NEXTAUTH — Authentication & Authorization
+// ═══════════════════════════════════════════════════════════════
+
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  image: text("image"),
+  emailVerified: timestamp("email_verified"),
+  role: text("role").notNull().default("insider"), // "admin" | "insider"
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+
+export const accounts = pgTable("accounts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  provider: text("provider").notNull(),
+  providerAccountId: text("provider_account_id").notNull(),
+  refresh_token: text("refresh_token"),
+  access_token: text("access_token"),
+  expires_at: integer("expires_at"),
+  token_type: text("token_type"),
+  scope: text("scope"),
+  id_token: text("id_token"),
+  session_state: text("session_state"),
+}, (account) => ({
+  pk: primaryKey({ columns: [account.provider, account.providerAccountId] }),
+}));
+
+export const insertAccountSchema = createInsertSchema(accounts).omit({
+  id: true,
+});
+export type InsertAccount = z.infer<typeof insertAccountSchema>;
+export type Account = typeof accounts.$inferSelect;
+
+export const sessions = pgTable("sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sessionToken: text("session_token").notNull().unique(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires").notNull(),
+});
+
+export const insertSessionSchema = createInsertSchema(sessions).omit({
+  id: true,
+});
+export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type Session = typeof sessions.$inferSelect;
+
+export const verificationTokens = pgTable("verification_tokens", {
+  identifier: text("identifier").notNull(),
+  token: text("token").notNull().unique(),
+  expires: timestamp("expires").notNull(),
+}, (vt) => ({
+  pk: primaryKey({ columns: [vt.identifier, vt.token] }),
+}));
+
+export const insertVerificationTokenSchema = createInsertSchema(verificationTokens);
+export type InsertVerificationToken = z.infer<typeof insertVerificationTokenSchema>;
+export type VerificationToken = typeof verificationTokens.$inferSelect;
 
 // ─── Opportunities ──────────────────────────────────
 export const opportunities = pgTable("opportunities", {
