@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
@@ -9,6 +10,39 @@ import { users, accounts, sessions, verificationTokens } from "@/shared/schema";
 // Create auth config lazily - only when environment variables are available
 function createAuthConfig(): NextAuthConfig {
   const providers = [];
+  
+  // Add CredentialsProvider for admin login (always available)
+  providers.push(
+    CredentialsProvider({
+      name: "Admin Login",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        
+        const adminEmail = process.env.ADMIN_EMAIL || "mikeshparekh@gmail.com";
+        const adminPassword = process.env.ADMIN_PASSWORD;
+        
+        if (!adminPassword) return null;
+        
+        if (
+          credentials.email === adminEmail &&
+          credentials.password === adminPassword
+        ) {
+          return {
+            id: "admin",
+            email: adminEmail,
+            name: "Mik",
+            role: "admin",
+          };
+        }
+        
+        return null;
+      },
+    })
+  );
   
   // Only add EmailProvider if EMAIL_SERVER is configured
   if (process.env.EMAIL_SERVER) {
