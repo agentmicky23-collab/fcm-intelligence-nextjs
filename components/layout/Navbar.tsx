@@ -39,6 +39,13 @@ export function Navbar() {
             </Link>
           ))}
           <div className="flex items-center gap-4 ml-4 pl-4 border-l border-border">
+            <Link
+              href="/inter-mission"
+              className="text-sm font-semibold text-[#00FF88] hover:text-[#00CC6A] transition-colors"
+              data-testid="link-inter-mission"
+            >
+              Inter-Mission
+            </Link>
             <Link href="/insiders" className="text-sm font-medium text-muted-foreground hover:text-white transition-colors">
               Sign In
             </Link>
@@ -71,6 +78,9 @@ export function Navbar() {
             </Link>
           ))}
           <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
+            <Link href="/inter-mission" className="w-full text-center py-2 text-sm font-semibold text-[#00FF88] border border-[#00FF88] rounded-md hover:bg-[#00FF88] hover:text-black transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+              Inter-Mission
+            </Link>
             <Link href="/insiders" className="btn-secondary w-full text-center" onClick={() => setIsMobileMenuOpen(false)}>
               Sign In
             </Link>

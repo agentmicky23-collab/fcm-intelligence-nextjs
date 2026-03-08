@@ -1,0 +1,3 @@
+{
+  "/api/inter-mission/assignments/[id]/route": "app/api/inter-mission/assignments/[id]/route.js"
+}

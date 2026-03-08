@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/inter-mission/layout,_N_T_/inter-mission/assignments/layout,_N_T_/inter-mission/assignments/post/layout,_N_T_/inter-mission/assignments/post/page,_N_T_/inter-mission/assignments/post"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/inter-mission/assignments/post/__PAGE__",
+    "/inter-mission/assignments/post",
+    "/inter-mission/assignments",
+    "/inter-mission",
+    "/_index",
+    "/_head"
+  ]
+}

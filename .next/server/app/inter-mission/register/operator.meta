@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/inter-mission/layout,_N_T_/inter-mission/register/layout,_N_T_/inter-mission/register/operator/layout,_N_T_/inter-mission/register/operator/page,_N_T_/inter-mission/register/operator"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/inter-mission/register/operator/__PAGE__",
+    "/inter-mission/register/operator",
+    "/inter-mission/register",
+    "/inter-mission",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/inter-mission/layout,_N_T_/inter-mission/map/layout,_N_T_/inter-mission/map/page,_N_T_/inter-mission/map"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/inter-mission/map/__PAGE__",
+    "/inter-mission/map",
+    "/inter-mission",
+    "/_index",
+    "/_head"
+  ]
+}

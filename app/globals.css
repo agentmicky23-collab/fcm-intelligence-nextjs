@@ -131,3 +131,122 @@
     @apply bg-card border border-border rounded-lg p-6 hover:border-primary transition-colors duration-300;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   INTER-MISSION — "Sport Mode" Design System
+   Green accent (#00FF88) replaces gold within /inter-mission
+   ═══════════════════════════════════════════════════════════════ */
+
+.im-section {
+  --im-green: #00FF88;
+  --im-green-dark: #00CC6A;
+  --im-green-muted: #00FF8833;
+  --im-card-bg: #0A1A0F;
+  --im-border: #1A3A25;
+  --im-danger: #FF4444;
+}
+
+.im-section {
+  --primary: 152 100% 50%;
+  --primary-foreground: 0 0% 0%;
+  --accent: 152 100% 50%;
+  --accent-foreground: 0 0% 0%;
+  --ring: 152 100% 50%;
+  --card: 140 33% 5%;
+  --border: 150 37% 16%;
+  --secondary-foreground: 152 100% 50%;
+}
+
+@layer utilities {
+  .im-card {
+    background: var(--im-card-bg, #0A1A0F);
+    border: 1px solid var(--im-border, #1A3A25);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .im-card:hover {
+    border-color: var(--im-green, #00FF88);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+  }
+
+  .im-btn-primary {
+    background: var(--im-green, #00FF88);
+    color: #000000;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .im-btn-primary:hover {
+    background: var(--im-green-dark, #00CC6A);
+  }
+
+  .im-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--im-green, #00FF88);
+    color: var(--im-green, #00FF88);
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .im-btn-secondary:hover {
+    background: var(--im-green, #00FF88);
+    color: #000000;
+  }
+
+  .im-text-green {
+    color: var(--im-green, #00FF88);
+  }
+
+  .im-font-financial {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--im-green, #00FF88);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+
+  .im-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+  }
+
+  .im-glow-strong {
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.25);
+  }
+}
+
+@keyframes im-pulse-green {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes im-pulse-urgent {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 68, 68, 0.7); }
+}
+
+@keyframes im-count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.im-pulse-available {
+  animation: im-pulse-green 2s ease-in-out infinite;
+}
+
+.im-pulse-urgent {
+  animation: im-pulse-urgent 1.5s ease-in-out infinite;
+}
+
+.im-animate-in {
+  animation: im-count-up 0.6s ease-out forwards;
+}
