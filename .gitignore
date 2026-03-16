@@ -9,3 +9,4 @@ node_modules
 .next/
 old-site-*.html
 AGENTS.md
+.vercel
