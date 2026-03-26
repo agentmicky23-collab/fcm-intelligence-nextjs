@@ -1552,5 +1552,311 @@
     "originalUrlDisabled": true,
     "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
     "verifiedDate": "19 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-001",
+    "businessName": "Bewdley Grade II Listed Convenience Store",
+    "businessType": "retail",
+    "location": "7 Load Street, Bewdley, Worcestershire",
+    "region": "Midlands",
+    "askingPrice": "275000",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "Bond Wolfe Auctions",
+    "sourceUrl": "https://www.bondwolfe.com",
+    "notes": "Grade II Listed building. Established convenience store (MoJam trading). Heritage conversion play. Potential mixed-use (residential upstairs). Auction-driven sale.",
+    "insiderVisible": true,
+    "badge": "🏛️ Heritage",
+    "priceLabel": "Freehold / Leasehold TBD",
+    "priceDisplay": "£275,000",
+    "headerGradient": "linear-gradient(135deg, #d97706 0%, #7c2d12 100%)",
+    "headerEmoji": "🏛️",
+    "headerTag": "HERITAGE",
+    "headerTagBg": "#ea580c",
+    "details": [
+      {
+        "label": "Property Type",
+        "value": "Grade II Listed"
+      },
+      {
+        "label": "Trading Status",
+        "value": "Convenience Retail"
+      }
+    ],
+    "summary": "HERITAGE CONVERSION PLAY: Grade II Listed building, currently fitted as convenience store. Potential mixed-use conversion (residential upstairs). Freehold/leasehold to verify. Auction sale.",
+    "originalUrl": "https://www.bondwolfe.com",
+    "originalUrlLabel": "Bond Wolfe Auctions",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "Bond Wolfe Auctions • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-002",
+    "businessName": "Allsop Retail Parade Investment Portfolio",
+    "businessType": "investment",
+    "location": "Multi-unit portfolio (UK)",
+    "region": "Multi-Region",
+    "askingPrice": "0",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "Allsop LLP Commercial Property Auctions",
+    "sourceUrl": "https://www.allsop.co.uk",
+    "notes": "Freehold retail parade (11 shops) + residential above (11 flats on leases). Diversified tenant mix. Portfolio diversification = de-risked investment. Suitable for institutional investors.",
+    "insiderVisible": true,
+    "badge": "📊 Portfolio",
+    "priceLabel": "Portfolio Pricing TBD",
+    "priceDisplay": "Contact Allsop",
+    "headerGradient": "linear-gradient(135deg, #06b6d4 0%, #0c4a6e 100%)",
+    "headerEmoji": "📊",
+    "headerTag": "INVESTMENT",
+    "headerTagBg": "#0891b2",
+    "details": [
+      {
+        "label": "Units",
+        "value": "11 retail + 11 residential"
+      },
+      {
+        "label": "Tenure",
+        "value": "Freehold / Long Leases"
+      }
+    ],
+    "summary": "PORTFOLIO INVESTMENT: Freehold retail parade (11 shops) with residential above (11 flats). Diversified tenant mix. De-risked investment for institutional investors.",
+    "originalUrl": "https://www.allsop.co.uk",
+    "originalUrlLabel": "Allsop Auctions",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "Allsop LLP • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-003",
+    "businessName": "Allsop Freehold Convenience Store",
+    "businessType": "retail",
+    "location": "UK (Location TBD)",
+    "region": "Multi-Region",
+    "askingPrice": "0",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "Allsop LLP Commercial Property Auctions",
+    "sourceUrl": "https://www.allsop.co.uk",
+    "notes": "Ground floor convenience store with storage, office, prep room, staff accommodation. Freehold. Turnkey operation. Suitable for owner-operators seeking freehold security + accommodation.",
+    "insiderVisible": true,
+    "badge": "🛍️ Freehold",
+    "priceLabel": "Price TBD",
+    "priceDisplay": "Contact Allsop",
+    "headerGradient": "linear-gradient(135deg, #059669 0%, #064e3b 100%)",
+    "headerEmoji": "🛍️",
+    "headerTag": "FREEHOLD",
+    "headerTagBg": "#10b981",
+    "details": [
+      {
+        "label": "Property Type",
+        "value": "Ground floor retail"
+      },
+      {
+        "label": "Accommodation",
+        "value": "Staff accommodation included"
+      }
+    ],
+    "summary": "FREEHOLD CONVENIENCE: Ground floor store with storage, office, prep room, staff accommodation. Freehold security. Turnkey operation for owner-operators.",
+    "originalUrl": "https://www.allsop.co.uk",
+    "originalUrlLabel": "Allsop Auctions",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "Allsop LLP • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-004",
+    "businessName": "Farnham Common Post Office & Retail",
+    "businessType": "post_office",
+    "location": "Farnham Common, Buckinghamshire",
+    "region": "South East",
+    "askingPrice": "0",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "RightBiz.co.uk",
+    "sourceUrl": "https://www.rightbiz.co.uk",
+    "notes": "Established Post Office + retail business. Village location. Leasehold. Suitable for operators seeking service diversification (PO + retail).",
+    "insiderVisible": true,
+    "badge": "📮 PO + Retail",
+    "priceLabel": "Price TBD",
+    "priceDisplay": "Contact Agent",
+    "headerGradient": "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+    "headerEmoji": "📮",
+    "headerTag": "POST OFFICE",
+    "headerTagBg": "#a855f7",
+    "details": [
+      {
+        "label": "Type",
+        "value": "PO + Retail"
+      },
+      {
+        "label": "Location",
+        "value": "Village, South East"
+      }
+    ],
+    "summary": "FARNHAM COMMON: Established Post Office + retail business in village location. Leasehold. Service diversification opportunity.",
+    "originalUrl": "https://www.rightbiz.co.uk",
+    "originalUrlLabel": "RightBiz Listing",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "RightBiz • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-005",
+    "businessName": "Chelmsford Grade II Listed Post Office + 3-Bed Freehold",
+    "businessType": "post_office",
+    "location": "Chelmsford CM1, Essex",
+    "region": "South East",
+    "askingPrice": "720000",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 95,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "RightBiz.co.uk",
+    "sourceUrl": "https://www.rightbiz.co.uk",
+    "notes": "Grade II Listed building. Operational Post Office + convenience. 3-bed owner residence. Freehold. 100+ year legacy. Exceptional heritage asset bundle.",
+    "insiderVisible": true,
+    "badge": "⭐ Premium Heritage",
+    "priceLabel": "Freehold + Residence",
+    "priceDisplay": "£720,000",
+    "headerGradient": "linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%)",
+    "headerEmoji": "👑",
+    "headerTag": "PREMIUM",
+    "headerTagBg": "#ef4444",
+    "details": [
+      {
+        "label": "Property Type",
+        "value": "Grade II Listed Freehold"
+      },
+      {
+        "label": "Accommodation",
+        "value": "3-bed family home"
+      },
+      {
+        "label": "Trading",
+        "value": "PO + Convenience"
+      }
+    ],
+    "summary": "PREMIUM HERITAGE ASSET: Grade II Listed freehold. Operational Post Office + convenience + 3-bed family home. 100+ year legacy. Exceptional bundle for heritage-focused operators.",
+    "originalUrl": "https://www.rightbiz.co.uk",
+    "originalUrlLabel": "RightBiz Listing",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "RightBiz • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-006",
+    "businessName": "Lower Shiplake Village Post Office + Off-Licence + 3-Bed",
+    "businessType": "post_office",
+    "location": "Lower Shiplake, Oxfordshire",
+    "region": "South East",
+    "askingPrice": "0",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "RightBiz.co.uk",
+    "sourceUrl": "https://www.rightbiz.co.uk",
+    "notes": "Village Post Office + off-licence. Family accommodation (3-bed). Growth potential noted. Community asset. Thames Valley location.",
+    "insiderVisible": true,
+    "badge": "🏘️ Village",
+    "priceLabel": "Price TBD",
+    "priceDisplay": "Contact Agent",
+    "headerGradient": "linear-gradient(135deg, #ea580c 0%, #7c2d12 100%)",
+    "headerEmoji": "🏘️",
+    "headerTag": "VILLAGE PO",
+    "headerTagBg": "#f97316",
+    "details": [
+      {
+        "label": "Type",
+        "value": "PO + Off-Licence"
+      },
+      {
+        "label": "Accommodation",
+        "value": "3-bed family home"
+      },
+      {
+        "label": "Region",
+        "value": "Thames Valley"
+      }
+    ],
+    "summary": "LOWER SHIPLAKE: Village Post Office + off-licence with 3-bed family accommodation. Growth potential noted. Community asset in Thames Valley.",
+    "originalUrl": "https://www.rightbiz.co.uk",
+    "originalUrlLabel": "RightBiz Listing",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "RightBiz • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
+  },
+  {
+    "id": "OPP-2026-0326-007",
+    "businessName": "Yeovil Freehold Retail Investment (Vision Express Leased)",
+    "businessType": "investment",
+    "location": "Yeovil, Somerset",
+    "region": "South West",
+    "askingPrice": "0",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "0",
+    "annualFees": "65000",
+    "sessionsPerMonth": 0,
+    "score": 0,
+    "confidence": "MEDIUM",
+    "status": "new",
+    "source": "Acuitus Commercial Property Auctions",
+    "sourceUrl": "https://www.acuitus.net",
+    "notes": "Freehold retail (544.89 sq m). Vision Express tenant. £65k p.a. guaranteed rent. Prime town centre, pedestrianised. Lease ending 2025 = re-let opportunity.",
+    "insiderVisible": true,
+    "badge": "💼 Investment",
+    "priceLabel": "Investment-Grade",
+    "priceDisplay": "£65k p.a. Income",
+    "headerGradient": "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+    "headerEmoji": "💼",
+    "headerTag": "INVESTMENT",
+    "headerTagBg": "#3b82f6",
+    "details": [
+      {
+        "label": "Guaranteed Income",
+        "value": "£65k p.a."
+      },
+      {
+        "label": "Property",
+        "value": "544.89 sq m freehold"
+      },
+      {
+        "label": "Location",
+        "value": "Town centre, pedestrianised"
+      }
+    ],
+    "summary": "YEOVIL FREEHOLD INVESTMENT: Ground floor retail (5,865 sq ft) with Vision Express tenant. £65k p.a. guaranteed rent. Prime town centre. Lease ends 2025 - re-let opportunity.",
+    "originalUrl": "https://www.acuitus.net",
+    "originalUrlLabel": "Acuitus Auctions",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "Acuitus Commercial • Verified 26 Mar 2026",
+    "verifiedDate": "26 Mar 2026"
   }
 ]
