@@ -1,5 +1,55 @@
 [
   {
+    "id": "OPP-2026-0330-001",
+    "businessName": "Stoke-on-Trent (Tittensor) Licensed Convenience Store + Post Office",
+    "businessType": "convenience_store",
+    "location": "Tittensor, Stoke-on-Trent",
+    "region": "Midlands",
+    "askingPrice": "167000",
+    "weeklyTurnover": "0",
+    "yearlyTurnover": "167000",
+    "annualFees": "0",
+    "sessionsPerMonth": 0,
+    "score": 81,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "RightBiz",
+    "sourceUrl": "https://rightbiz.com",
+    "notes": "Award-winning village location. Licensed convenience store + Post Office with 3-bed accommodation. Freehold property. Strong trading position in established community.",
+    "insiderVisible": true,
+    "badge": "✨ New Listing",
+    "priceLabel": "Freehold",
+    "priceDisplay": "£167,000",
+    "headerGradient": "linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%)",
+    "headerEmoji": "🏪",
+    "headerTag": "STOKE-ON-TRENT",
+    "headerTagBg": "#ef4444",
+    "details": [
+      {
+        "label": "Location",
+        "value": "Award-winning village"
+      },
+      {
+        "label": "Type",
+        "value": "Licensed Convenience + Post Office"
+      },
+      {
+        "label": "Turnover",
+        "value": "£167k/yr"
+      },
+      {
+        "label": "Property",
+        "value": "Freehold + 3-bed accommodation"
+      }
+    ],
+    "summary": "STOKE-ON-TRENT OPPORTUNITY: Award-winning village location. Licensed convenience + Post Office with 3-bed manager accommodation. Freehold property. Established community position.",
+    "originalUrl": "https://www.rightbiz.co.uk",
+    "originalUrlLabel": "View Listing →",
+    "originalUrlDisabled": false,
+    "sourceAttribution": "RightBiz • Verified 30 Mar 2026",
+    "verifiedDate": "30 Mar 2026"
+  },
+  {
     "id": "OPP-2026-0306-001",
     "businessName": "Keith Convenience + PO + Freehold",
     "businessType": "post_office",
@@ -130,48 +180,6 @@
     "verifiedDate": "19 Mar 2026"
   },
   {
-    "id": "OPP-2026-0306-004",
-    "businessName": "Mains Post Office Wells-next-the-Sea",
-    "businessType": "post_office",
-    "location": "Wells-next-the-Sea NR2, Norfolk",
-    "region": "East Anglia",
-    "askingPrice": "95000",
-    "weeklyTurnover": "2435",
-    "yearlyTurnover": "93600",
-    "annualFees": "93600",
-    "sessionsPerMonth": 0,
-    "score": 86,
-    "confidence": "HIGH",
-    "status": "new",
-    "source": "RightBiz",
-    "sourceUrl": "https://rightbiz.com",
-    "notes": "Exceptional valuation: sub-1x annual PO income asking price (rare signal). Coastal resort town with high seasonal footfall. 2 open counters + fortress counter. Retail expansion potential.",
-    "insiderVisible": true,
-    "badge": "⭐ FCM Pick",
-    "priceLabel": "Leasehold",
-    "priceDisplay": "£95,000",
-    "headerGradient": "linear-gradient(135deg, #f97316 0%, #b45309 100%)",
-    "headerEmoji": "⛵",
-    "headerTag": "COASTAL RESORT",
-    "headerTagBg": "#fb923c",
-    "details": [
-      {
-        "label": "PO Revenue",
-        "value": "£93.6k/yr"
-      },
-      {
-        "label": "Weekly Turnover",
-        "value": "£2,435"
-      }
-    ],
-    "summary": "EXCEPTIONAL VALUATION: Sub-1x annual PO income asking price (rare signal). Coastal resort town with high seasonal footfall. 2 open counters + fortress counter. Retail expansion potential.",
-    "originalUrl": "https://www.rightbiz.co.uk/buy_business/for_sale/645602_norfolk.html",
-    "originalUrlLabel": "View Listing →",
-    "originalUrlDisabled": false,
-    "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
-    "verifiedDate": "19 Mar 2026"
-  },
-  {
     "id": "OPP-2026-0306-005",
     "businessName": "Bilsborrow Village Store & PO",
     "businessType": "convenience_store",
@@ -216,48 +224,6 @@
     ],
     "summary": "PHENOMENAL OPPORTUNITY: A6 roadside position. Zero PO competition (nearest 4 miles). £702k turnover with £13.5k weekly. 3-bed flat above. Premier Inn + caravan park + canal footfall. Rare lifestyle + business hybrid.",
     "originalUrl": "https://www.rightbiz.co.uk/buy_business/for_sale/641541_lancashire.html",
-    "originalUrlLabel": "View Listing →",
-    "originalUrlDisabled": false,
-    "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
-    "verifiedDate": "19 Mar 2026"
-  },
-  {
-    "id": "OPP-2026-0306-006",
-    "businessName": "Lanark Mains PO + Development Site",
-    "businessType": "post_office",
-    "location": "Lanark ML1, South Lanarkshire, Scotland",
-    "region": "Scotland",
-    "askingPrice": "175000",
-    "weeklyTurnover": "0",
-    "yearlyTurnover": "0",
-    "annualFees": "64300",
-    "sessionsPerMonth": 0,
-    "score": 87,
-    "confidence": "HIGH",
-    "status": "new",
-    "source": "RightBiz",
-    "sourceUrl": "https://rightbiz.com",
-    "notes": "Scotland development play: Sole mains Post Office in town. Freehold with planning permission for convenience store + 2x 2-bed residential flats. Rates exempt. Town centre prominence. Significant upside potential.",
-    "insiderVisible": true,
-    "badge": "⭐ FCM Pick",
-    "priceLabel": "Freehold",
-    "priceDisplay": "£175,000",
-    "headerGradient": "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
-    "headerEmoji": "🏗️",
-    "headerTag": "DEVELOPMENT",
-    "headerTagBg": "#a855f7",
-    "details": [
-      {
-        "label": "PO Revenue",
-        "value": "£64.3k/yr"
-      },
-      {
-        "label": "Development",
-        "value": "Planning permission granted"
-      }
-    ],
-    "summary": "SCOTLAND DEVELOPMENT PLAY: Sole mains Post Office in town. Freehold with planning permission for convenience store + 2x 2-bed residential flats. Rates exempt. Town centre prominence. Significant upside potential.",
-    "originalUrl": "https://www.rightbiz.co.uk/buy_business/for_sale/644738_south_lanarkshire.html",
     "originalUrlLabel": "View Listing →",
     "originalUrlDisabled": false,
     "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
@@ -1176,52 +1142,6 @@
     ],
     "summary": "DONCASTER LEVERAGE: Rare village Post Office with 4-bed accommodation. £4k weekly baseline. Underutilized kitchen = significant expansion potential. Low entry price with major upside opportunity.",
     "originalUrl": "https://www.rightbiz.co.uk/buy_business/for_sale/636241_south_yorkshire.html",
-    "originalUrlLabel": "View Listing →",
-    "originalUrlDisabled": false,
-    "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
-    "verifiedDate": "19 Mar 2026"
-  },
-  {
-    "id": "OPP-2026-0306-028",
-    "businessName": "Greenford Post Office + Off-Licence",
-    "businessType": "post_office",
-    "location": "Greenford UB6, London",
-    "region": "London",
-    "askingPrice": "180000",
-    "weeklyTurnover": "0",
-    "yearlyTurnover": "336000",
-    "annualFees": "0",
-    "sessionsPerMonth": 0,
-    "score": 82,
-    "confidence": "HIGH",
-    "status": "new",
-    "source": "RightBiz",
-    "sourceUrl": "https://rightbiz.com",
-    "notes": "London gateway: Prime Greenford location with high foot traffic. Post Office + off-licence combination. New lease opportunity. London market entry point.",
-    "insiderVisible": true,
-    "badge": "📍 London",
-    "priceLabel": "Leasehold",
-    "priceDisplay": "£180,000",
-    "headerGradient": "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-    "headerEmoji": "🏪",
-    "headerTag": "LONDON",
-    "headerTagBg": "#fcd34d",
-    "details": [
-      {
-        "label": "Annual Turnover",
-        "value": "£336k/yr"
-      },
-      {
-        "label": "Location",
-        "value": "Prime high foot traffic area"
-      },
-      {
-        "label": "Lease Status",
-        "value": "New lease available"
-      }
-    ],
-    "summary": "LONDON GATEWAY: Prime Greenford location with high foot traffic. Post Office + off-licence combination. New lease opportunity. London market entry point.",
-    "originalUrl": "https://www.rightbiz.co.uk/buy_business/for_sale/645522_london.html",
     "originalUrlLabel": "View Listing →",
     "originalUrlDisabled": false,
     "sourceAttribution": "RightBiz • Verified 19 Mar 2026",
