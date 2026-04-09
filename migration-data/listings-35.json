@@ -2374,5 +2374,169 @@
     "pickReason": "Twin stores (£1.5m combined turnover) = dual-location resilience. Island location = protected market (no direct local competition). Licensed convenience = alcohol revenue stream (premium margin). Freehold protects both units. De-risks single-location model.",
     "verified": "6 April 2026",
     "source": "Rotation 8"
+  },
+  {
+    "id": "r9-001-condorrat-po",
+    "businessName": "Condorrat Community Post Office",
+    "businessType": "post_office",
+    "location": "Condorrat, South Lanarkshire, Scotland",
+    "region": "Scotland",
+    "askingPrice": "Contact broker",
+    "score": 87,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "Rotation 9",
+    "sourceUrl": "https://www.businessesforsale.com",
+    "badge": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 FREEHOLD HERITAGE",
+    "priceDisplay": "Contact broker",
+    "headerGradient": "from-purple-600 to-indigo-500",
+    "headerEmoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "headerTag": "SCOTLAND",
+    "headerTagBg": "#7c3aed",
+    "details": [
+      {
+        "label": "Type",
+        "value": "Post Office + Newsagents"
+      },
+      {
+        "label": "Tenure",
+        "value": "Freehold ✅"
+      },
+      {
+        "label": "Heritage",
+        "value": "100+ years (family-owned)"
+      },
+      {
+        "label": "Market",
+        "value": "Scottish secondary (lower competition)"
+      }
+    ],
+    "summary": "CONDORRAT OPPORTUNITY: Rare freehold Post Office + Newsagents with 100+ year heritage. Family-owned business = motivated seller. Scottish secondary market entry point with exceptional brand stability.",
+    "tier": 1,
+    "pickReason": "Freehold ownership eliminates landlord dependency. 100+ year heritage = exceptional customer loyalty + credibility. Family sale motivation = faster negotiation timeline. Scottish market = lower competitive intensity than NW England.",
+    "verified": "9 April 2026"
+  },
+  {
+    "id": "r9-002-newport-po",
+    "businessName": "Newport Post Office + Retail",
+    "businessType": "post_office",
+    "location": "Commercial centre, village area, South Wales",
+    "region": "Wales",
+    "askingPrice": "Contact broker",
+    "score": 84,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "Rotation 9",
+    "sourceUrl": "https://www.businessesforsale.com",
+    "badge": "🏪 MULTI-STREAM REVENUE",
+    "priceDisplay": "Contact broker",
+    "headerGradient": "from-green-600 to-emerald-500",
+    "headerEmoji": "🏴",
+    "headerTag": "WALES",
+    "headerTagBg": "#16a34a",
+    "details": [
+      {
+        "label": "Type",
+        "value": "Post Office + Newsagents + ATM + Lottery"
+      },
+      {
+        "label": "Location",
+        "value": "Village commercial centre (high foot traffic)"
+      },
+      {
+        "label": "Revenue Streams",
+        "value": "PO salary + retail + ATM + lottery"
+      },
+      {
+        "label": "Market",
+        "value": "South Wales (emerging secondary)"
+      }
+    ],
+    "summary": "NEWPORT OPPORTUNITY: Long-established Post Office + Newsagents + ATM + Lottery in village commercial centre. Multiple revenue streams reduce PO-salary dependency. Geographic expansion into South Wales (emerging secondary market).",
+    "tier": 2,
+    "pickReason": "Multi-revenue model (PO salary + retail + ATM + lottery) = cash flow stability. Village commercial centre = high foot traffic + established customer base. South Wales = emerging secondary market (lower competition than NW/Scotland). Geographic diversification beyond traditional NW focus.",
+    "verified": "9 April 2026"
+  },
+  {
+    "id": "r9-003-freehold-flats",
+    "businessName": "Freehold Post Office + Newsagents + 2 Residential Flats",
+    "businessType": "post_office",
+    "location": "UK (location TBD)",
+    "region": "England",
+    "askingPrice": "Contact broker",
+    "score": 94,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "Rotation 9",
+    "sourceUrl": "https://www.businessesforsale.com",
+    "badge": "👑 PREMIUM ASSET BUNDLE",
+    "priceDisplay": "Contact broker",
+    "headerGradient": "from-yellow-500 to-orange-500",
+    "headerEmoji": "👑",
+    "headerTag": "FREEHOLD",
+    "headerTagBg": "#eab308",
+    "details": [
+      {
+        "label": "Type",
+        "value": "PO + Newsagents + 2 residential flats"
+      },
+      {
+        "label": "Tenure",
+        "value": "Freehold ✅"
+      },
+      {
+        "label": "Heritage",
+        "value": "Since 1902 (120+ years)"
+      },
+      {
+        "label": "Current Owner",
+        "value": "12 years tenure (proven operator)"
+      }
+    ],
+    "summary": "PREMIUM ASSET: Rare freehold triple bundle (Post Office + Newsagents + 2 residential flats). 120-year heritage (strongest credibility). Dual-revenue model (commercial + residential income). Turnkey handoff from experienced operator.",
+    "tier": 1,
+    "pickReason": "EXCEPTIONAL RARITY: Freehold triple bundle eliminates landlord dependency. 120-year heritage = unmatched brand loyalty + customer security. Dual-revenue model (PO + retail + 2 flats rental income) = cash flow resilience. Seller motivation (other interests) = faster timeline. Experienced operator (12 years tenure) = proven track record + turnkey handoff. Ideal for wealth consolidation + portfolio diversification.",
+    "verified": "9 April 2026"
+  },
+  {
+    "id": "r9-004-newsagents-off-license",
+    "businessName": "Newsagents + Stationers + Off-Licence + Post Office",
+    "businessType": "newsagents",
+    "location": "UK (location TBD)",
+    "region": "England",
+    "askingPrice": "Contact broker",
+    "score": 82,
+    "confidence": "HIGH",
+    "status": "new",
+    "source": "Rotation 9",
+    "sourceUrl": "https://www.businessesforsale.com",
+    "badge": "📈 GROWTH TRAJECTORY",
+    "priceDisplay": "Contact broker",
+    "headerGradient": "from-blue-600 to-cyan-500",
+    "headerEmoji": "🚀",
+    "headerTag": "CONSOLIDATION",
+    "headerTagBg": "#0284c7",
+    "details": [
+      {
+        "label": "Type",
+        "value": "Newsagents + Stationers + Grocery + Off-Licence + PO"
+      },
+      {
+        "label": "PO Salary",
+        "value": "£45,000/year ✅"
+      },
+      {
+        "label": "Off-Licence",
+        "value": "Granted December 2024 (4.5 months old)"
+      },
+      {
+        "label": "PO Status",
+        "value": "Recently introduced (new revenue stream)"
+      }
+    ],
+    "summary": "CONSOLIDATION PLAY: Multi-revenue newsagents bundle with newly-granted off-licence (Dec 2024) + recently-introduced Post Office (£45k salary). Growth trajectory evident. Multiple revenue streams reduce single-stream dependency.",
+    "tier": 2,
+    "pickReason": "Multi-revenue consolidation model (newsagents + stationers + grocery + off-licence + PO salary) = cash flow diversification. Recent off-licence grant (4.5 months) = growth signal + expansion momentum. Recently-introduced PO = consolidation opportunity. £45k PO salary meets income threshold. High upside potential. Ideal for experienced multi-unit operators seeking growth trajectory.",
+    "verified": "9 April 2026"
   }
 ]
