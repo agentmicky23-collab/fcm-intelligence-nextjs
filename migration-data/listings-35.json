@@ -2158,12 +2158,12 @@
     "postcode": "G77",
     "price": "£129,950",
     "poCommission": "£70,000+/year",
-    "details": {
-      "tenure": "Leasehold",
-      "location_quality": "Town centre, affluent suburb",
-      "footfall": "Heavily utilised, strong session potential",
-      "retailSales": "£25,000+/year"
-    },
+    "details": [
+      "tenure: Leasehold",
+      "location_quality: Town centre, affluent suburb",
+      "footfall: Heavily utilised, strong session potential",
+      "retailSales: £25,000+/year"
+    ],
     "summary": "Scottish entry point. Verified £70k+ PO income in affluent Glasgow suburb. Gateway to secondary Scottish cluster.",
     "tier": 1,
     "badge": "🔥 SCOTTISH ENTRY",
@@ -2182,11 +2182,11 @@
     "price": "£199,950",
     "turnover": "£980,356/year (£18,853/week)",
     "profitMargin": "21% (£203,507/year)",
-    "details": {
-      "tenure": "Leasehold",
-      "motivation": "Retirement sale",
-      "priceRatio": "4.9x turnover ratio (EXCEPTIONAL)"
-    },
+    "details": [
+      "tenure: Leasehold",
+      "motivation: Retirement sale",
+      "priceRatio: 4.9x turnover ratio (EXCEPTIONAL)"
+    ],
     "summary": "Exceptional value signal. £19k/week turnover at under £200k entry. 21% profit margin with motivated seller.",
     "tier": 1,
     "badge": "💎 EXCEPTIONAL VALUE",
@@ -2204,11 +2204,11 @@
     "postcode": "PH",
     "price": "£575,000",
     "turnover": "£1,248,000/year (£24,000+/week)",
-    "details": {
-      "tenure": "Freehold",
-      "expansion": "Vacant unit for hot food/café expansion",
-      "priceRatio": "2.17x (EXCEPTIONAL)"
-    },
+    "details": [
+      "tenure: Freehold",
+      "expansion: Vacant unit for hot food/café expansion",
+      "priceRatio: 2.17x (EXCEPTIONAL)"
+    ],
     "summary": "Highest turnover found (£1.248m/year). Freehold asset with café expansion potential. Protected Highland market.",
     "tier": 1,
     "badge": "📊 HIGHEST TURNOVER",
@@ -2226,12 +2226,12 @@
     "postcode": "CA9",
     "price": "£249,500",
     "poCommission": "£44,000/year",
-    "details": {
-      "tenure": "Freehold",
-      "accommodation": "3-4 bed owner accommodation",
-      "uniqueFeature": "Royal Mail mailwork sorting/delivery contract",
-      "motivation": "Retirement (estate planning)"
-    },
+    "details": [
+      "tenure: Freehold",
+      "accommodation: 3-4 bed owner accommodation",
+      "uniqueFeature: Royal Mail mailwork sorting/delivery contract",
+      "motivation: Retirement (estate planning)"
+    ],
     "summary": "Unique mailwork contract (Royal Mail recurring revenue). Freehold bundle with accommodation. Multiple revenue streams.",
     "tier": 1,
     "badge": "🎯 UNIQUE CONTRACT",
@@ -2249,11 +2249,11 @@
     "postcode": "G46",
     "price": "£90,000",
     "poCommission": "£85,000+/year",
-    "details": {
-      "tenure": "Leasehold",
-      "location_quality": "Town centre, affluent suburb",
-      "retailSales": "£2,500+/week"
-    },
+    "details": [
+      "tenure: Leasehold",
+      "location_quality: Town centre, affluent suburb",
+      "retailSales: £2,500+/week"
+    ],
     "summary": "Best entry point into Scotland. £90k asking with £85k/year PO income verified. Exceptional ROI.",
     "tier": 1,
     "badge": "🚪 BEST ENTRY",
@@ -2272,11 +2272,11 @@
     "price": "£299,950",
     "turnover": "£260,000–£312,000/year",
     "poCommission": "£35,000+/year",
-    "details": {
-      "tenure": "Freehold",
-      "established": "1992 (32 years trading)",
-      "parking": "Customer parking available"
-    },
+    "details": [
+      "tenure: Freehold",
+      "established: 1992 (32 years trading)",
+      "parking: Customer parking available"
+    ],
     "summary": "Scottish freehold with 32-year trading history. Established customer base reduces risk. Freehold protects against landlord.",
     "tier": 2,
     "badge": "📜 ESTABLISHED",
@@ -2294,11 +2294,11 @@
     "postcode": "FK20",
     "price": "£699,000",
     "turnover": "£437,000/year",
-    "details": {
-      "tenure": "Freehold",
-      "accommodation": "3-bed cottage + gardens",
-      "motivation": "Retirement (estate planning)"
-    },
+    "details": [
+      "tenure: Freehold",
+      "accommodation: 3-bed cottage + gardens",
+      "motivation: Retirement (estate planning)"
+    ],
     "summary": "Freehold + accommodation bundle. Scenic Perthshire location. Pattern validates freehold premium positioning.",
     "tier": 2,
     "badge": "🏡 LIFESTYLE ASSET",
@@ -2317,11 +2317,11 @@
     "price": "£549,000",
     "turnover": "£624,000/year (£12,000/week)",
     "poCommission": "£20,000–£24,000/year",
-    "details": {
-      "tenure": "Freehold",
-      "established": "25 years trading",
-      "accommodation": "Included"
-    },
+    "details": [
+      "tenure: Freehold",
+      "established: 25 years trading",
+      "accommodation: Included"
+    ],
     "summary": "West Midlands expansion. Freehold bundle, 25-year established history. Opens secondary geographic cluster.",
     "tier": 2,
     "badge": "🏛️ WEST MIDLANDS",
@@ -2338,12 +2338,12 @@
     "region": "East Midlands",
     "postcode": "NG",
     "price": "£600,000",
-    "details": {
-      "tenure": "Freehold",
-      "established": "26 years trading",
-      "accommodation": "Spacious",
-      "profitTrack": "High-profit operation"
-    },
+    "details": [
+      "tenure: Freehold",
+      "established: 26 years trading",
+      "accommodation: Spacious",
+      "profitTrack: High-profit operation"
+    ],
     "summary": "26-year profitable operation. Freehold protects asset. Strong track record = lower risk acquisition.",
     "tier": 2,
     "badge": "📈 ESTABLISHED PROFIT",
@@ -2361,12 +2361,12 @@
     "postcode": "HS7",
     "price": "£840,000",
     "turnover": "£1,500,000+/year (£28,000+/week)",
-    "details": {
-      "tenure": "Freehold",
-      "units": "Twin convenience stores + Post Office",
-      "license": "Licensed convenience (alcohol sales)",
-      "protection": "Island market protection"
-    },
+    "details": [
+      "tenure: Freehold",
+      "units: Twin convenience stores + Post Office",
+      "license: Licensed convenience (alcohol sales)",
+      "protection: Island market protection"
+    ],
     "summary": "Portfolio play. Twin stores (£1.5m combined turnover). Island location = protected market. Licensed = premium margins.",
     "tier": 2,
     "badge": "🏝️ PORTFOLIO PLAY",
@@ -2553,7 +2553,9 @@
     "score": 88,
     "badge": "⭐",
     "summary": "Highest PO salary in current market (£108k). Busy town centre parade. Dual-revenue model (PO + £4k/week retail).",
-    "details": "Exceptionally high standard fitted. Hemsworth, West Yorkshire (busy parade, town centre). £108k PO + £4k/week retail = £316k total. Unmatched PO salary.",
+    "details": [
+      "Exceptionally high standard fitted. Hemsworth, West Yorkshire (busy parade, town centre). £108k PO + £4k/week retail = £316k total. Unmatched PO salary."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2571,7 +2573,9 @@
     "score": 82,
     "badge": "🏆",
     "summary": "Historic affluent market town. Sub-£125k entry for high PO income. Retail expansion scope.",
-    "details": "Detached location, extremely well fitted, high foot-traffic. North Yorkshire market town demographic. Long-established tenure. Retail development potential noted.",
+    "details": [
+      "Detached location, extremely well fitted, high foot-traffic. North Yorkshire market town demographic. Long-established tenure. Retail development potential noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2589,7 +2593,9 @@
     "score": 85,
     "badge": "🔑",
     "summary": "RARE FREEHOLD at sub-£150k. Asset appreciation + tenure security. Motivated seller.",
-    "details": "£51k PO + £12k retail. Lowest-cost freehold PO in market. Motivated seller (sensible offers invited). NW location. Exceptional value anomaly.",
+    "details": [
+      "£51k PO + £12k retail. Lowest-cost freehold PO in market. Motivated seller (sensible offers invited). NW location. Exceptional value anomaly."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2607,7 +2613,9 @@
     "score": 83,
     "badge": "🏠",
     "summary": "Suburb location, 3-bed owner living space. £85k guaranteed income. Retirement sale (timing advantage).",
-    "details": "Dense suburban population, high foot-traffic, professional demographic. 3-bed accommodation included. Genuine retirement sale. Suburb location appeal.",
+    "details": [
+      "Dense suburban population, high foot-traffic, professional demographic. 3-bed accommodation included. Genuine retirement sale. Suburb location appeal."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2625,7 +2633,9 @@
     "score": 84,
     "badge": "🌊",
     "summary": "Seaside resort + residential. Unopposed market. Freehold available (rare). Tourism + permanent residents.",
-    "details": "Superb unopposed business. £6,500/week turnover. Newsagency £1,600/week. Freehold option rare. Year-round + seasonal tourism revenue. Resilient base.",
+    "details": [
+      "Superb unopposed business. £6,500/week turnover. Newsagency £1,600/week. Freehold option rare. Year-round + seasonal tourism revenue. Resilient base."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2643,7 +2653,9 @@
     "score": 81,
     "badge": "💰",
     "summary": "Multiple revenue streams: PO + grocery + Lottery + PayZone. Main-road visibility. Expansion scope.",
-    "details": "Fully fitted, main-road location. £36.5k PO + £520k retail + £2k/week Lottery + £1.5k/week PayZone. Midlands expansion opportunity.",
+    "details": [
+      "Fully fitted, main-road location. £36.5k PO + £520k retail + £2k/week Lottery + £1.5k/week PayZone. Midlands expansion opportunity."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2661,7 +2673,9 @@
     "score": 82,
     "badge": "🏖️",
     "summary": "Coastal resort + residential. 3-bed family accommodation. Retail + extended hours potential.",
-    "details": "Secure, extremely well fitted, detached. £85k PO verified. Super 3-bed family space. Huge scope for retail expansion & extended hours. Coastal stability.",
+    "details": [
+      "Secure, extremely well fitted, detached. £85k PO verified. Super 3-bed family space. Huge scope for retail expansion & extended hours. Coastal stability."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2679,7 +2693,9 @@
     "score": 86,
     "badge": "🏔️",
     "summary": "Premium freehold + 3-4 bed accommodation. Lake District location. £8,192/week verified turnover.",
-    "details": "Lake District area. £426k verified turnover (£8,192/week). 3-4 bed accommodation, fully fitted kitchen, lovely views. Premium freehold property. Asset security.",
+    "details": [
+      "Lake District area. £426k verified turnover (£8,192/week). 3-4 bed accommodation, fully fitted kitchen, lovely views. Premium freehold property. Asset security."
+    ],
     "source": "Everett Masson & Furby",
     "verificationDate": "2026-04-16"
   },
@@ -2697,7 +2713,9 @@
     "score": 84,
     "badge": "💷",
     "summary": "Specialist Euro/Dollar exchange PO. Niche premium services. Dense urban location. Strong retail component.",
-    "details": "Specialist PO (Euro/Dollar exchange = premium niche). £75.18k PO verified + £7k/week retail estimated. Professional demographic. Dense Northwest suburb.",
+    "details": [
+      "Specialist PO (Euro/Dollar exchange = premium niche). £75.18k PO verified + £7k/week retail estimated. Professional demographic. Dense Northwest suburb."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2715,7 +2733,9 @@
     "score": 80,
     "badge": "🏠",
     "summary": "London suburbs location. 3-4 bed accommodation. Extended hours upside potential.",
-    "details": "Busy main road, residential area. £30k PO + £3.5k/week retail. 3-4 bed living space. Currently closes 7pm (extended hours scope). Londont opportunities.",
+    "details": [
+      "Busy main road, residential area. £30k PO + £3.5k/week retail. 3-4 bed living space. Currently closes 7pm (extended hours scope). Londont opportunities."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2733,7 +2753,9 @@
     "score": 79,
     "badge": "👥",
     "summary": "Ideal for husband/wife team. Huge retail development scope. Safe residential demographic.",
-    "details": "Popular residential locality (Hertfordshire Home Counties). £50k PO verified. Huge retail expansion scope. Perfect for couple operation. Safe demographic.",
+    "details": [
+      "Popular residential locality (Hertfordshire Home Counties). £50k PO verified. Huge retail expansion scope. Perfect for couple operation. Safe demographic."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2751,7 +2773,9 @@
     "score": 80,
     "badge": "🔄",
     "summary": "Northeast expansion opportunity. 10-year retiring owner (established customer base). Further expansion potential.",
-    "details": "Northeast England (dense population). £30k PO + £5k/week retail. Owner retiring after 10 years (long tenure = loyal base). Further expansion noted.",
+    "details": [
+      "Northeast England (dense population). £30k PO + £5k/week retail. Owner retiring after 10 years (long tenure = loyal base). Further expansion noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2769,7 +2793,9 @@
     "score": 78,
     "badge": "🏠",
     "summary": "Wales cluster opportunity. Established concern (easy management). Vast retail expansion scope.",
-    "details": "Attractive village setting (South Wales). Smart 2-bed included. £26k PO + retail. Established concern (easy management). Vast retail expansion scope noted.",
+    "details": [
+      "Attractive village setting (South Wales). Smart 2-bed included. £26k PO + retail. Established concern (easy management). Vast retail expansion scope noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2787,7 +2813,9 @@
     "score": 75,
     "badge": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "summary": "Scottish Highlands location. Character property. Profitable secondary sales.",
-    "details": "Inveraray, Argyll & Bute (beautiful Highland location). Mid-terraced traditional building. £24.5k PO + profitable ancillary sales. Character property + storage.",
+    "details": [
+      "Inveraray, Argyll & Bute (beautiful Highland location). Mid-terraced traditional building. £24.5k PO + profitable ancillary sales. Character property + storage."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2805,7 +2833,9 @@
     "score": 88,
     "badge": "⭐",
     "summary": "Highest PO salary in current market (£108k). Busy town centre parade. Dual-revenue model (PO + £4k/week retail).",
-    "details": "Exceptionally high standard fitted. Hemsworth, West Yorkshire (busy parade, town centre). £108k PO + £4k/week retail = £316k total. Unmatched PO salary.",
+    "details": [
+      "Exceptionally high standard fitted. Hemsworth, West Yorkshire (busy parade, town centre). £108k PO + £4k/week retail = £316k total. Unmatched PO salary."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2823,7 +2853,9 @@
     "score": 82,
     "badge": "🏆",
     "summary": "Historic affluent market town. Sub-£125k entry for high PO income. Retail expansion scope.",
-    "details": "Detached location, extremely well fitted, high foot-traffic. North Yorkshire market town demographic. Long-established tenure. Retail development potential noted.",
+    "details": [
+      "Detached location, extremely well fitted, high foot-traffic. North Yorkshire market town demographic. Long-established tenure. Retail development potential noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2841,7 +2873,9 @@
     "score": 85,
     "badge": "🔑",
     "summary": "RARE FREEHOLD at sub-£150k. Asset appreciation + tenure security. Motivated seller.",
-    "details": "£51k PO + £12k retail. Lowest-cost freehold PO in market. Motivated seller (sensible offers invited). NW location. Exceptional value anomaly.",
+    "details": [
+      "£51k PO + £12k retail. Lowest-cost freehold PO in market. Motivated seller (sensible offers invited). NW location. Exceptional value anomaly."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2859,7 +2893,9 @@
     "score": 83,
     "badge": "🏠",
     "summary": "Suburb location, 3-bed owner living space. £85k guaranteed income. Retirement sale (timing advantage).",
-    "details": "Dense suburban population, high foot-traffic, professional demographic. 3-bed accommodation included. Genuine retirement sale. Suburb location appeal.",
+    "details": [
+      "Dense suburban population, high foot-traffic, professional demographic. 3-bed accommodation included. Genuine retirement sale. Suburb location appeal."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2877,7 +2913,9 @@
     "score": 84,
     "badge": "🌊",
     "summary": "Seaside resort + residential. Unopposed market. Freehold available (rare). Tourism + permanent residents.",
-    "details": "Superb unopposed business. £6,500/week turnover. Newsagency £1,600/week. Freehold option rare. Year-round + seasonal tourism revenue. Resilient base.",
+    "details": [
+      "Superb unopposed business. £6,500/week turnover. Newsagency £1,600/week. Freehold option rare. Year-round + seasonal tourism revenue. Resilient base."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2895,7 +2933,9 @@
     "score": 81,
     "badge": "💰",
     "summary": "Multiple revenue streams: PO + grocery + Lottery + PayZone. Main-road visibility. Expansion scope.",
-    "details": "Fully fitted, main-road location. £36.5k PO + £520k retail + £2k/week Lottery + £1.5k/week PayZone. Midlands expansion opportunity.",
+    "details": [
+      "Fully fitted, main-road location. £36.5k PO + £520k retail + £2k/week Lottery + £1.5k/week PayZone. Midlands expansion opportunity."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2913,7 +2953,9 @@
     "score": 82,
     "badge": "🏖️",
     "summary": "Coastal resort + residential. 3-bed family accommodation. Retail + extended hours potential.",
-    "details": "Secure, extremely well fitted, detached. £85k PO verified. Super 3-bed family space. Huge scope for retail expansion & extended hours. Coastal stability.",
+    "details": [
+      "Secure, extremely well fitted, detached. £85k PO verified. Super 3-bed family space. Huge scope for retail expansion & extended hours. Coastal stability."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2931,7 +2973,9 @@
     "score": 86,
     "badge": "🏔️",
     "summary": "Premium freehold + 3-4 bed accommodation. Lake District location. £8,192/week verified turnover.",
-    "details": "Lake District area. £426k verified turnover (£8,192/week). 3-4 bed accommodation, fully fitted kitchen, lovely views. Premium freehold property. Asset security.",
+    "details": [
+      "Lake District area. £426k verified turnover (£8,192/week). 3-4 bed accommodation, fully fitted kitchen, lovely views. Premium freehold property. Asset security."
+    ],
     "source": "Everett Masson & Furby",
     "verificationDate": "2026-04-16"
   },
@@ -2949,7 +2993,9 @@
     "score": 84,
     "badge": "💷",
     "summary": "Specialist Euro/Dollar exchange PO. Niche premium services. Dense urban location. Strong retail component.",
-    "details": "Specialist PO (Euro/Dollar exchange = premium niche). £75.18k PO verified + £7k/week retail estimated. Professional demographic. Dense Northwest suburb.",
+    "details": [
+      "Specialist PO (Euro/Dollar exchange = premium niche). £75.18k PO verified + £7k/week retail estimated. Professional demographic. Dense Northwest suburb."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2967,7 +3013,9 @@
     "score": 80,
     "badge": "🏠",
     "summary": "London suburbs location. 3-4 bed accommodation. Extended hours upside potential.",
-    "details": "Busy main road, residential area. £30k PO + £3.5k/week retail. 3-4 bed living space. Currently closes 7pm (extended hours scope). London opportunities.",
+    "details": [
+      "Busy main road, residential area. £30k PO + £3.5k/week retail. 3-4 bed living space. Currently closes 7pm (extended hours scope). London opportunities."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -2985,7 +3033,9 @@
     "score": 79,
     "badge": "👥",
     "summary": "Ideal for husband/wife team. Huge retail development scope. Safe residential demographic.",
-    "details": "Popular residential locality (Hertfordshire Home Counties). £50k PO verified. Huge retail expansion scope. Perfect for couple operation. Safe demographic.",
+    "details": [
+      "Popular residential locality (Hertfordshire Home Counties). £50k PO verified. Huge retail expansion scope. Perfect for couple operation. Safe demographic."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -3003,7 +3053,9 @@
     "score": 80,
     "badge": "🔄",
     "summary": "Northeast expansion opportunity. 10-year retiring owner (established customer base). Further expansion potential.",
-    "details": "Northeast England (dense population). £30k PO + £5k/week retail. Owner retiring after 10 years (long tenure = loyal base). Further expansion noted.",
+    "details": [
+      "Northeast England (dense population). £30k PO + £5k/week retail. Owner retiring after 10 years (long tenure = loyal base). Further expansion noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -3021,7 +3073,9 @@
     "score": 78,
     "badge": "🏠",
     "summary": "Wales cluster opportunity. Established concern (easy management). Vast retail expansion scope.",
-    "details": "Attractive village setting (South Wales). Smart 2-bed included. £26k PO + retail. Established concern (easy management). Vast retail expansion scope noted.",
+    "details": [
+      "Attractive village setting (South Wales). Smart 2-bed included. £26k PO + retail. Established concern (easy management). Vast retail expansion scope noted."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -3039,7 +3093,9 @@
     "score": 75,
     "badge": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "summary": "Scottish Highlands location. Character property. Profitable secondary sales.",
-    "details": "Inveraray, Argyll & Bute (beautiful Highland location). Mid-terraced traditional building. £24.5k PO + profitable ancillary sales. Character property + storage.",
+    "details": [
+      "Inveraray, Argyll & Bute (beautiful Highland location). Mid-terraced traditional building. £24.5k PO + profitable ancillary sales. Character property + storage."
+    ],
     "source": "Firms For Sale",
     "verificationDate": "2026-04-16"
   },
@@ -3057,7 +3113,9 @@
     "score": 70,
     "badge": "⭐",
     "summary": "Monopoly position — only PO in Boroughbridge. National award-winning card shop. Freehold retirement sale after 23 years.",
-    "details": "Boroughbridge, North Yorkshire. Only Post Office serving Boroughbridge — monopoly catchment. Freehold £675,000 + SAV. PO commissions £96k–£100k/year (enhanced by April 2026 remuneration uplift). National award-winning card & gift shop adds ~£76k/year. Total revenue ~£172k/year. 23-year retirement sale with strong community ties (120+ Facebook comments of support). Broker: Christie & Co — Steve Riley.",
+    "details": [
+      "Boroughbridge, North Yorkshire. Only Post Office serving Boroughbridge — monopoly catchment. Freehold £675,000 + SAV. PO commissions £96k–£100k/year (enhanced by April 2026 remuneration uplift). National award-winning card & gift shop adds ~£76k/year. Total revenue ~£172k/year. 23-year retirement sale with strong community ties (120+ Facebook comments of support). Broker: Christie & Co — Steve Riley."
+    ],
     "source": "Christie & Co",
     "verificationDate": "2026-04-20"
   }
