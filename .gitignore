@@ -10,3 +10,4 @@ node_modules
 old-site-*.html
 AGENTS.md
 .vercel
+migration-data/listings-35.json.bak-*
