@@ -189,8 +189,19 @@ export const stages: Stage[] = [
         slug: "health-check",
         name: "Branch Health Check",
         price: "Price on request",
-        summary: "A full review of your branch: income, staffing costs, compliance and where the extra profit is.",
-        includes: ["Remuneration and income review", "Staffing structure and costs", "Profit improvement opportunities"],
+        summary:
+          "A full, independent review of your branch. Priced on how many branches you run and how many counters each one has.",
+        includes: [
+          "Operational excellence monitoring",
+          "Independent audit of cash and stamp stock",
+          "Cash movement monitoring",
+          "Staff training audit",
+          "Staff knowledge audit",
+          "Remuneration and income review",
+          "Staffing structure and costs",
+          "Profit improvement opportunities",
+          "Improvement action plan",
+        ],
       },
       {
         slug: "advisory-retainer",
