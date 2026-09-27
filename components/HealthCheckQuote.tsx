@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { branchLines, checks, gbp, perLabel, type BranchSize } from "@/lib/health-check";
+import { branchLines, checks, gbp, monthlyDiscount, perLabel, type BranchSize } from "@/lib/health-check";
 
 type Row = { id: number; name: string; counters: string; staff: string };
 const field = "mt-1.5 block w-full border border-line bg-white px-3 py-2.5 text-ink focus:border-red focus:outline-none focus:ring-2 focus:ring-red/30";
@@ -11,6 +11,8 @@ const whole = (v: string) => Math.max(0, Math.floor(Number(v) || 0));
 export function HealthCheckQuote() {
   const [rows, setRows] = useState<Row[]>([{ id: 1, name: "", counters: "", staff: "" }]);
   const [picked, setPicked] = useState<string[]>(checks.map((c) => c.name));
+  const [monthly, setMonthly] = useState(false);
+  const off = `${monthlyDiscount * 100}%`;
 
   const chosen = checks.filter((c) => picked.includes(c.name));
   const needsStaff = chosen.some((c) => c.per === "staff");
@@ -20,6 +22,7 @@ export function HealthCheckQuote() {
     return { branch: b, lines, subtotal: lines.reduce((a, l) => a + (l.cost ?? 0), 0) };
   });
   const total = quote.reduce((a, q) => a + q.subtotal, 0);
+  const monthlyTotal = total * (1 - monthlyDiscount);
   const separate = chosen.filter((c) => c.price === null);
 
   const update = (id: number, patch: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -28,14 +31,18 @@ export function HealthCheckQuote() {
   // Plain-text version for the enquiry email.
   const summary = [
     "BRANCH HEALTH CHECK ESTIMATE",
+    `Frequency: ${monthly ? `monthly subscription (${off} off)` : "one-off"}`,
     ...quote.flatMap((q) => [
       "",
       `${q.branch.label} (${q.branch.counters} counters${needsStaff ? `, ${q.branch.staff} staff` : ""})`,
-      ...q.lines.map((l) => `- ${l.check.name}: ${l.cost === null ? "quoted separately" : `${l.qty > 1 || l.check.per !== "branch" ? `${l.qty} x ${gbp(l.check.price!)} = ` : ""}${gbp(l.cost)}`}`),
+      ...q.lines.map((l) => `- ${l.check.name}: ${l.cost === null ? "quoted separately" : `${l.check.per !== "branch" ? `${l.qty} x ${gbp(l.check.price!)} = ` : ""}${gbp(l.cost)}`}`),
       `Branch subtotal: ${gbp(q.subtotal)}`,
     ]),
     "",
-    `ESTIMATED TOTAL: ${gbp(total)} + VAT${separate.length ? ` (plus ${separate.map((c) => c.name.toLowerCase()).join(", ")}, quoted separately)` : ""}`,
+    monthly
+      ? `ESTIMATED TOTAL: monthly subscription, ${gbp(monthlyTotal)} + VAT per month (${gbp(total)} less ${off})`
+      : `ESTIMATED TOTAL: one-off, ${gbp(total)} + VAT`,
+    ...(separate.length ? [`Quoted separately: ${separate.map((c) => c.name).join(", ")}`] : []),
   ].join("\n");
 
   return (
@@ -97,8 +104,23 @@ export function HealthCheckQuote() {
         </button>
       </fieldset>
 
+      <fieldset className="border border-line bg-white p-5">
+        <legend className="px-1 text-sm font-medium text-navy">3. How often?</legend>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {[
+            { value: false, title: "One-off", line: "A single Health Check." },
+            { value: true, title: `Monthly, ${off} off`, line: `Every month, at ${off} off the total.` },
+          ].map((o) => (
+            <label key={o.title} className="flex cursor-pointer items-start gap-3 border border-line px-3 py-2.5 text-sm has-[:checked]:border-navy">
+              <input type="radio" name="frequency" checked={monthly === o.value} onChange={() => setMonthly(o.value)} className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-red)]" />
+              <span><span className="block font-medium text-ink">{o.title}</span><span className="block text-xs text-muted">{o.line}</span></span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <div className="bg-night p-5 text-white sm:p-6" aria-live="polite">
-        <p className="text-sm font-medium text-white/60">3. Your estimate</p>
+        <p className="text-sm font-medium text-white/60">4. Your estimate</p>
         <div className="mt-4 space-y-5">
           {quote.map((q) => (
             <div key={q.branch.label + q.branch.counters}>
@@ -122,9 +144,17 @@ export function HealthCheckQuote() {
           ))}
         </div>
         <div className="mt-5 flex items-baseline justify-between border-t-2 border-red pt-4">
-          <p className="text-sm text-white/70">Estimated total</p>
-          <p className="font-display text-2xl font-bold">{gbp(total)} <span className="text-sm font-normal text-white/60">+ VAT</span></p>
+          <p className="text-sm text-white/70">{monthly ? "Total before discount" : "Estimated total"}</p>
+          <p className={`font-display font-bold ${monthly ? "text-lg text-white/60 line-through decoration-red decoration-2" : "text-2xl"}`}>
+            {gbp(total)} {!monthly && <span className="text-sm font-normal text-white/60">+ VAT</span>}
+          </p>
         </div>
+        {monthly && (
+          <div className="mt-1 flex items-baseline justify-between">
+            <p className="text-sm text-white/70">Monthly, {off} off</p>
+            <p className="font-display text-2xl font-bold">{gbp(monthlyTotal)} <span className="text-sm font-normal text-white/60">+ VAT a month</span></p>
+          </div>
+        )}
         {separate.length > 0 && <p className="mt-2 text-xs text-white/50">{separate.map((c) => c.name).join(", ")} quoted separately.</p>}
         <p className="mt-2 text-xs text-white/50">An estimate from what you&apos;ve entered. I&apos;ll confirm the final quote with you.</p>
       </div>
