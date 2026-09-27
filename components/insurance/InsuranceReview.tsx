@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { calculateGaps, policyStart, questions, renewalOptions, sections, type Answers, type Gap } from "@/lib/insurance-review";
-import { site } from "@/lib/site";
+import { EnquiryFailed, EnquirySent, Honeypot, PrivacyNote } from "@/components/EnquiryStatus";
+import { useEnquiry } from "@/components/useEnquiry";
 
 type Stage = "intro" | "survey" | "policy-check" | "results";
 const STORE = "fcm-insurance-review";
@@ -202,31 +203,53 @@ function Results({ answers, onBack }: { answers: Answers; onBack: () => void }) 
 function Enquiry({ answers, gaps }: { answers: Answers; gaps: ReturnType<typeof calculateGaps> }) {
   const field = "mt-2 block w-full border border-line bg-white px-4 py-3 text-ink focus:border-red focus:outline-none focus:ring-2 focus:ring-red/30";
 
+  const { state, send } = useEnquiry();
+  const [draft, setDraft] = useState("");
+
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const d = new FormData(e.currentTarget);
-    const renewal = renewalOptions.find((r) => r.value === d.get("renewal"))?.label ?? "-";
-    const lines = [
-      `Name: ${d.get("name")}`,
-      `Email: ${d.get("email")}`,
-      `Phone: ${d.get("phone") || "-"}`,
-      `Branch: ${d.get("branch") || "-"}`,
-      `FAD code: ${d.get("fad") || "-"}`,
-      `Policy renewal: ${renewal}`,
-      "",
-      String(d.get("message") || ""),
-      "",
+    const get = (key: string) => String(d.get(key) ?? "").trim();
+    const fields = {
+      Branch: get("branch"),
+      "FAD code": get("fad"),
+      "Policy renewal": renewalOptions.find((r) => r.value === get("renewal"))?.label ?? "",
+    };
+    const details = [
       "GAPS FOUND",
       ...levels.flatMap((l) => gaps[l.key].map((g) => `[${l.label}] ${g.title}`)),
       "",
       "ANSWERS",
       ...questions.map((q) => `${q.id}. ${q.question}\n   ${q.options.find((o) => o.value === answers[q.storageKey])?.label ?? "-"}`),
-    ];
-    window.location.assign(`mailto:${site.contactEmail}?subject=${encodeURIComponent("Insurance Review enquiry")}&body=${encodeURIComponent(lines.join("\n"))}`);
+    ].join("\n");
+
+    setDraft([`Name: ${get("name")}`, `Email: ${get("email")}`, `Phone: ${get("phone") || "-"}`, ...Object.entries(fields).map(([k, v]) => `${k}: ${v || "-"}`), "", get("message"), "", details].join("\n"));
+
+    void send({
+      kind: "insurance-review",
+      service: "insurance-review",
+      subject: "Insurance Review",
+      name: get("name"),
+      email: get("email"),
+      phone: get("phone"),
+      message: get("message"),
+      details,
+      fields,
+      company_url: get("company_url"),
+    });
+  }
+
+  if (state.status === "sent") {
+    return (
+      <div className="mt-12 bg-night p-6 sm:p-10">
+        <EnquirySent {...state} dark />
+      </div>
+    );
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-12 bg-night p-6 text-white sm:p-10">
+    <form onSubmit={onSubmit} className="relative mt-12 bg-night p-6 text-white sm:p-10">
+      <Honeypot />
       <h3 className="font-display text-2xl font-bold tracking-[-0.02em]">Want me to review your policy properly?</h3>
       <p className="mt-3 max-w-2xl leading-relaxed text-white/70">
         It&apos;s free. Send your details and I&apos;ll look at your cover with these answers in front of me. Your answers and the gaps above are included automatically.
@@ -245,8 +268,15 @@ function Enquiry({ answers, gaps }: { answers: Answers; gaps: ReturnType<typeof 
         </label>
         <label className="sm:col-span-2">Anything else I should know? <span className="font-normal text-white/50">(optional)</span><textarea name="message" rows={3} className={field} /></label>
       </div>
-      <button type="submit" className="mt-8 bg-red px-7 py-4 text-[15px] font-semibold text-white hover:bg-red-dark">Send my enquiry</button>
-      <p className="mt-3 text-xs text-white/50">This opens your email app with everything filled in, ready to send.</p>
+      {state.status === "failed" && (
+        <div className="mt-6">
+          <EnquiryFailed error={state.error} subject="Insurance Review enquiry" body={draft} dark />
+        </div>
+      )}
+      <button type="submit" disabled={state.status === "sending"} className="mt-8 bg-red px-7 py-4 text-[15px] font-semibold text-white hover:bg-red-dark disabled:opacity-60">
+        {state.status === "sending" ? "Sending…" : "Send my enquiry"}
+      </button>
+      <div className="mt-3"><PrivacyNote dark /></div>
     </form>
   );
 }
