@@ -83,3 +83,13 @@ body {
   text-align: left;
 }
 .prose-fcm th { color: var(--color-navy); }
+
+/* Printing (the example report's "Save as PDF") */
+@media print {
+  header, footer, .no-print { display: none !important; }
+  body { background: #fff; }
+  .report-section { break-inside: avoid; }
+  .report [style*="scale"] { transform: none !important; }
+  .report [style*="opacity"] { opacity: 1 !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
