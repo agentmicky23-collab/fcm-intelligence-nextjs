@@ -200,7 +200,7 @@ export const stages: Stage[] = [
         summary: "Me on call every month, with a close eye on your remuneration and first sight of new branches.",
         includes: [
           "Two 60-minute calls a month",
-          "A 120-minute session on operations and your management team",
+          "A 120-minute management breakdown of your branch's monthly performance",
           "Advice on increasing your remuneration",
           "Monthly breakdown of remuneration gains and losses",
           "Unlimited email and WhatsApp support",
