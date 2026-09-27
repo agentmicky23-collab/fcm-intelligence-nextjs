@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #050e1f;
+  --color-navy-900: #07142a;
+  --color-navy: #0b1d3a;
+  --color-navy-700: #13294f;
+  --color-navy-600: #1d3663;
+  --color-gold: #bf9b51;
+  --color-gold-light: #d6b878;
+  --color-gold-dark: #8a6c2e;
+  --color-cream: #f7f4ee;
+  --color-cream-dark: #ece6da;
+  --color-ink: #1b2433;
+  --color-muted: #5b6475;
+}
+
+@theme inline {
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold-light);
+  color: var(--color-navy);
+}
+
+/* Long-form article typography */
+.prose-fcm {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+}
+.prose-fcm > * + * { margin-top: 1.25em; }
+.prose-fcm h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1.25;
+  color: var(--color-navy);
+  margin-top: 2.2em;
+}
+.prose-fcm h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-navy);
+  margin-top: 1.8em;
+}
+.prose-fcm a {
+  color: var(--color-gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-fcm strong { color: var(--color-navy); }
+.prose-fcm ul, .prose-fcm ol { padding-left: 1.4em; }
+.prose-fcm ul { list-style: disc; }
+.prose-fcm ol { list-style: decimal; }
+.prose-fcm li + li { margin-top: 0.5em; }
+.prose-fcm li::marker { color: var(--color-gold-dark); }
+.prose-fcm blockquote {
+  border-left: 3px solid var(--color-gold);
+  padding: 0.25em 0 0.25em 1.25em;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--color-navy);
+}
+.prose-fcm table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.prose-fcm th, .prose-fcm td {
+  border-bottom: 1px solid var(--color-cream-dark);
+  padding: 0.6em 0.75em;
+  text-align: left;
+}
+.prose-fcm th { color: var(--color-navy); }

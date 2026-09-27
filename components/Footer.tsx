@@ -1,0 +1,83 @@
+import Image from "next/image";
+import Link from "next/link";
+import { site } from "@/lib/site";
+
+const columns = [
+  {
+    title: "Learn",
+    links: [
+      { href: "/insights", label: "Insights" },
+      { href: "/resources", label: "Free resources" },
+      { href: "/about", label: "About Mikesh" },
+    ],
+  },
+  {
+    title: "Work with me",
+    links: [
+      { href: "/services", label: "All services" },
+      { href: "/reports", label: "Acquisition reports" },
+      { href: "/contact", label: "Get in touch" },
+    ],
+  },
+  {
+    title: "Account",
+    links: [
+      { href: "/account", label: "Member sign in" },
+      { href: site.staffAppUrl, label: "Staff login" },
+    ],
+  },
+];
+
+export function Footer() {
+  const socials = [
+    { href: site.social.linkedin, label: "LinkedIn" },
+    { href: site.social.x, label: "X" },
+  ].filter((s) => s.href);
+
+  return (
+    <footer className="bg-navy-950 text-white/70">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div>
+          <Image src="/brand/logo-full-white.png" alt="FCM First Class Managerial" width={1318} height={435} className="h-12 w-auto" />
+          <p className="mt-6 max-w-xs text-sm leading-relaxed">
+            Straight answers on buying and running a Post Office, from {site.owner}.
+          </p>
+          {socials.length > 0 && (
+            <div className="mt-6 flex gap-4 text-sm">
+              {socials.map((s) => (
+                <a key={s.label} href={s.href} className="hover:text-gold" target="_blank" rel="noopener noreferrer">
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+        {columns.map((col) => (
+          <div key={col.title}>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">{col.title}</p>
+            <ul className="mt-5 space-y-3 text-sm">
+              {col.links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="transition-colors hover:text-white">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <p>
+            © {new Date().getFullYear()} {site.company}. FCM Intelligence is independent and is not part of or endorsed by Post Office Limited.
+          </p>
+          <div className="flex gap-5">
+            <Link href="/privacy" className="hover:text-white">Privacy</Link>
+            <Link href="/terms" className="hover:text-white">Terms</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
