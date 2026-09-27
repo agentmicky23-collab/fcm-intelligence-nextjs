@@ -25,6 +25,7 @@ function ServiceCard({ service }: { service: Service }) {
           >
             {service.price}
           </p>
+          {service.price.startsWith("£") && <p className="text-xs text-muted">+ VAT</p>}
           {service.unit && <p className="text-xs text-muted">{service.unit}</p>}
         </div>
       </div>
@@ -38,7 +39,7 @@ function ServiceCard({ service }: { service: Service }) {
         ))}
       </ul>
       <Link href={href} className="mt-6 text-sm font-semibold text-red-dark hover:text-navy">
-        {service.href ? "Find out more →" : "Enquire →"}
+        {service.cta ?? (service.href ? "Find out more →" : "Enquire →")}
       </Link>
     </div>
   );

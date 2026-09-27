@@ -62,7 +62,7 @@ export default async function ArticlePage(props: PageProps<"/insights/[slug]">) 
           <div className="mt-14 bg-light p-8">
             <p className="font-display font-bold tracking-[-0.02em] text-xl text-navy">Want me to look at a branch with you?</p>
             <p className="mt-2 text-muted">
-              Reports from £199, or book an hour with me and we&apos;ll go through it together.
+              Reports from £199 + VAT, or book an hour with me and we&apos;ll go through it together.
             </p>
             <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
               <Link href="/reports" className="text-red-dark hover:text-navy">See the reports →</Link>

@@ -53,7 +53,10 @@ export default function ReportsPage() {
               <div className="relative flex flex-1 flex-col">
                 <div className="flex items-baseline justify-between gap-4">
                   <h2 className={`font-display text-3xl font-bold tracking-[-0.02em] ${i === 1 ? "text-white" : "text-navy"}`}>{r.name}</h2>
-                  <p className={`font-display text-4xl font-bold tracking-[-0.02em] ${i === 1 ? "text-red-light" : "text-red-dark"}`}>{r.price}</p>
+                  <p className={`text-right font-display text-4xl font-bold tracking-[-0.02em] ${i === 1 ? "text-red-light" : "text-red-dark"}`}>
+                    {r.price}
+                    <span className={`block font-sans text-xs font-normal tracking-normal ${i === 1 ? "text-white/60" : "text-muted"}`}>+ VAT</span>
+                  </p>
                 </div>
                 <p className={`mt-4 leading-relaxed ${i === 1 ? "text-white/75" : "text-muted"}`}>{r.summary}</p>
                 <ul className="mt-6 flex-1 space-y-3 text-[15px]">

@@ -22,7 +22,7 @@ export function ReportMap() {
               onClick={() => setTier(t.id)}
               className={`px-5 py-2.5 text-sm font-semibold transition-colors ${tier === t.id ? "bg-navy text-white" : "text-navy hover:bg-light"}`}
             >
-              {t.name} <span className={tier === t.id ? "text-white/60" : "text-muted"}>{t.price}</span>
+              {t.name} <span className={tier === t.id ? "text-white/60" : "text-muted"}>{t.price} + VAT</span>
             </button>
           ))}
         </div>

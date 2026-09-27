@@ -1,5 +1,5 @@
 // Services, grouped by where the customer is in their journey.
-// Prices are provisional until Mikesh confirms them (see site.pricesConfirmed).
+// Prices are provisional until Mikesh confirms them (see site.pricesConfirmed). All prices are plus VAT.
 
 export type Service = {
   slug: string;
@@ -9,6 +9,7 @@ export type Service = {
   summary: string;
   includes: string[];
   href?: string; // dedicated page, otherwise the enquiry form
+  cta?: string; // link text when the default doesn't fit
 };
 
 export type Stage = {
@@ -68,11 +69,12 @@ export const stages: Stage[] = [
         slug: "deal-review",
         name: "Deal Review",
         price: "£497",
-        unit: "60 minutes",
+        unit: "60 minutes + report",
         summary:
-          "Found a branch? We go through it together and you leave with a clear go or no-go.",
+          "Found a branch? I research it first, then we go through it together and you leave with a clear go or no-go.",
         includes: [
-          "60-minute deep dive on one opportunity",
+          "Insight Report on the branch",
+          "60-minute deep dive on the opportunity",
           "Viability and red-flag check",
           "Due diligence guidance",
           "Written summary with action points",
@@ -83,12 +85,12 @@ export const stages: Stage[] = [
         name: "Acquisition Advisory",
         price: "£1,997",
         summary:
-          "An Intelligence Report plus three sessions with me, from first look to final offer.",
+          "An Intelligence Report, a visit to the branch, and my advice from first look through to closing.",
         includes: [
           "Intelligence Report on your chosen branch",
-          "Session 1: acquisition strategy",
-          "Session 2: due diligence review",
-          "Session 3: negotiation and closing",
+          "Location visit",
+          "Full improvement report, pre- and post-acquisition",
+          "Full advisory through negotiation and closing",
           "Email and WhatsApp support between sessions",
         ],
       },
@@ -101,6 +103,8 @@ export const stages: Stage[] = [
           "I walk the whole journey with you: the offer, due diligence, the Post Office interview and the handover.",
         includes: [
           "Intelligence Report included",
+          "Business Plan Writing included",
+          "Post Office Interview Preparation included",
           "Six one-to-one sessions",
           "Unlimited email and WhatsApp support",
           "Optional site visit",
@@ -110,14 +114,14 @@ export const stages: Stage[] = [
       {
         slug: "business-plan",
         name: "Business Plan Writing",
-        price: "Price on request",
+        price: "£1,200",
         summary: "The business plan the Post Office and your lender will ask for, written by someone who has been through it dozens of times.",
         includes: ["Financial projections built from the real numbers", "Written to Post Office expectations", "Ready for lenders"],
       },
       {
         slug: "interview-prep",
         name: "Post Office Interview Preparation",
-        price: "Price on request",
+        price: "£1,200",
         summary: "Coaching for the operator interview so you walk in knowing what they're looking for.",
         includes: ["Mock interview", "Likely questions and strong answers", "Feedback on your business plan"],
       },
@@ -147,7 +151,9 @@ export const stages: Stage[] = [
         name: "Insurance Review",
         price: "Price on request",
         summary: "Most branches are over- or under-insured. We check your cover against what a Post Office actually needs.",
-        includes: ["Review of your current policies", "Gaps and overlaps identified", "Recommendations"],
+        includes: ["17-question policy check with instant results", "Gaps and overlaps identified", "Your policy reviewed by me"],
+        href: "/services/insurance-review",
+        cta: "Start the review →",
       },
     ],
   },

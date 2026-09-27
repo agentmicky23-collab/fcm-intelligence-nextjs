@@ -514,7 +514,7 @@ export default function ExampleReportPage() {
           <div className="relative mx-auto flex max-w-[1280px] flex-col items-start justify-between gap-8 px-5 py-16 text-white sm:px-8 md:flex-row md:items-center">
             <div>
               <h2 className="font-display text-3xl font-bold tracking-[-0.02em] sm:text-[40px]">Want this for a real branch?</h2>
-              <p className="mt-3 text-white/80">Insight from £199. Intelligence, as above, £499.</p>
+              <p className="mt-3 text-white/80">Insight from £199. Intelligence, as above, £499. Prices plus VAT.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <ButtonLink href="/contact?service=intelligence-report" variant="white">Order a report</ButtonLink>

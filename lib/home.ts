@@ -6,7 +6,7 @@ export const practices = [
   { title: "HR & employment", line: "TUPE, contracts and people matters, handled properly.", href: "/services" },
   { title: "Health, safety & compliance", line: "Audit-ready branches and safe workplaces.", href: "/services" },
   { title: "Operations & growth", line: "Performance reviews and multi-branch strategy.", href: "/services" },
-  { title: "Insight & Intelligence reports", line: "Location and business reports from £199.", href: "/reports" },
+  { title: "Insight & Intelligence reports", line: "Location and business reports from £199 + VAT.", href: "/reports" },
 ] as const;
 
 export const credentials = ["15 years operating", "10 Crown conversions in 2025", "Strategic partner to Post Office"] as const;
