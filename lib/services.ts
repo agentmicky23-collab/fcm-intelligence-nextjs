@@ -12,10 +12,13 @@ export type Service = {
   cta?: string; // link text when the default doesn't fit
 };
 
+export type Audience = { title: string; line: string; points: string[] };
+
 export type Stage = {
   id: string;
   title: string;
   intro: string;
+  audiences?: Audience[]; // who this stage is for, when that differs
   services: Service[];
 };
 
@@ -161,6 +164,18 @@ export const stages: Stage[] = [
     id: "running",
     title: "Running a branch",
     intro: "Already operating? Sometimes you need a second pair of eyes, sometimes you need an answer today.",
+    audiences: [
+      {
+        title: "Running one branch",
+        line: "You're the postmaster, the manager and often the one on the counter.",
+        points: ["Cash, compliance and audits under control", "Staff costs that match your footfall", "Every pound of remuneration you're owed"],
+      },
+      {
+        title: "Running several branches",
+        line: "You can't be in every branch, so the systems and managers have to hold.",
+        points: ["Managers and reporting that work across sites", "Remuneration tracked branch by branch", "Growth that doesn't dilute your margins"],
+      },
+    ],
     services: [
       {
         slug: "helpline",
@@ -180,10 +195,17 @@ export const stages: Stage[] = [
       {
         slug: "advisory-retainer",
         name: "Advisory Retainer",
-        price: "£997",
+        price: "£300",
         unit: "per month",
-        summary: "Me on call for operators who are growing, with two calls a month and support in between.",
-        includes: ["Two 60-minute calls a month", "Email and WhatsApp support", "Growth and portfolio planning", "3-month minimum"],
+        summary: "Me on call every month, with a close eye on your remuneration and first sight of new branches.",
+        includes: [
+          "Two 60-minute calls a month",
+          "A 120-minute session on operations and your management team",
+          "Advice on increasing your remuneration",
+          "Monthly breakdown of remuneration gains and losses",
+          "Unlimited email and WhatsApp support",
+          "Access to FCM Picks: new branches as they come up",
+        ],
       },
     ],
   },

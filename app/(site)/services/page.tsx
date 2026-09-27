@@ -84,7 +84,34 @@ export default function ServicesPage() {
         <section key={stage.id} id={stage.id} className={`scroll-mt-20 ${i % 2 ? "bg-white" : ""}`}>
           <Container className="py-16 md:py-20">
             <SectionHeading eyebrow={`Stage ${i + 1}`} title={stage.title} intro={stage.intro} />
-            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {stage.audiences && (
+              <>
+                <div className="mt-10 grid gap-px bg-line md:grid-cols-2">
+                  {stage.audiences.map((a, j) => (
+                    <div key={a.title} className={`relative overflow-hidden p-7 sm:p-8 ${j === 0 ? "bg-white" : "bg-night text-white"}`}>
+                      {j === 1 && <Slant className="inset-y-0 right-[-10%] w-[22%] bg-navy" />}
+                      <div className="relative">
+                        <p className={`font-display text-xs font-semibold uppercase tracking-[0.16em] ${j === 0 ? "text-red-dark" : "text-red-light"}`}>
+                          {j === 0 ? "Single operator" : "Multiple operator"}
+                        </p>
+                        <h3 className={`mt-3 font-display text-2xl font-bold tracking-[-0.02em] ${j === 0 ? "text-navy" : "text-white"}`}>{a.title}</h3>
+                        <p className={`mt-2 ${j === 0 ? "text-muted" : "text-white/70"}`}>{a.line}</p>
+                        <ul className="mt-5 space-y-2 text-[15px]">
+                          {a.points.map((pt) => (
+                            <li key={pt} className="flex gap-3">
+                              <span className="mt-[7px] h-2.5 w-1.5 shrink-0 -skew-x-[18deg] bg-red" aria-hidden />
+                              {pt}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-10 text-sm font-medium text-muted">Each service below works for one branch or many.</p>
+              </>
+            )}
+            <div className={`${stage.audiences ? "mt-5" : "mt-10"} grid gap-6 md:grid-cols-2 lg:grid-cols-3`}>
               {stage.services.map((service) => (
                 <ServiceCard key={service.slug} service={service} />
               ))}
