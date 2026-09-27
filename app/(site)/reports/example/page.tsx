@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { MotionConfig } from "motion/react";
 import { Draw, Grow, Pop, Reveal, Rise, ScoreRing } from "@/components/report/charts";
+import { MapPanel } from "@/components/report/MapPanel";
 import { PrintButton } from "@/components/report/PrintButton";
 import { ButtonLink, Slant } from "@/components/ui";
 import { example as r } from "@/lib/example-report";
@@ -283,26 +284,30 @@ export default function ExampleReportPage() {
 
             {/* 6 */}
             <Section n={6} intro="The branch sits on a busy parade, with everyday destinations inside a five-minute walk.">
-              <svg viewBox="0 0 640 300" className="w-full border border-line bg-white" role="img" aria-label="Diagram of the branch at the centre of 250 and 500 metre rings, with nearby amenities">
-                {[60, 140, 220].map((y) => <line key={y} x1="0" x2="640" y1={y + 10} y2={y + 10} stroke="var(--color-line)" strokeWidth="10" />)}
-                {[110, 320, 520].map((x) => <line key={x} y1="0" y2="300" x1={x} x2={x} stroke="var(--color-line)" strokeWidth="10" />)}
-                <Draw d="M320 150m-70 0a70 70 0 1 0 140 0a70 70 0 1 0 -140 0" fill="none" stroke="var(--color-navy)" strokeOpacity="0.35" strokeDasharray="4 5" />
-                <Draw d="M320 150m-135 0a135 135 0 1 0 270 0a135 135 0 1 0 -270 0" fill="none" stroke="var(--color-navy)" strokeOpacity="0.25" strokeDasharray="4 5" delay={0.2} />
-                <text x="395" y="100" fontSize="11" fill="var(--color-muted)">250 m</text>
-                <text x="450" y="50" fontSize="11" fill="var(--color-muted)">500 m</text>
-                {[
-                  { x: 335, y: 128, l: "Bus stop" }, { x: 250, y: 112, l: "GP surgery" }, { x: 420, y: 230, l: "Primary school" },
-                  { x: 180, y: 240, l: "Supermarket" }, { x: 560, y: 60, l: "Station" },
-                ].map((p, i) => (
-                  <Pop key={p.l} delay={0.5 + i * 0.12}>
-                    <rect x={p.x - 5} y={p.y - 5} width="10" height="10" fill="var(--color-navy)" />
-                    <text x={p.x + 10} y={p.y + 4} fontSize="12" fill="var(--color-ink)">{p.l}</text>
-                  </Pop>
-                ))}
-                <Pop delay={0.3}><circle cx="320" cy="150" r="11" fill="var(--color-red)" /></Pop>
-                <text x="300" y="180" fontSize="12" fontWeight="600" fill="var(--color-red-dark)">The branch</text>
-              </svg>
-              <p className="mt-3 text-xs text-muted">Diagram, not to scale. Real reports include mapping and street-level imagery.</p>
+              <div className="grid gap-8 xl:grid-cols-[1fr_260px]">
+                <MapPanel
+                  lat={r.map.lat}
+                  lng={r.map.lng}
+                  rings={[{ metres: 250, label: "250 m" }, { metres: 500, label: "500 m" }]}
+                  label="250 m is about a three-minute walk; 500 m about six. Real map, fictional branch position."
+                />
+                <div>
+                  <h3 className="font-display text-base font-semibold text-navy">Within a short walk</h3>
+                  <ul className="mt-4 divide-y divide-line border-y border-line text-sm">
+                    {r.footfall.filter((f) => f.metres <= 500).map((f) => (
+                      <li key={f.name} className="flex items-center justify-between gap-4 py-3">
+                        <span>{f.name}</span>
+                        <span className="text-right"><span className="font-semibold text-navy">{f.metres} m</span><span className="block text-xs text-muted">{Math.max(1, Math.round(f.metres / 80))} min walk</span></span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 space-y-2 text-sm">
+                    <p className="flex items-center gap-3"><span className="h-3 w-3 rounded-full bg-red" />The branch</p>
+                    <p className="flex items-center gap-3"><span className="h-3 w-3 border border-dashed border-navy" />Walking distance</p>
+                  </div>
+                </div>
+              </div>
+              <Insight>A bus stop at the door and a GP surgery two minutes away give this branch steady, all-day footfall that doesn&apos;t depend on the high street.</Insight>
             </Section>
 
             {/* 7 */}
@@ -344,35 +349,36 @@ export default function ExampleReportPage() {
 
             {/* 9 */}
             <Section n={9} intro="Every Post Office and parcel point within two miles.">
-              <div className="grid items-center gap-10 md:grid-cols-[1fr_1fr]">
-                <svg viewBox="-160 -160 320 320" className="mx-auto w-full max-w-sm" role="img" aria-label="Competitors plotted by distance from the branch">
-                  {[0.5, 1, 1.5, 2].map((m) => (
-                    <g key={m}>
-                      <circle r={m * 70} fill="none" stroke="var(--color-navy)" strokeOpacity={0.15} />
-                      <text x={4} y={-m * 70 + 12} fontSize="9" fill="var(--color-muted)">{m} mi</text>
-                    </g>
-                  ))}
-                  {r.competitors.map((c, i) => {
-                    const a = (c.angle * Math.PI) / 180;
-                    const x = Math.cos(a) * c.miles * 70, y = Math.sin(a) * c.miles * 70;
-                    return (
-                      <Pop key={c.name} delay={0.2 + i * 0.15}>
-                        {c.full ? <rect x={x - 6} y={y - 6} width="12" height="12" fill="var(--color-navy)" /> : <rect x={x - 5} y={y - 5} width="10" height="10" fill="white" stroke="var(--color-navy)" strokeWidth="2" />}
-                      </Pop>
-                    );
-                  })}
-                  <Pop><circle r="8" fill="var(--color-red)" /></Pop>
-                </svg>
+              <MapPanel
+                lat={r.map.lat}
+                lng={r.map.lng}
+                rings={[0.5, 1, 1.5, 2].map((m) => ({ metres: m * 1609, label: `${m} mi` }))}
+                markers={r.competitors.map((c, i) => ({
+                  east: Math.cos((c.angle * Math.PI) / 180) * c.miles * 1609,
+                  north: -Math.sin((c.angle * Math.PI) / 180) * c.miles * 1609,
+                  label: String.fromCharCode(65 + i),
+                  kind: c.full ? "full" : "partial",
+                }))}
+                label="Real map with fictional competitor positions, for illustration."
+                heightClass="h-[380px] sm:h-[600px]"
+              />
+              <div className="mt-8 grid gap-8 md:grid-cols-[1fr_auto]">
                 <ul className="divide-y divide-line border-y border-line text-sm">
-                  {[...r.competitors].sort((a, b) => a.miles - b.miles).map((c) => (
-                    <li key={c.name} className="flex items-center justify-between gap-4 py-3">
+                  {r.competitors.map((c, i) => ({ ...c, letter: String.fromCharCode(65 + i) })).sort((a, b) => a.miles - b.miles).map((c) => (
+                    <li key={c.letter} className="flex items-center justify-between gap-4 py-3">
                       <span className="flex items-center gap-3">
-                        <span className={`h-2.5 w-2.5 ${c.full ? "bg-navy" : "border-2 border-navy"}`} />{c.name}
+                        <span className={`flex h-6 w-6 items-center justify-center text-xs font-bold ${c.full ? "bg-navy text-white" : "border-2 border-navy text-navy"}`}>{c.letter}</span>
+                        {c.name}
                       </span>
                       <span className="font-semibold text-navy">{c.miles} mi</span>
                     </li>
                   ))}
                 </ul>
+                <div className="space-y-2 text-sm md:w-56">
+                  <p className="flex items-center gap-3"><span className="h-3.5 w-3.5 bg-navy" />Full-service Post Office</p>
+                  <p className="flex items-center gap-3"><span className="h-3.5 w-3.5 border-2 border-navy" />Local or parcel point</p>
+                  <p className="flex items-center gap-3"><span className="h-3.5 w-3.5 rounded-full bg-red" />The branch</p>
+                </div>
               </div>
               <Insight>The nearest full-service branch is 1.4 miles away. The supermarket parcel point takes drop-offs, but not banking or bill payments, which is where this branch earns most.</Insight>
             </Section>

@@ -5,6 +5,8 @@ export const example = {
   branch: "Market Street Post Office",
   town: "Anytown (fictional)",
   type: "Mains branch with retail",
+  // A real town centre, used only so the maps show real streets. The branch itself is fictional.
+  map: { lat: 52.1366, lng: -0.4668 },
   tier: "Intelligence Report",
   reference: "EX-0001",
   date: "Example",
@@ -94,9 +96,9 @@ export const example = {
     ],
   },
   competitors: [
-    { name: "Competitor A (full service)", miles: 1.4, angle: 40, full: true },
-    { name: "Competitor B (Local)", miles: 0.9, angle: 200, full: false },
-    { name: "Competitor C (full service)", miles: 1.9, angle: 290, full: true },
+    { name: "Full-service branch", miles: 1.4, angle: 40, full: true },
+    { name: "Local-style branch", miles: 0.9, angle: 200, full: false },
+    { name: "Full-service branch", miles: 1.9, angle: 290, full: true },
     { name: "Supermarket parcel point", miles: 0.6, angle: 120, full: false },
   ],
   footfall: [
