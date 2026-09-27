@@ -1,10 +1,11 @@
 // Branch Health Check pricing. Every price is a one-off, before VAT, and each check is priced per
 // branch unless it says otherwise. A null price is quoted separately.
 
-/** Taking the Health Check as a subscription takes this much off the total each time. */
+/** A monthly subscription takes this much off the total, with a minimum term so the discount can't be taken once and cancelled. */
 export const subscriptionDiscount = 0.25;
+export const minimumMonths = 3;
 
-export type Frequency = "one-off" | "quarterly" | "monthly";
+export type Frequency = "one-off" | "monthly";
 
 export type Per = "branch" | "counter" | "staff";
 export type Check = { name: string; price: number | null; per: Per; note?: string };

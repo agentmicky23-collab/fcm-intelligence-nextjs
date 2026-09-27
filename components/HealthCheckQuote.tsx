@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { branchLines, checks, gbp, perLabel, subscriptionDiscount, type BranchSize, type Frequency } from "@/lib/health-check";
+import { branchLines, checks, gbp, minimumMonths, perLabel, subscriptionDiscount, type BranchSize, type Frequency } from "@/lib/health-check";
 
 type Row = { id: number; name: string; counters: string; staff: string };
 const field = "mt-1.5 block w-full border border-line bg-white px-3 py-2.5 text-ink focus:border-red focus:outline-none focus:ring-2 focus:ring-red/30";
@@ -14,7 +14,6 @@ export function HealthCheckQuote() {
   const [frequency, setFrequency] = useState<Frequency>("one-off");
   const off = `${subscriptionDiscount * 100}%`;
   const subscribed = frequency !== "one-off";
-  const period = frequency === "monthly" ? "month" : "quarter";
 
   const chosen = checks.filter((c) => picked.includes(c.name));
   const needsStaff = chosen.some((c) => c.per === "staff");
@@ -33,7 +32,7 @@ export function HealthCheckQuote() {
   // Plain-text version for the enquiry email.
   const summary = [
     "BRANCH HEALTH CHECK ESTIMATE",
-    `Frequency: ${subscribed ? `${frequency} subscription (${off} off, can cancel after the first quarter)` : "one-off"}`,
+    `Frequency: ${subscribed ? `monthly subscription (${off} off, ${minimumMonths}-month minimum term)` : "one-off"}`,
     ...quote.flatMap((q) => [
       "",
       `${q.branch.label} (${q.branch.counters} counters${needsStaff ? `, ${q.branch.staff} staff` : ""})`,
@@ -42,7 +41,7 @@ export function HealthCheckQuote() {
     ]),
     "",
     subscribed
-      ? `ESTIMATED TOTAL: ${frequency} subscription, ${gbp(discounted)} + VAT per ${period} (${gbp(total)} less ${off})`
+      ? `ESTIMATED TOTAL: monthly subscription, ${gbp(discounted)} + VAT per month (${gbp(total)} less ${off}), minimum ${minimumMonths} months`
       : `ESTIMATED TOTAL: one-off, ${gbp(total)} + VAT`,
     ...(separate.length ? [`Quoted separately: ${separate.map((c) => c.name).join(", ")}`] : []),
   ].join("\n");
@@ -108,11 +107,10 @@ export function HealthCheckQuote() {
 
       <fieldset className="border border-line bg-white p-5">
         <legend className="px-1 text-sm font-medium text-navy">3. How often?</legend>
-        <div className="mt-2 grid gap-2 sm:grid-cols-3">
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
           {([
             { value: "one-off", title: "One-off", line: "A single Health Check." },
-            { value: "quarterly", title: `Quarterly, ${off} off`, line: `Every three months, at ${off} off the total.` },
-            { value: "monthly", title: `Monthly, ${off} off`, line: `Every month, at ${off} off the total.` },
+            { value: "monthly", title: `Monthly, ${off} off`, line: `Every month, at ${off} off the total. ${minimumMonths}-month minimum.` },
           ] as const).map((o) => (
             <label key={o.title} className="flex cursor-pointer items-start gap-3 border border-line px-3 py-2.5 text-sm has-[:checked]:border-navy">
               <input type="radio" name="frequency" checked={frequency === o.value} onChange={() => setFrequency(o.value)} className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-red)]" />
@@ -120,7 +118,7 @@ export function HealthCheckQuote() {
             </label>
           ))}
         </div>
-        {subscribed && <p className="mt-3 text-xs text-muted">Subscriptions run for at least one quarter. Cancel any time after that.</p>}
+        {subscribed && <p className="mt-3 text-xs text-muted">The monthly subscription runs for at least {minimumMonths} months. Cancel any time after that.</p>}
       </fieldset>
 
       <div className="bg-night p-5 text-white sm:p-6" aria-live="polite">
@@ -155,11 +153,12 @@ export function HealthCheckQuote() {
         </div>
         {subscribed && (
           <div className="mt-1 flex items-baseline justify-between">
-            <p className="text-sm capitalize text-white/70">{frequency}, {off} off</p>
-            <p className="font-display text-2xl font-bold">{gbp(discounted)} <span className="text-sm font-normal text-white/60">+ VAT a {period}</span></p>
+            <p className="text-sm text-white/70">Monthly, {off} off</p>
+            <p className="font-display text-2xl font-bold">{gbp(discounted)} <span className="text-sm font-normal text-white/60">+ VAT a month</span></p>
           </div>
         )}
         {separate.length > 0 && <p className="mt-2 text-xs text-white/50">{separate.map((c) => c.name).join(", ")} quoted separately.</p>}
+        {subscribed && <p className="mt-2 text-xs text-white/50">Minimum {minimumMonths} months ({gbp(discounted * minimumMonths)} + VAT), then cancel any time.</p>}
         <p className="mt-2 text-xs text-white/50">An estimate from what you&apos;ve entered. I&apos;ll confirm the final quote with you.</p>
       </div>
 

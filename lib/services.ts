@@ -191,7 +191,7 @@ export const stages: Stage[] = [
         price: "From £100",
         unit: "per branch",
         summary:
-          "A full, independent review of your branch. Choose the checks you need and see an estimate for each branch. One-off, or quarterly or monthly at 25% off.",
+          "A full, independent review of your branch. Choose the checks you need and see an estimate for each branch. One-off, or monthly at 25% off with a 3-month minimum.",
         includes: [
           "Operational excellence monitoring",
           "Independent audit of cash and stamp stock",
