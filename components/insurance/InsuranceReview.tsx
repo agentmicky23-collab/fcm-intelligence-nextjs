@@ -62,7 +62,7 @@ export function InsuranceReview() {
           <motion.div key={`${stage}-${index}`} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.3, ease }}>
             {stage === "intro" && (
               <div className="max-w-2xl">
-                <p className="text-sm font-medium text-muted">17 questions · about 7 minutes</p>
+                <p className="text-sm font-medium text-muted">Free · 17 questions · about 7 minutes</p>
                 <h2 className="mt-3 font-display text-2xl font-bold tracking-[-0.02em] text-navy sm:text-3xl">Check your policy against what a Post Office actually carries.</h2>
                 <p className="mt-4 leading-relaxed text-muted">
                   These are the questions I put to my own policy. Have your policy schedule in front of you. At the end you&apos;ll
@@ -229,7 +229,7 @@ function Enquiry({ answers, gaps }: { answers: Answers; gaps: ReturnType<typeof 
     <form onSubmit={onSubmit} className="mt-12 bg-night p-6 text-white sm:p-10">
       <h3 className="font-display text-2xl font-bold tracking-[-0.02em]">Want me to review your policy properly?</h3>
       <p className="mt-3 max-w-2xl leading-relaxed text-white/70">
-        Send your details and I&apos;ll look at your cover with these answers in front of me. Your answers and the gaps above are included automatically.
+        It&apos;s free. Send your details and I&apos;ll look at your cover with these answers in front of me. Your answers and the gaps above are included automatically.
       </p>
       <div className="mt-8 grid gap-5 sm:grid-cols-2 [&_label]:text-sm [&_label]:font-medium">
         <label>Name<input name="name" required autoComplete="name" className={field} /></label>

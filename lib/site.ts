@@ -15,7 +15,7 @@ export const site = {
     x: "",
   },
   // Set to true once Mikesh has confirmed every price on the services page.
-  pricesConfirmed: false,
+  pricesConfirmed: true,
   // Set to true when the site is ready to be found by search engines.
   indexable: false,
 } as const;

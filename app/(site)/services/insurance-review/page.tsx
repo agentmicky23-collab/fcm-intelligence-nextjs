@@ -23,6 +23,7 @@ export default function InsuranceReviewPage() {
             Most branches are on shop cover with Post Office extras bolted on. A Post Office needs cover built around what it
             actually carries: the cash, the contract income and the counter.
           </p>
+          <p className="mt-4 text-sm font-medium text-white/60">Free to use. I&apos;m not selling insurance.</p>
         </Container>
       </section>
       <section>

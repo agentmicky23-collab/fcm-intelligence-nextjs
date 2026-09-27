@@ -160,9 +160,9 @@ export const stages: Stage[] = [
       {
         slug: "insurance-review",
         name: "Insurance Review",
-        price: "Price on request",
-        summary: "Most branches are over- or under-insured. We check your cover against what a Post Office actually needs.",
-        includes: ["17-question policy check with instant results", "Gaps and overlaps identified", "Your policy reviewed by me"],
+        price: "Free",
+        summary: "A free tool to check your cover against what a Post Office actually needs. I'm not selling insurance.",
+        includes: ["17-question policy check with instant results", "Gaps and overlaps identified", "A second look from me if you want one"],
         href: "/services/insurance-review",
         cta: "Start the review →",
       },
