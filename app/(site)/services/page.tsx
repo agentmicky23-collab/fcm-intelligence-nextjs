@@ -18,14 +18,14 @@ function ServiceCard({ service }: { service: Service }) {
         <div className="shrink-0 text-right">
           <p
             className={
-              service.price.startsWith("£")
+              service.price.includes("£")
                 ? "font-display font-bold tracking-[-0.02em] text-xl text-red-dark"
                 : "pt-1 text-xs font-semibold uppercase tracking-wide text-red-dark"
             }
           >
             {service.price}
           </p>
-          {service.price.startsWith("£") && <p className="text-xs text-muted">+ VAT</p>}
+          {service.price.includes("£") && <p className="text-xs text-muted">+ VAT</p>}
           {service.unit && <p className="text-xs text-muted">{service.unit}</p>}
         </div>
       </div>

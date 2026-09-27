@@ -188,9 +188,10 @@ export const stages: Stage[] = [
       {
         slug: "health-check",
         name: "Branch Health Check",
-        price: "Price on request",
+        price: "From £100",
+        unit: "per branch",
         summary:
-          "A full, independent review of your branch. Choose the checks you need; the price depends on those, and on your branches and counters.",
+          "A full, independent review of your branch. Choose the checks you need and see an estimate for each branch.",
         includes: [
           "Operational excellence monitoring",
           "Independent audit of cash and stamp stock",
@@ -202,6 +203,7 @@ export const stages: Stage[] = [
           "Profit improvement opportunities",
           "Improvement action plan",
         ],
+        cta: "Build your quote →",
       },
       {
         slug: "advisory-retainer",
