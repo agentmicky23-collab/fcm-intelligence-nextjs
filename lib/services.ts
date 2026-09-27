@@ -138,16 +138,24 @@ export const stages: Stage[] = [
       {
         slug: "business-setup",
         name: "Business Setup",
-        price: "Price on request",
+        price: "£300",
         summary: "Company, bank, suppliers, staffing contracts and systems ready for day one.",
         includes: ["Set-up checklist done with you", "Staff contracts with real accountability", "Supplier and systems introductions"],
       },
       {
         slug: "operator-training",
         name: "Operator Training",
-        price: "Price on request",
-        summary: "Training for new postmasters and their teams, from people who run the counter every day.",
-        includes: ["Counter and cash management", "Compliance and audits", "Managing staff and rotas"],
+        price: "Enquiry only",
+        summary:
+          "Training for new postmasters and their teams, from people who run the counter every day. The cost depends on the course length and where it happens.",
+        includes: [
+          "1, 3, 5 or 10-day courses",
+          "At one of our branches: £100 + VAT a day",
+          "At your branch: £200 + VAT a day, plus travel",
+          "Counter and cash management",
+          "Compliance and audits",
+          "Managing staff and rotas",
+        ],
       },
       {
         slug: "insurance-review",

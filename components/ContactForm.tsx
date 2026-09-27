@@ -17,6 +17,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
   );
 
   const sized = sizedServices.includes(service);
+  const training = service === "operator-training";
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,6 +29,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
       `Phone: ${data.get("phone") || "-"}`,
       `Situation: ${data.get("situation")}`,
       ...(sized ? ["", String(data.get("quote") ?? "")] : []),
+      ...(training ? ["", `Training location: ${data.get("trainingLocation")}`, `Course length: ${data.get("trainingDays")}`] : []),
       "",
       String(data.get("message") ?? ""),
     ].join("\n");
@@ -81,6 +83,29 @@ export function ContactForm({ initialService }: { initialService?: string }) {
         </select>
       </label>
       {sized && <HealthCheckQuote />}
+      {training && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <label className="block text-sm font-medium text-navy">
+            Where would you like the training?
+            <select name="trainingLocation" required defaultValue="" className={field}>
+              <option value="" disabled>Select…</option>
+              <option>At one of your branches (£100 + VAT a day)</option>
+              <option>At my branch (£200 + VAT a day, plus travel)</option>
+              <option>Not sure yet</option>
+            </select>
+          </label>
+          <label className="block text-sm font-medium text-navy">
+            How many days?
+            <select name="trainingDays" required defaultValue="" className={field}>
+              <option value="" disabled>Select…</option>
+              {[1, 3, 5, 10].map((d) => (
+                <option key={d} value={`${d} ${d === 1 ? "day" : "days"}`}>{d} {d === 1 ? "day" : "days"}</option>
+              ))}
+              <option value="not sure">Not sure yet</option>
+            </select>
+          </label>
+        </div>
+      )}
       <label className="block text-sm font-medium text-navy">
         Tell me a bit more
         <textarea name="message" rows={6} required className={field} />
