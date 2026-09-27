@@ -29,7 +29,8 @@ export const stats = [
 
 export const nav = [
   { href: "/insights", label: "Insights" },
-  { href: "/resources", label: "Free resources" },
-  { href: "/about", label: "About Mikesh" },
-  { href: "/services", label: "Work with me" },
+  { href: "/services", label: "Practice areas" },
+  { href: "/reports", label: "Reports" },
+  { href: "/resources", label: "Resources" },
+  { href: "/about", label: "About" },
 ] as const;

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { JoinCta } from "@/components/JoinCta";
-import { ButtonLink, Container, Eyebrow, PhotoPlaceholder } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, BrandPanel } from "@/components/ui";
 import { stats } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -12,16 +12,16 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <section className="bg-navy">
-        <Container className="grid items-end gap-12 py-20 md:grid-cols-[1.3fr_1fr] md:py-24">
+      <section className="relative overflow-hidden bg-night">
+        <Container className="relative grid items-end gap-12 py-20 md:grid-cols-[1.3fr_1fr] md:py-24">
           <div>
-            <Eyebrow>About</Eyebrow>
-            <h1 className="mt-5 font-display text-4xl leading-tight text-white sm:text-5xl">Mikesh Parekh</h1>
+            <Eyebrow light>About</Eyebrow>
+            <h1 className="mt-5 font-display font-bold tracking-[-0.02em] text-4xl leading-tight text-white sm:text-5xl">Mikesh Parekh</h1>
             <p className="mt-5 max-w-xl text-xl leading-relaxed text-white/75">
               Third-generation subpostmaster. 15 years. From one branch to forty-three.
             </p>
           </div>
-          <PhotoPlaceholder label="Portrait of Mikesh" className="aspect-square w-full max-w-sm md:ml-auto" />
+          <BrandPanel figure="43" label="Branches operated" className="aspect-square w-full max-w-sm md:ml-auto" />
         </Container>
       </section>
 
@@ -65,8 +65,8 @@ export default function AboutPage() {
 
           <aside className="space-y-6 md:pt-2">
             {stats.map((s) => (
-              <div key={s.label} className="border-l-2 border-gold pl-4">
-                <p className="font-display text-3xl text-navy">{s.value}</p>
+              <div key={s.label} className="border-l-2 border-red pl-4">
+                <p className="font-display font-bold tracking-[-0.02em] text-3xl text-navy">{s.value}</p>
                 <p className="text-sm text-muted">{s.label}</p>
               </div>
             ))}

@@ -8,8 +8,8 @@ export default function Page() {
   return (
     <section>
       <Container className="max-w-3xl py-20">
-        <h1 className="font-display text-4xl text-navy">Privacy policy</h1>
-        <p className="mt-6 rounded-lg bg-gold/15 px-4 py-3 text-sm text-gold-dark">
+        <h1 className="font-display font-bold tracking-[-0.02em] text-4xl text-navy">Privacy policy</h1>
+        <p className="mt-6 bg-red/15 px-4 py-3 text-sm text-red-dark">
           Draft: the full privacy policy will be published before the site launches.
         </p>
         <p className="mt-6 leading-relaxed text-muted">

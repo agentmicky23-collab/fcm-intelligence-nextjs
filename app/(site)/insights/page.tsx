@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { JoinCta } from "@/components/JoinCta";
-import { Container, Eyebrow } from "@/components/ui";
+import { Container, Eyebrow, Slant } from "@/components/ui";
 import { getArticles } from "@/lib/articles";
 
 export const metadata: Metadata = {
@@ -13,10 +13,13 @@ export default function InsightsPage() {
   const articles = getArticles();
   return (
     <>
-      <section className="bg-navy">
-        <Container className="py-20 md:py-24">
-          <Eyebrow>Insights</Eyebrow>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl leading-tight text-white sm:text-5xl">
+      <section className="relative overflow-hidden bg-night">
+        <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
+        <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
+        <Slant className="inset-y-0 right-[25%] hidden w-[0.8%] bg-red/55 md:block" />
+        <Container className="relative py-20 md:py-24">
+          <Eyebrow light>Insights</Eyebrow>
+          <h1 className="mt-5 max-w-3xl font-display font-bold tracking-[-0.02em] text-4xl leading-tight text-white sm:text-5xl">
             What I&apos;ve learned running Post Offices, written down.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-white/70">

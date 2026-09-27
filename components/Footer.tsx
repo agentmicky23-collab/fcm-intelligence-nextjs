@@ -14,9 +14,9 @@ const columns = [
   {
     title: "Work with me",
     links: [
-      { href: "/services", label: "All services" },
+      { href: "/services", label: "Practice areas" },
       { href: "/reports", label: "Acquisition reports" },
-      { href: "/contact", label: "Get in touch" },
+      { href: "/contact", label: "Book a consultation" },
     ],
   },
   {
@@ -35,8 +35,8 @@ export function Footer() {
   ].filter((s) => s.href);
 
   return (
-    <footer className="bg-navy-950 text-white/70">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+    <footer className="border-t-[3px] border-red bg-night text-white/70">
+      <div className="mx-auto grid max-w-[1280px] gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <Image src="/brand/logo-full-white.png" alt="FCM First Class Managerial" width={1318} height={435} className="h-12 w-auto" />
           <p className="mt-6 max-w-xs text-sm leading-relaxed">
@@ -45,7 +45,7 @@ export function Footer() {
           {socials.length > 0 && (
             <div className="mt-6 flex gap-4 text-sm">
               {socials.map((s) => (
-                <a key={s.label} href={s.href} className="hover:text-gold" target="_blank" rel="noopener noreferrer">
+                <a key={s.label} href={s.href} className="hover:text-white" target="_blank" rel="noopener noreferrer">
                   {s.label}
                 </a>
               ))}
@@ -54,7 +54,7 @@ export function Footer() {
         </div>
         {columns.map((col) => (
           <div key={col.title}>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">{col.title}</p>
+            <p className="font-display text-sm font-semibold text-white">{col.title}</p>
             <ul className="mt-5 space-y-3 text-sm">
               {col.links.map((l) => (
                 <li key={l.href}>
@@ -68,7 +68,7 @@ export function Footer() {
         ))}
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>
             © {new Date().getFullYear()} {site.company}. FCM Intelligence is independent and is not part of or endorsed by Post Office Limited.
           </p>

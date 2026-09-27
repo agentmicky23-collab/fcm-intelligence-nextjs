@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { nav } from "@/lib/site";
+import { nav, site } from "@/lib/site";
 
 export function Header() {
   const pathname = usePathname();
@@ -13,39 +13,40 @@ export function Header() {
   const open = openOn === pathname;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy/95 backdrop-blur supports-[backdrop-filter]:bg-navy/85">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <Link href="/" className="flex items-center gap-3" aria-label="FCM Intelligence home">
-          <Image src="/brand/logo-mark-gold.png" alt="" width={729} height={177} className="h-6 w-auto" priority />
-          <span className="hidden border-l border-white/20 pl-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 sm:inline">
-            Intelligence
-          </span>
+    <header className="sticky top-0 z-50 bg-night">
+      <div className="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-5 sm:px-8">
+        <Link href="/" className="flex items-center gap-4" aria-label={`${site.owner}, FCM Intelligence home`}>
+          <Image src="/brand/logo-mark-white.png" alt="" width={729} height={177} className="h-6 w-auto" priority />
+          <span className="h-5 w-px bg-white/25" aria-hidden />
+          <span className="text-sm font-medium text-white/85">{site.owner}</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">
           {nav.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm transition-colors ${active ? "text-gold" : "text-white/80 hover:text-white"}`}
+                aria-current={active ? "page" : undefined}
+                className={`relative py-1 text-sm transition-colors ${active ? "text-white" : "text-white/75 hover:text-white"}`}
               >
                 {item.label}
+                {active && <span aria-hidden className="absolute -bottom-1 left-0 h-[2px] w-full bg-red" />}
               </Link>
             );
           })}
-          <Link
-            href="/account"
-            className="rounded-full border border-gold/60 px-4 py-2 text-sm font-medium text-gold transition-colors hover:bg-gold hover:text-navy"
-          >
+          <Link href="/account" className="text-sm text-white/75 transition-colors hover:text-white">
             Join free
+          </Link>
+          <Link href="/contact" className="bg-red px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-dark">
+            Book a consultation
           </Link>
         </nav>
 
         <button
           type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-white md:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center text-white lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -58,14 +59,14 @@ export function Header() {
       </div>
 
       {open && (
-        <nav id="mobile-menu" className="border-t border-white/10 bg-navy px-5 pb-6 pt-2 md:hidden" aria-label="Mobile">
-          {nav.map((item) => (
+        <nav id="mobile-menu" className="border-t border-white/10 bg-night px-5 pb-6 pt-2 lg:hidden" aria-label="Mobile">
+          {[...nav, { href: "/account", label: "Join free" }].map((item) => (
             <Link key={item.href} href={item.href} className="block border-b border-white/10 py-4 text-white">
               {item.label}
             </Link>
           ))}
-          <Link href="/account" className="mt-5 block rounded-full bg-gold py-3 text-center font-semibold text-navy">
-            Join free
+          <Link href="/contact" className="mt-5 block bg-red py-3.5 text-center font-semibold text-white">
+            Book a consultation
           </Link>
         </nav>
       )}

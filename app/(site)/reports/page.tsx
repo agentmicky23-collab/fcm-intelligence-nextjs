@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ButtonLink, Container, Eyebrow, SectionHeading } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { stages } from "@/lib/services";
 
 export const metadata: Metadata = {
@@ -13,10 +13,13 @@ const reports = buying.services.filter((s) => s.href === "/reports");
 export default function ReportsPage() {
   return (
     <>
-      <section className="bg-navy">
-        <Container className="py-20 md:py-24">
-          <Eyebrow>Acquisition reports</Eyebrow>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl leading-tight text-white sm:text-5xl">
+      <section className="relative overflow-hidden bg-night">
+        <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
+        <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
+        <Slant className="inset-y-0 right-[25%] hidden w-[0.8%] bg-red/55 md:block" />
+        <Container className="relative py-20 md:py-24">
+          <Eyebrow light>Acquisition reports</Eyebrow>
+          <h1 className="mt-5 max-w-3xl font-display font-bold tracking-[-0.02em] text-4xl leading-tight text-white sm:text-5xl">
             Know what you&apos;re buying before you spend a penny on solicitors.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-white/70">
@@ -31,22 +34,22 @@ export default function ReportsPage() {
           {reports.map((r, i) => (
             <div
               key={r.slug}
-              className={`flex flex-col rounded-2xl p-8 ${i === 1 ? "bg-navy text-white ring-2 ring-gold" : "border border-cream-dark bg-white"}`}
+              className={`flex flex-col p-8 ${i === 1 ? "bg-navy text-white ring-2 ring-red" : "border border-line bg-white"}`}
             >
-              {i === 1 && <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-gold">The full picture</p>}
-              <h2 className={`font-display text-3xl ${i === 1 ? "text-white" : "text-navy"}`}>{r.name}</h2>
-              <p className={`mt-2 font-display text-4xl ${i === 1 ? "text-gold" : "text-gold-dark"}`}>{r.price}</p>
+              {i === 1 && <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-red">The full picture</p>}
+              <h2 className={`font-display font-bold tracking-[-0.02em] text-3xl ${i === 1 ? "text-white" : "text-navy"}`}>{r.name}</h2>
+              <p className={`mt-2 font-display font-bold tracking-[-0.02em] text-4xl ${i === 1 ? "text-red" : "text-red-dark"}`}>{r.price}</p>
               <p className={`mt-4 leading-relaxed ${i === 1 ? "text-white/75" : "text-muted"}`}>{r.summary}</p>
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {r.includes.map((item) => (
                   <li key={item} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red" aria-hidden />
                     {item}
                   </li>
                 ))}
               </ul>
               <div className="mt-8">
-                <ButtonLink href={`/contact?service=${r.slug}`} variant={i === 1 ? "gold" : "navy"}>
+                <ButtonLink href={`/contact?service=${r.slug}`} variant={i === 1 ? "red" : "navy"}>
                   Register interest
                 </ButtonLink>
               </div>
@@ -65,8 +68,8 @@ export default function ReportsPage() {
               ["I review it", "Every report is checked before it reaches you. If something doesn't add up, we say so."],
             ].map(([title, text], i) => (
               <li key={title}>
-                <p className="font-display text-3xl text-gold">{i + 1}</p>
-                <h3 className="mt-2 font-display text-lg text-navy">{title}</h3>
+                <p className="font-display font-bold tracking-[-0.02em] text-3xl text-red">{i + 1}</p>
+                <h3 className="mt-2 font-display font-bold tracking-[-0.02em] text-lg text-navy">{title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
               </li>
             ))}

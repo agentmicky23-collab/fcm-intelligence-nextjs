@@ -27,7 +27,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
     window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent(`Enquiry: ${chosen}`)}&body=${encodeURIComponent(body)}`;
   }
 
-  const field = "mt-2 block w-full rounded-lg border border-cream-dark bg-white px-4 py-3 text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30";
+  const field = "mt-2 block w-full border border-line bg-white px-4 py-3 text-ink focus:border-red focus:outline-none focus:ring-2 focus:ring-red/30";
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
@@ -79,7 +79,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
       </label>
       <button
         type="submit"
-        className="inline-flex min-h-11 items-center rounded-full bg-gold px-7 py-3 text-sm font-semibold text-navy hover:bg-gold-light"
+        className="inline-flex min-h-11 items-center bg-red px-7 py-3 text-sm font-semibold text-white hover:bg-red-dark"
       >
         Send enquiry
       </button>

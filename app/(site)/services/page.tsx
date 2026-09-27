@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ButtonLink, Container, Eyebrow, SectionHeading } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { stages, type Service } from "@/lib/services";
 import { site } from "@/lib/site";
 
@@ -12,15 +12,15 @@ export const metadata: Metadata = {
 function ServiceCard({ service }: { service: Service }) {
   const href = service.href ?? `/contact?service=${service.slug}`;
   return (
-    <div className="flex flex-col rounded-2xl border border-cream-dark bg-white p-7">
+    <div className="flex flex-col border border-line bg-white p-7">
       <div className="flex items-start justify-between gap-4">
-        <h3 className="font-display text-xl text-navy">{service.name}</h3>
+        <h3 className="font-display font-bold tracking-[-0.02em] text-xl text-navy">{service.name}</h3>
         <div className="shrink-0 text-right">
           <p
             className={
               service.price.startsWith("£")
-                ? "font-display text-xl text-gold-dark"
-                : "pt-1 text-xs font-semibold uppercase tracking-wide text-gold-dark"
+                ? "font-display font-bold tracking-[-0.02em] text-xl text-red-dark"
+                : "pt-1 text-xs font-semibold uppercase tracking-wide text-red-dark"
             }
           >
             {service.price}
@@ -32,12 +32,12 @@ function ServiceCard({ service }: { service: Service }) {
       <ul className="mt-5 flex-1 space-y-2 text-sm text-ink">
         {service.includes.map((item) => (
           <li key={item} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-red" aria-hidden />
             {item}
           </li>
         ))}
       </ul>
-      <Link href={href} className="mt-6 text-sm font-semibold text-gold-dark hover:text-navy">
+      <Link href={href} className="mt-6 text-sm font-semibold text-red-dark hover:text-navy">
         {service.href ? "Find out more →" : "Enquire →"}
       </Link>
     </div>
@@ -47,10 +47,13 @@ function ServiceCard({ service }: { service: Service }) {
 export default function ServicesPage() {
   return (
     <>
-      <section className="bg-navy">
-        <Container className="py-20 md:py-24">
-          <Eyebrow>Work with me</Eyebrow>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl leading-tight text-white sm:text-5xl">
+      <section className="relative overflow-hidden bg-night">
+        <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
+        <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
+        <Slant className="inset-y-0 right-[25%] hidden w-[0.8%] bg-red/55 md:block" />
+        <Container className="relative py-20 md:py-24">
+          <Eyebrow light>Work with me</Eyebrow>
+          <h1 className="mt-5 max-w-3xl font-display font-bold tracking-[-0.02em] text-4xl leading-tight text-white sm:text-5xl">
             When you want me in your corner.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-white/70">
@@ -62,14 +65,14 @@ export default function ServicesPage() {
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="rounded-full border border-white/25 px-5 py-2.5 text-sm text-white hover:border-gold hover:text-gold"
+                className=" border border-white/25 px-5 py-2.5 text-sm text-white hover:border-red hover:text-red"
               >
                 {s.title}
               </a>
             ))}
           </nav>
           {!site.pricesConfirmed && (
-            <p className="mt-8 inline-block rounded-lg bg-gold/15 px-4 py-2 text-sm text-gold-light">
+            <p className="mt-8 inline-block bg-red/15 px-4 py-2 text-sm text-red-light">
               Draft: prices on this page are provisional and still to be confirmed.
             </p>
           )}
@@ -92,7 +95,7 @@ export default function ServicesPage() {
       <section className="bg-navy">
         <Container className="flex flex-col items-start justify-between gap-6 py-16 md:flex-row md:items-center">
           <div>
-            <h2 className="font-display text-3xl text-white">Not sure where to start?</h2>
+            <h2 className="font-display font-bold tracking-[-0.02em] text-3xl text-white">Not sure where to start?</h2>
             <p className="mt-2 text-white/70">Book a discovery call and I&apos;ll point you in the right direction.</p>
           </div>
           <ButtonLink href="/contact?service=discovery-call">Book a discovery call</ButtonLink>
