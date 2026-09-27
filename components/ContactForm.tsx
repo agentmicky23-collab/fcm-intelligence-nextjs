@@ -6,11 +6,16 @@ import { site } from "@/lib/site";
 
 const allServices = stages.flatMap((s) => s.services);
 
+// Services priced on the size of the operation, so the form asks for it up front.
+const sizedServices = ["health-check"];
+
 /** Until the enquiry system is built, the form opens the visitor's email app with everything filled in. */
 export function ContactForm({ initialService }: { initialService?: string }) {
   const [service, setService] = useState(
     allServices.some((s) => s.slug === initialService) ? initialService! : "general",
   );
+
+  const sized = sizedServices.includes(service);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,6 +26,7 @@ export function ContactForm({ initialService }: { initialService?: string }) {
       `Email: ${data.get("email")}`,
       `Phone: ${data.get("phone") || "-"}`,
       `Situation: ${data.get("situation")}`,
+      ...(sized ? [`Branches: ${data.get("branches")}`, `Counters (all branches): ${data.get("counters")}`] : []),
       "",
       String(data.get("message") ?? ""),
     ].join("\n");
@@ -73,6 +79,19 @@ export function ContactForm({ initialService }: { initialService?: string }) {
           ))}
         </select>
       </label>
+      {sized && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <label className="block text-sm font-medium text-navy">
+            How many branches do you run?
+            <input name="branches" type="number" min={1} required inputMode="numeric" className={field} />
+          </label>
+          <label className="block text-sm font-medium text-navy">
+            How many counters in total?
+            <input name="counters" type="number" min={1} required inputMode="numeric" className={field} />
+            <span className="mt-1.5 block text-xs font-normal text-muted">Across all your branches. The price depends on it.</span>
+          </label>
+        </div>
+      )}
       <label className="block text-sm font-medium text-navy">
         Tell me a bit more
         <textarea name="message" rows={6} required className={field} />
