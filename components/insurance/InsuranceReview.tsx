@@ -222,7 +222,7 @@ function Enquiry({ answers, gaps }: { answers: Answers; gaps: ReturnType<typeof 
       "ANSWERS",
       ...questions.map((q) => `${q.id}. ${q.question}\n   ${q.options.find((o) => o.value === answers[q.storageKey])?.label ?? "-"}`),
     ];
-    window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent("Insurance Review enquiry")}&body=${encodeURIComponent(lines.join("\n"))}`;
+    window.location.assign(`mailto:${site.contactEmail}?subject=${encodeURIComponent("Insurance Review enquiry")}&body=${encodeURIComponent(lines.join("\n"))}`);
   }
 
   return (

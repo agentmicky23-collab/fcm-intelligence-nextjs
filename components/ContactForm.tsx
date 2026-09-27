@@ -6,8 +6,9 @@ import { site } from "@/lib/site";
 
 const allServices = stages.flatMap((s) => s.services);
 
-// Services priced on the size of the operation, so the form asks for it up front.
+// Services quoted on the branches, counters and checks chosen, so the form asks for them up front.
 const sizedServices = ["health-check"];
+type BranchRow = { id: number; name: string; counters: string };
 
 /** Until the enquiry system is built, the form opens the visitor's email app with everything filled in. */
 export function ContactForm({ initialService }: { initialService?: string }) {
@@ -16,6 +17,10 @@ export function ContactForm({ initialService }: { initialService?: string }) {
   );
 
   const sized = sizedServices.includes(service);
+  const [branches, setBranches] = useState<BranchRow[]>([{ id: 1, name: "", counters: "" }]);
+  const sizes = branches.map((b, i) => ({ label: b.name.trim() || `Branch ${i + 1}`, counters: Math.max(0, Math.floor(Number(b.counters) || 0)) }));
+  const checklist = allServices.find((x) => x.slug === service)?.includes ?? [];
+  const update = (id: number, patch: Partial<BranchRow>) => setBranches((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,11 +31,21 @@ export function ContactForm({ initialService }: { initialService?: string }) {
       `Email: ${data.get("email")}`,
       `Phone: ${data.get("phone") || "-"}`,
       `Situation: ${data.get("situation")}`,
-      ...(sized ? [`Branches: ${data.get("branches")}`, `Counters (all branches): ${data.get("counters")}`] : []),
+      ...(sized
+        ? [
+            "",
+            `BRANCHES (${sizes.length})`,
+            ...sizes.map((b) => `${b.label}: ${b.counters} counters`),
+            `Total counters: ${sizes.reduce((a, b) => a + b.counters, 0)}`,
+            "",
+            "CHECKS WANTED",
+            ...data.getAll("checks").map((c) => `- ${c}`),
+          ]
+        : []),
       "",
       String(data.get("message") ?? ""),
     ].join("\n");
-    window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent(`Enquiry: ${chosen}`)}&body=${encodeURIComponent(body)}`;
+    window.location.assign(`mailto:${site.contactEmail}?subject=${encodeURIComponent(`Enquiry: ${chosen}`)}&body=${encodeURIComponent(body)}`);
   }
 
   const field = "mt-2 block w-full border border-line bg-white px-4 py-3 text-ink focus:border-red focus:outline-none focus:ring-2 focus:ring-red/30";
@@ -80,17 +95,57 @@ export function ContactForm({ initialService }: { initialService?: string }) {
         </select>
       </label>
       {sized && (
-        <div className="grid gap-5 sm:grid-cols-2">
-          <label className="block text-sm font-medium text-navy">
-            How many branches do you run?
-            <input name="branches" type="number" min={1} required inputMode="numeric" className={field} />
-          </label>
-          <label className="block text-sm font-medium text-navy">
-            How many counters in total?
-            <input name="counters" type="number" min={1} required inputMode="numeric" className={field} />
-            <span className="mt-1.5 block text-xs font-normal text-muted">Across all your branches. The price depends on it.</span>
-          </label>
-        </div>
+        <fieldset className="border border-line bg-white p-5">
+          <legend className="px-1 text-sm font-medium text-navy">Your branches</legend>
+          <p className="text-xs text-muted">Add each branch and its number of counters, so the quote can show the cost for each one.</p>
+          <div className="mt-4 space-y-3">
+            {branches.map((b, i) => (
+              <div key={b.id} className="grid grid-cols-[1fr_96px_auto] items-end gap-3 sm:grid-cols-[1fr_120px_auto]">
+                <label className="block text-xs font-medium text-navy">
+                  Branch {i + 1} <span className="font-normal text-muted">(name optional)</span>
+                  <input value={b.name} onChange={(e) => update(b.id, { name: e.target.value })} className={field} />
+                </label>
+                <label className="block text-xs font-medium text-navy">
+                  Counters
+                  <input value={b.counters} onChange={(e) => update(b.id, { counters: e.target.value })} type="number" min={1} required inputMode="numeric" className={field} />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setBranches((rows) => rows.filter((r) => r.id !== b.id))}
+                  disabled={branches.length === 1}
+                  aria-label={`Remove branch ${i + 1}`}
+                  className="mb-1 h-11 w-9 text-lg text-muted hover:text-red disabled:invisible"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setBranches((rows) => [...rows, { id: Math.max(...rows.map((r) => r.id)) + 1, name: "", counters: "" }])}
+            className="mt-4 text-sm font-semibold text-red-dark hover:text-red"
+          >
+            + Add another branch
+          </button>
+          <p className="mt-4 border-t border-line pt-4 text-sm text-muted">
+            {sizes.length} {sizes.length === 1 ? "branch" : "branches"}, {sizes.reduce((a, b) => a + b.counters, 0)} counters in total
+          </p>
+        </fieldset>
+      )}
+      {sized && (
+        <fieldset className="border border-line bg-white p-5">
+          <legend className="px-1 text-sm font-medium text-navy">Which checks do you want?</legend>
+          <p className="text-xs text-muted">Tick everything you&apos;d like included. Not sure? Leave them all ticked and we&apos;ll talk it through.</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {checklist.map((c) => (
+              <label key={c} className="flex cursor-pointer items-center gap-3 border border-line px-3 py-2.5 text-sm has-[:checked]:border-navy">
+                <input type="checkbox" name="checks" value={c} defaultChecked className="h-4 w-4 accent-[var(--color-red)]" />
+                {c}
+              </label>
+            ))}
+          </div>
+        </fieldset>
       )}
       <label className="block text-sm font-medium text-navy">
         Tell me a bit more

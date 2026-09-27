@@ -190,7 +190,7 @@ export const stages: Stage[] = [
         name: "Branch Health Check",
         price: "Price on request",
         summary:
-          "A full, independent review of your branch. Priced on how many branches you run and how many counters each one has.",
+          "A full, independent review of your branch. Choose the checks you need; the price depends on those, and on your branches and counters.",
         includes: [
           "Operational excellence monitoring",
           "Independent audit of cash and stamp stock",
