@@ -25,7 +25,7 @@ This week is about control. Know what you've got, lock it down, and let the team
 **Cash and compliance**
 
 - [ ] Handover day: expect the branch to be closed for most of the day while Post Office auditors count every bit of cash, every stamp and all the stock
-- [ ] Have your own independent check of that count before you sign. Auditors are human and they do make mistakes. Once you've signed, a shortfall found that evening or the next day is yours
+- [ ] Have an independent check of that count before you sign. Auditors are human and they do make mistakes. Once you've signed, a shortfall found that evening or the next day is yours. Post Office rarely suggests this, and it won't let just anyone into a transfer audit. We're known and trusted within Post Office, so we can be on site with you to check the cash, stamps and stock while their auditors count
 - [ ] Any losses or gains from the audit are settled by the outgoing postmaster before the branch is signed over
 - [ ] Sign for the safe keys, alarm codes and access codes, and check each one works
 - [ ] Change locks, alarm codes and safe codes
