@@ -1,6 +1,6 @@
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 
-/** Invitation to create a free account: the main conversion on content pages. */
+/** Invitation to join free: the main conversion on content pages. */
 export function JoinCta() {
   return (
     <section className="bg-night">
@@ -15,7 +15,7 @@ export function JoinCta() {
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
-          <ButtonLink href="/account">Create a free account</ButtonLink>
+          <ButtonLink href="/account">Join free</ButtonLink>
           <ButtonLink href="/resources" variant="outline-light">
             See what&apos;s included
           </ButtonLink>

@@ -38,9 +38,10 @@ export default async function ArticlePage(props: PageProps<"/insights/[slug]">) 
   return (
     <>
       <section className="relative overflow-hidden bg-night">
-        <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
-        <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
-        <Slant className="inset-y-0 right-[25%] hidden w-[0.8%] bg-red/55 md:block" />
+        {/* The article column is centred, so the stripes sit further right and only on wide screens. */}
+        <Slant className="inset-y-0 right-[-16%] hidden w-[24%] bg-navy xl:block" />
+        <Slant className="inset-y-0 right-[6%] hidden w-[2.5%] bg-red xl:block" />
+        <Slant className="inset-y-0 right-[10%] hidden w-[0.7%] bg-red/55 xl:block" />
         <Container className="relative max-w-3xl py-16 md:py-20">
           <Link href="/insights" className="text-sm text-white/60 hover:text-red">
             ← All insights

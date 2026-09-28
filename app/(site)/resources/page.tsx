@@ -4,7 +4,7 @@ import { resources } from "@/lib/resources";
 
 export const metadata: Metadata = {
   title: "Free resources",
-  description: "Checklists, worksheets and guides for buying and running a Post Office. Free with a member account.",
+  description: "Checklists, worksheets and guides for buying and running a Post Office. Free for members.",
 };
 
 export default function ResourcesPage() {
@@ -20,10 +20,10 @@ export default function ResourcesPage() {
             The checklists and guides I use myself.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-white/70">
-            All free. Create a member account and you can download every one of them.
+            All free. Join and I&apos;ll email you each one as it&apos;s ready.
           </p>
           <div className="mt-8">
-            <ButtonLink href="/account">Create a free account</ButtonLink>
+            <ButtonLink href="/account">Join free</ButtonLink>
           </div>
         </Container>
       </section>
@@ -34,7 +34,7 @@ export default function ResourcesPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-dark">{r.format}</p>
               <h2 className="mt-3 font-display font-bold tracking-[-0.02em] text-xl text-navy">{r.title}</h2>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{r.description}</p>
-              <p className="mt-6 text-xs font-medium text-muted">Free for members</p>
+              <p className="mt-6 text-xs font-medium text-muted">Free for members · Coming soon</p>
             </div>
           ))}
         </Container>

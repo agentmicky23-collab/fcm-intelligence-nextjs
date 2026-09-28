@@ -46,6 +46,8 @@ body {
 .prose-fcm > * + * { margin-top: 1.25em; }
 .prose-fcm h2 {
   font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   font-size: 1.75rem;
   line-height: 1.25;
   color: var(--color-navy);
@@ -53,6 +55,7 @@ body {
 }
 .prose-fcm h3 {
   font-family: var(--font-display);
+  font-weight: 700;
   font-size: 1.3rem;
   color: var(--color-navy);
   margin-top: 1.8em;
@@ -93,3 +96,7 @@ body {
   .report [style*="opacity"] { opacity: 1 !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* When a new page opens, the router scrolls its first element into view. Offset that by the
+   sticky header's height so pages open at the very top, not tucked under the header. */
+#main > * { scroll-margin-top: 5rem; }

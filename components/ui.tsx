@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-[1280px] px-5 sm:px-8 ${className}`}>{children}</div>;
+  // A narrower width passed in (e.g. max-w-3xl for reading) replaces the default rather than competing with it.
+  const width = /(^|\s)max-w-/.test(className) ? "" : "max-w-[1280px]";
+  return <div className={`mx-auto w-full ${width} px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
 /** The slanted cut from the FCM logo, used as the site's recurring shape. */
