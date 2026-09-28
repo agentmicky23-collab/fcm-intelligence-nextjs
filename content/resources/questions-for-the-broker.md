@@ -29,11 +29,11 @@ The first call with the broker is where you find out whether a branch is worth y
 
 1. What is the annual Post Office remuneration, and can I see the monthly statements?
 2. What are the daily session counts?
-3. What type of contract is it? [CHECK: current contract categories]
+3. What type of contract is it: Mains, Local or SPSO? If it's Local or SPSO, are the figures from before April 2026, when those contracts were paid less per transaction?
 4. When was the last audit, and was anything outstanding?
 5. Any losses, suspensions or transaction correction problems?
 6. Is Post Office planning any changes to this branch or others nearby?
-7. Does the branch get any support payments or temporary top-ups? [CHECK: which ones currently exist and whether they transfer]
+7. Does the branch get any support payments or temporary top-ups? On a Mains branch, can I see the figures without the 4% top-up that ends in April 2027? Is the Major Branch Support Payment or Remote Support Payment being claimed?
 
 **Good answer:** statements and session counts sent within a few days.
 **Worrying answer:** "the income is about £X" with nothing to back it up, or no session data at all. I treat a seller who won't share session data as a reason to walk away.

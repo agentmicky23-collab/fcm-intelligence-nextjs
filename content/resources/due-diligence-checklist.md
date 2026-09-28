@@ -37,8 +37,11 @@ If a seller can't or won't give you something on this list, write that down too.
 
 - [ ] Monthly remuneration statements for the last five years
 - [ ] Income split by product: banking, mails, bill payments, travel, other
-- [ ] Contract type confirmed (for example Mains or Local) [CHECK: confirm current Post Office contract categories before publishing]
-- [ ] Any fixed payments, support payments or temporary top-ups, and whether they continue under a new owner [CHECK: current Post Office support payments and any time-limited top-ups]
+- [ ] Contract type confirmed: Mains, Local or SPSO. Since April 2026 all three are paid the same rate per transaction, so Local and SPSO figures from before then understate what the branch earns now
+- [ ] Mains branches: figures with and without the temporary 4% top-up, which runs from April 2026 trading to April 2027
+- [ ] Major Branch Support Payment (town and city centres with two or more working banks within a quarter of a mile): is it being claimed, and will the branch still qualify?
+- [ ] Remote Support Payment (fewer than 1,500 residents within half a mile, £5,000 a year): is it being claimed if the branch qualifies?
+- [ ] Any other fixed payments or trial payments, and whether they are due to end
 
 **Red flags:** income leaning heavily on one product that could move elsewhere. Recent figures lifted by a temporary payment you won't keep. Statements that don't match the listing.
 

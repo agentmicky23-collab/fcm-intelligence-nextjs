@@ -83,7 +83,7 @@ The asking price is the number everyone looks at. The costs that hurt new postma
 
 | Cost | What to check | Your estimate (£) |
 |---|---|---|
-| Cash to trade | Enough to pay wages, suppliers and bills before income catches up. [CHECK: when Post Office remuneration is paid, so you know the gap] | |
+| Cash to trade | Enough to pay wages, suppliers and bills before income catches up. Remuneration for a month's trading is paid the following month, so plan for the gap. | |
 | First months of wages | At least one full payroll with no income assumed. | |
 | A slow quarter | What happens if trade dips while you settle in. | |
 | **Subtotal** | | |

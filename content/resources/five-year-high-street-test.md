@@ -51,7 +51,7 @@ This can cut both ways. When banks close, people often turn to the Post Office f
 
 **Score:** 2 = banks closed or closing and your branch is the natural place for that banking. 1 = no change. 0 = a new banking service nearby that could take your counter banking.
 
-Check how any change affects remuneration or support payments tied to the location. [CHECK: current Post Office payments linked to nearby banks]
+Check how any change affects payments tied to the location. The Major Branch Support Payment, a 4% boost to variable remuneration, depends on two or more working banks within a quarter of a mile. Eligibility is checked each January and applied from April, so if a qualifying bank closes, the payment goes the following April.
 
 **Score: ___ / 2**
 
