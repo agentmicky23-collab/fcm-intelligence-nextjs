@@ -8,7 +8,8 @@ export async function sendEmail(message: {
   html?: string;
   replyTo?: string;
   headers?: Record<string, string>;
-}) {
+  attachments?: { filename: string; content: string; content_id?: string; content_type?: string }[];
+}): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
     console.error("email: RESEND_API_KEY is not set, so nothing was sent:", message.subject);
@@ -26,11 +27,16 @@ export async function sendEmail(message: {
         ...(message.html && { html: message.html }),
         ...(message.replyTo && { reply_to: message.replyTo }),
         ...(message.headers && { headers: message.headers }),
+        ...(message.attachments && { attachments: message.attachments }),
       }),
       cache: "no-store",
       signal: AbortSignal.timeout(8000),
     });
-    if (!res.ok) console.error("email: send failed", res.status, (await res.text()).slice(0, 300));
+    if (!res.ok) {
+      console.error("email: send failed", res.status, (await res.text()).slice(0, 300));
+      // If an attachment was the problem, the email still matters more than the logo.
+      if (message.attachments && res.status >= 400 && res.status < 500) return sendEmail({ ...message, attachments: undefined });
+    }
     return res.ok;
   } catch (err) {
     console.error("email: send failed", err);
