@@ -19,12 +19,6 @@ export const site = {
   indexable: false,
 } as const;
 
-export const stats = [
-  { value: "15", label: "years as a subpostmaster" },
-  { value: "43", label: "Post Office branches" },
-  { value: "200+", label: "staff" },
-  { value: "10", label: "Crown conversions in 2025" },
-] as const;
 
 export const nav = [
   { href: "/insights", label: "Insights" },
