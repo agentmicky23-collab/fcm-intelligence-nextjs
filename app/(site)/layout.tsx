@@ -1,5 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { JsonLd } from "@/components/JsonLd";
+import { organization, person, website } from "@/lib/seo";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +12,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       >
         Skip to content
       </a>
+      <JsonLd data={[organization, person, website]} />
       <Header />
       <main id="main" className="flex-1">
         {children}

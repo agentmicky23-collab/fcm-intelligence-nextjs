@@ -3,8 +3,10 @@ import Link from "next/link";
 import { LegalPart as Part } from "@/components/Legal";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Terms of use" };
+export const metadata: Metadata = pageMeta("/terms", "Terms of use", "The terms for using the FCM Intelligence website.");
+
 
 export default function Page() {
   return (

@@ -3,11 +3,10 @@ import { MemberSignup } from "@/components/MemberSignup";
 import { Container, Eyebrow, Slant } from "@/components/ui";
 import { memberBenefits } from "@/lib/member";
 import { resources } from "@/lib/resources";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Free membership",
-  description: "Free membership: checklists, guides and tools for Post Office buyers and operators.",
-};
+export const metadata: Metadata = pageMeta("/account", "Free Membership for Post Office Buyers and Operators", "Join free for checklists, worksheets and guides on buying and running a Post Office, written by an operator of 43 branches.");
+
 
 export default function AccountPage() {
   return (

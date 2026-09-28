@@ -6,6 +6,8 @@ import remarkGfm from "remark-gfm";
 import { PrintButton } from "@/components/report/PrintButton";
 import { RequestAccess } from "@/components/RequestAccess";
 import { ButtonLink, Container, Slant } from "@/components/ui";
+import { JsonLd } from "@/components/JsonLd";
+import { abs, breadcrumbs, orgId, pageMeta, personId } from "@/lib/seo";
 import { currentMember } from "@/lib/server/member";
 import { getResource, prepareBody, resources, showReviewNotes } from "@/lib/resources";
 
@@ -15,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata(props: PageProps<"/resources/[slug]">): Promise<Metadata> {
   const r = getResource((await props.params).slug);
-  return r ? { title: r.title, description: r.summary } : {};
+  return r ? pageMeta(`/resources/${r.slug}`, r.title, r.summary) : {};
 }
 
 /** Non-members see the introduction and the first section, then an invitation to join. */
@@ -32,6 +34,21 @@ export default async function ResourcePage(props: PageProps<"/resources/[slug]">
 
   return (
     <div className="report">
+      <JsonLd
+        data={[
+          {
+            "@type": "Article",
+            headline: r.title,
+            description: r.summary,
+            genre: r.format,
+            inLanguage: "en-GB",
+            mainEntityOfPage: abs(`/resources/${r.slug}`),
+            author: { "@id": personId },
+            publisher: { "@id": orgId },
+          },
+          breadcrumbs([["Free resources", "/resources"], [r.title, `/resources/${r.slug}`]]),
+        ]}
+      />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-16%] hidden w-[24%] bg-navy xl:block" />
         <Slant className="inset-y-0 right-[6%] hidden w-[2.5%] bg-red xl:block" />

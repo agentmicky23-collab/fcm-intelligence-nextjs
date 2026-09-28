@@ -3,16 +3,17 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { JoinCta } from "@/components/JoinCta";
 import { Container, Eyebrow, Slant } from "@/components/ui";
 import { getArticles } from "@/lib/articles";
+import { JsonLd } from "@/components/JsonLd";
+import { breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Insights",
-  description: "Practical advice on buying and running a Post Office, from 15 years and 43 branches of experience.",
-};
+export const metadata: Metadata = pageMeta("/insights", "Advice on Buying and Running a Post Office", "Practical articles on buying and running a Post Office: leases, accounts, hidden costs, reviews and more, from 15 years and 43 branches of experience.");
+
 
 export default function InsightsPage() {
   const articles = getArticles();
   return (
     <>
+      <JsonLd data={breadcrumbs([["Insights", "/insights"]])} />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
         <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />

@@ -8,6 +8,8 @@ import { JoinCta } from "@/components/JoinCta";
 import { Container, Slant } from "@/components/ui";
 import { formatDate, getArticle, getArticles } from "@/lib/articles";
 import { site } from "@/lib/site";
+import { JsonLd } from "@/components/JsonLd";
+import { abs, breadcrumbs, orgId, personId, shareImage } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -19,10 +21,25 @@ export async function generateMetadata(props: PageProps<"/insights/[slug]">): Pr
   const { slug } = await props.params;
   const article = getArticle(slug);
   if (!article) return {};
+  // Articles use their own share image (opengraph-image.tsx), so the site-wide one is left out here.
+  const path = `/insights/${slug}`;
   return {
     title: article.title,
     description: article.description,
-    openGraph: { type: "article", title: article.title, description: article.description, publishedTime: article.date },
+    alternates: { canonical: abs(path) },
+    authors: [{ name: site.owner, url: abs("/about") }],
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.description,
+      url: abs(path),
+      siteName: site.name,
+      locale: "en_GB",
+      publishedTime: article.date,
+      authors: [abs("/about")],
+      section: article.category,
+    },
+    twitter: { card: "summary_large_image", title: article.title, description: article.description },
   };
 }
 
@@ -37,6 +54,26 @@ export default async function ArticlePage(props: PageProps<"/insights/[slug]">) 
 
   return (
     <>
+      <JsonLd
+        data={[
+          {
+            "@type": "BlogPosting",
+            "@id": `${abs(`/insights/${article.slug}`)}#article`,
+            headline: article.title,
+            description: article.description,
+            datePublished: article.date,
+            dateModified: article.date,
+            articleSection: article.category,
+            inLanguage: "en-GB",
+            wordCount: article.body.trim().split(/\s+/).length,
+            mainEntityOfPage: abs(`/insights/${article.slug}`),
+            image: shareImage.url,
+            author: { "@id": personId },
+            publisher: { "@id": orgId },
+          },
+          breadcrumbs([["Insights", "/insights"], [article.title, `/insights/${article.slug}`]]),
+        ]}
+      />
       <section className="relative overflow-hidden bg-night">
         {/* The article column is centred, so the stripes sit further right and only on wide screens. */}
         <Slant className="inset-y-0 right-[-16%] hidden w-[24%] bg-navy xl:block" />

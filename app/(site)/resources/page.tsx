@@ -4,11 +4,11 @@ import { RequestAccess } from "@/components/RequestAccess";
 import { ButtonLink, Container, Eyebrow, Slant } from "@/components/ui";
 import { currentMember } from "@/lib/server/member";
 import { resources } from "@/lib/resources";
+import { JsonLd } from "@/components/JsonLd";
+import { breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Free resources",
-  description: "Checklists, worksheets and guides for buying and running a Post Office. Free for members.",
-};
+export const metadata: Metadata = pageMeta("/resources", "Free Post Office Checklists and Guides", "Due diligence checklist, questions for the broker, hidden costs worksheet, TUPE explained and more. Free resources for Post Office buyers.");
+
 
 export default async function ResourcesPage() {
   const member = await currentMember();
@@ -16,6 +16,7 @@ export default async function ResourcesPage() {
 
   return (
     <>
+      <JsonLd data={breadcrumbs([["Free resources", "/resources"]])} />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
         <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />

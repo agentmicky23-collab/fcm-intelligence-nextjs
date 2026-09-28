@@ -8,11 +8,10 @@ import { PrintButton } from "@/components/report/PrintButton";
 import { ButtonLink, Slant } from "@/components/ui";
 import { example as r } from "@/lib/example-report";
 import { reportSections } from "@/lib/report";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Example Intelligence Report",
-  description: "A full example of an FCM Intelligence Report on a fictional Post Office branch.",
-};
+export const metadata: Metadata = pageMeta("/reports/example", "Example Post Office Intelligence Report", "A full example of an FCM Intelligence Report on a fictional Post Office branch: all 15 sections, with charts, maps and a verdict.");
+
 
 const k = (n: number) => `£${Math.abs(n)}k`;
 

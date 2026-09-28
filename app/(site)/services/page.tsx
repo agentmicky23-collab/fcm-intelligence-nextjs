@@ -3,11 +3,13 @@ import Link from "next/link";
 import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { stages, type Service } from "@/lib/services";
 import { site } from "@/lib/site";
+import { Faq } from "@/components/Faq";
+import { JsonLd } from "@/components/JsonLd";
+import { serviceFaqs } from "@/lib/faqs";
+import { allServices, breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Work with me",
-  description: "Reports, consultations and hands-on support for buying, starting and running a Post Office.",
-};
+export const metadata: Metadata = pageMeta("/services", "Post Office Consultancy, Training and Support", "Reports, consultations and hands-on support for buying, starting and running a Post Office, from an operator of 43 branches. All prices plus VAT.");
+
 
 function ServiceCard({ service }: { service: Service }) {
   const href = service.href ?? `/contact?service=${service.slug}`;
@@ -48,6 +50,7 @@ function ServiceCard({ service }: { service: Service }) {
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd data={[...allServices(), breadcrumbs([["Services", "/services"]])]} />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
         <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
@@ -119,6 +122,8 @@ export default function ServicesPage() {
           </Container>
         </section>
       ))}
+
+      <Faq items={serviceFaqs} />
 
       <section className="bg-navy">
         <Container className="flex flex-col items-start justify-between gap-6 py-16 md:flex-row md:items-center">

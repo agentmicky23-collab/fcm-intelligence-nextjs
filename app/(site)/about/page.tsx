@@ -3,12 +3,11 @@ import type { ReactNode } from "react";
 import { Movement } from "@/components/about/Movement";
 import { JoinCta } from "@/components/JoinCta";
 import { ButtonLink, Container, Eyebrow, Slant } from "@/components/ui";
+import { JsonLd } from "@/components/JsonLd";
+import { abs, breadcrumbs, pageMeta, personId } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About Mikesh Parekh",
-  description:
-    "Fifteen years, up to 100 branches, 43 today and a management team built from scratch. A profile of the Post Office operator behind FCM Intelligence.",
-};
+export const metadata: Metadata = pageMeta("/about", "About Mikesh Parekh", "Fifteen years, up to 100 branches, 43 today and a management team built from scratch. A profile of the Post Office operator behind FCM Intelligence.");
+
 
 const numbers = [
   { value: "15", label: "years operating Post Offices" },
@@ -39,6 +38,7 @@ function Quote({ children, by = "Mikesh Parekh" }: { children: ReactNode; by?: s
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={[{ "@type": "ProfilePage", url: abs("/about"), mainEntity: { "@id": personId } }, breadcrumbs([["About", "/about"]])]} />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
         <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />

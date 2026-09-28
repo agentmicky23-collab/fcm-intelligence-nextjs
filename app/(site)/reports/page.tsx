@@ -5,11 +5,13 @@ import { ReportMap } from "@/components/report/ReportMap";
 import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { example } from "@/lib/example-report";
 import { stages } from "@/lib/services";
+import { Faq } from "@/components/Faq";
+import { JsonLd } from "@/components/JsonLd";
+import { reportFaqs } from "@/lib/faqs";
+import { breadcrumbs, pageMeta, serviceSchema } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Acquisition reports",
-  description: "Insight (£199) and Intelligence (£499) reports on any UK Post Office, before you risk your money on it.",
-};
+export const metadata: Metadata = pageMeta("/reports", "Post Office Acquisition Reports", "Insight (£199 + VAT) and Intelligence (£499 + VAT) reports on any UK Post Office for sale: remuneration, location, competition, staffing, risks and negotiation.");
+
 
 const buying = stages.find((s) => s.id === "buying")!;
 const reports = buying.services.filter((s) => s.href === "/reports");
@@ -17,6 +19,7 @@ const reports = buying.services.filter((s) => s.href === "/reports");
 export default function ReportsPage() {
   return (
     <>
+      <JsonLd data={[...reports.map((s) => serviceSchema(s, buying.title)), breadcrumbs([["Reports", "/reports"]])]} />
       <section className="relative overflow-hidden bg-night">
         <Slant className="inset-y-0 right-[-12%] hidden w-[34%] bg-navy md:block" />
         <Slant className="inset-y-0 right-[20%] hidden w-[3%] bg-red md:block" />
@@ -122,6 +125,7 @@ export default function ReportsPage() {
           </ol>
         </Container>
       </section>
+      <Faq items={reportFaqs} />
     </>
   );
 }

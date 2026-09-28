@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { InsuranceReview } from "@/components/insurance/InsuranceReview";
 import { Container, Eyebrow, Slant } from "@/components/ui";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Insurance Review",
-  description: "Seventeen questions that show whether your Post Office insurance covers the risks you actually carry.",
-};
+export const metadata: Metadata = pageMeta("/services/insurance-review", "Free Post Office Insurance Review", "Seventeen questions that show whether your Post Office insurance covers the risks you actually carry. Free, instant results, nothing to buy.");
+
 
 export default function InsuranceReviewPage() {
   return (

@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
 import { Container, Eyebrow } from "@/components/ui";
 import { site } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Get in touch",
-  description: "Tell me where you are and what you need, and I'll come back to you personally.",
-};
+export const metadata: Metadata = pageMeta("/contact", "Contact Mikesh Parekh", "Tell me where you are with buying or running a Post Office and what you need, and I'll come back to you personally.");
+
 
 export default async function ContactPage(props: PageProps<"/contact">) {
   const { service } = await props.searchParams;

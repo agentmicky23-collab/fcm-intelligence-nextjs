@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { LegalPart as Part } from "@/components/Legal";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Privacy policy" };
+export const metadata: Metadata = pageMeta("/privacy", "Privacy policy", "How FCM Intelligence collects, uses and protects your information.");
+
 
 export default function Page() {
   return (

@@ -18,7 +18,19 @@ export const metadata: Metadata = {
     locale: "en_GB",
     type: "website",
   },
-  robots: site.indexable ? undefined : { index: false, follow: false },
+  applicationName: site.name,
+  authors: [{ name: site.owner, url: `${site.url}/about` }],
+  creator: site.owner,
+  publisher: site.company,
+  twitter: { card: "summary_large_image" },
+  robots: site.indexable
+    ? { index: true, follow: true, googleBot: { "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } }
+    : { index: false, follow: false },
+  // Ownership checks for Google Search Console and Bing Webmaster Tools, added as Vercel settings.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : undefined,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
