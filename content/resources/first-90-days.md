@@ -13,7 +13,7 @@ The first 90 days set the tone for everything after. Most of the damage in a new
 - [ ] Payroll ready to run under your name
 - [ ] Bank account and card terminal set up
 - [ ] Handover date and time agreed with the seller, and who will be there
-- [ ] Post Office's week of counter training done. It's compulsory, but it happens in a classroom on a practice system with no real customers, so plan time on a live counter with an experienced postmaster too
+- [ ] Post Office's week of counter training done. It's compulsory, but it happens in a classroom in London on a practice system with no real customers, so plan time on a live counter with an experienced postmaster too
 - [ ] Staff list, contracts and holiday balances in hand
 - [ ] P250 pack sent for every member of staff who will serve on the counter, with a basic disclosure and right to work check for each. No approval means no Horizon login, and no login means they can't use the system
 - [ ] Your reserve untouched and ready
