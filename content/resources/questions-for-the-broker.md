@@ -84,7 +84,7 @@ The first call with the broker is where you find out whether a branch is worth y
 
 1. Have there been other offers? Did any fall through, and why?
 2. What timescale is the seller working to?
-3. Is it a sale of the business and assets, or of the company shares? [CHECK: implications with a solicitor, this changes what liabilities you take on]
+3. Is it a sale of the business and assets, or of the company shares? It changes which liabilities you take on, so ask your solicitor.
 4. What does the seller need from me to move forward?
 5. Who else needs to approve the sale? Post Office has to approve you as the new postmaster, through your business plan and an interview, before you're given a handover date. Does the timescale allow for that?
 

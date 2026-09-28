@@ -9,11 +9,11 @@ When you buy a Post Office with staff, the staff come with it. That's TUPE, and 
 
 ## What TUPE is
 
-TUPE is short for the Transfer of Undertakings (Protection of Employment) Regulations. It applies when a business, or part of one, moves from one owner to another as a going concern. Buying a Post Office and its shop from the current operator will usually count. [CHECK: with a solicitor for each deal]
+TUPE is short for the Transfer of Undertakings (Protection of Employment) Regulations. It applies when a business, or part of one, moves from one owner to another as a going concern. Buying a Post Office and its shop from the current operator will usually count. Confirm it with your solicitor on every deal.
 
 The idea is simple. Staff shouldn't lose out just because the business changed hands. So their jobs move to you on the same terms.
 
-**One important exception.** If you buy the shares of the company that owns the branch, the employer doesn't change. The company is still the employer, so TUPE doesn't apply in the same way. But everything the company owes, including to staff, stays with the company, which you now own. Either way, you inherit the history. [CHECK: share purchase vs asset purchase with a solicitor]
+**One important exception.** If you buy the shares of the company that owns the branch, the employer doesn't change. The company is still the employer, so TUPE doesn't apply in the same way. But everything the company owes, including to staff, stays with the company, which you now own. Either way, you inherit the history. Your solicitor will explain what that means for your deal.
 
 ## What transfers to you
 
@@ -23,7 +23,7 @@ The idea is simple. Staff shouldn't lose out just because the business changed h
 - **Holiday they've built up** and not taken.
 - **Most liabilities connected to them**, such as unpaid wages or claims that relate to their employment before the sale.
 
-Pensions are more complicated. Some pension rights don't transfer in full, but you'll have your own duties as an employer, including auto-enrolment. [CHECK: pension position for each deal with an accountant or pensions adviser]
+Pensions are more complicated. Some pension rights don't transfer in full, but you'll have your own duties as an employer, including auto-enrolment. Check the pension position on every deal with your accountant or a pensions adviser.
 
 ## What you can't change
 
@@ -69,7 +69,7 @@ Get this wrong and there can be compensation to pay per employee, and both buyer
 | Outstanding claims | Any disputes or claims the seller knows about. |
 | Legal and payroll setup | Getting contracts reviewed and payroll moved over. |
 
-Ask your solicitor about protections in the sale agreement, such as warranties and indemnities from the seller, or holding back part of the price. [CHECK: with solicitor]
+Ask your solicitor about protections in the sale agreement, such as warranties and indemnities from the seller, or holding back part of the price.
 
 ## Practical steps
 

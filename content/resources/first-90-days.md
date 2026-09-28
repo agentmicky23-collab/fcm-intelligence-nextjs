@@ -100,7 +100,7 @@ By now you should know the branch. This is where you start making it yours, care
 **Staff**
 
 - [ ] Look at the staffing structure against the hours the branch is busy
-- [ ] If anything needs to change, take advice before you act. TUPE doesn't disappear after a few weeks [CHECK: with HR adviser before any change to transferred staff terms]
+- [ ] If anything needs to change, take advice before you act. TUPE doesn't disappear after a few weeks. Speak to an HR adviser before you change any transferred member of staff's terms
 - [ ] For new hires, build clear customer service expectations into their contracts
 - [ ] Set simple goals for each person and review them monthly
 

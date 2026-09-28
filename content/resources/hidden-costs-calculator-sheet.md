@@ -20,7 +20,7 @@ The asking price is the number everyone looks at. The costs that hurt new postma
 |---|---|---|
 | Untaken holiday | Holiday owed to each person at completion, in writing. Negotiate it into the price. | |
 | Redundancy exposure | Length of service for each person. Long service transfers to you under TUPE. [CHECK: current statutory redundancy rules] | |
-| Pensions | What the seller currently pays in, and your own auto-enrolment duties as the new employer. [CHECK: with an accountant] | |
+| Pensions | What the seller currently pays in, and your own auto-enrolment duties as the new employer. Confirm both with your accountant. | |
 | Pay rises | Next increase in the legal minimum wage, and anyone already promised a rise. [CHECK: current and announced rates] | |
 | Cover while you learn | Extra hours or staff while you and the team get up to speed. | |
 | Training | Your own training and any gaps in the team's. | |
