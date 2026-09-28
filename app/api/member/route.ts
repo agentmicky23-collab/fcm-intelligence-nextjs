@@ -1,8 +1,9 @@
-import { randomBytes } from "node:crypto";
 import type { JoinResult } from "@/lib/member";
 import { situations } from "@/lib/member";
 import { sendEmail } from "@/lib/server/email";
 import { confirmationEmail } from "@/lib/server/emails/confirmation";
+import { libraryEmail } from "@/lib/server/emails/library";
+import { newToken } from "@/lib/server/member";
 import { logoAttachment } from "@/lib/server/emails/layout";
 import { emailPattern, oneLine, senderHash, text } from "@/lib/server/request";
 import { rpc } from "@/lib/server/supabase";
@@ -30,7 +31,8 @@ export async function POST(req: Request) {
   const elapsed = typeof p.elapsedMs === "number" ? p.elapsedMs : 0;
   if (text(p.company_url, 200) !== "" || elapsed < 2000) return reply({ ok: true });
 
-  const token = randomBytes(32).toString("base64url");
+  const token = newToken();
+  const accessToken = newToken();
   let status: string;
   try {
     const res = await rpc("join_member", {
@@ -40,6 +42,7 @@ export async function POST(req: Request) {
       p_source_path: text(p.sourcePath, 300),
       p_ip_hash: senderHash(req),
       p_token: token,
+      p_access_token: accessToken,
     });
     if (!res.ok) {
       if (res.body.includes("rate_limited")) return reply({ ok: false, error: "rate_limited" }, 429);
@@ -52,17 +55,16 @@ export async function POST(req: Request) {
     return reply({ ok: false, error: "unavailable" }, 502);
   }
 
-  // Existing members and very recent sign-ups get the same answer, so the form can't be used to
-  // find out who's on the list, and nobody gets flooded with confirmation emails.
-  if (status !== "pending") return reply({ ok: true });
+  // A very recent sign-up gets the same answer and no email, so nobody gets flooded.
+  if (status === "recent") return reply({ ok: true });
 
-  const link = `${new URL(req.url).origin}/account/confirm?token=${token}`;
-  const sent = await sendEmail({
-    to: email,
-    replyTo: site.contactEmail,
-    attachments: [logoAttachment],
-    ...confirmationEmail(name, link),
-  });
+  // Someone who's already a member gets a fresh library link instead of a confirmation.
+  const origin = new URL(req.url).origin;
+  const message =
+    status === "resend"
+      ? libraryEmail(name, `${origin}/api/member/open?key=${accessToken}`)
+      : confirmationEmail(name, `${origin}/api/member/confirm?token=${token}`);
+  const sent = await sendEmail({ to: email, replyTo: site.contactEmail, attachments: [logoAttachment], ...message });
   if (!sent) return reply({ ok: false, error: "unavailable" }, 502);
   return reply({ ok: true });
 }

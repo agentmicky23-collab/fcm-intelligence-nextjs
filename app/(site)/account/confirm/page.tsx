@@ -1,27 +1,14 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
-import { rpc } from "@/lib/server/supabase";
 
-export const metadata: Metadata = { title: "Confirm membership", robots: { index: false, follow: false } };
-
-async function confirm(token: string) {
-  if (!token || token.length > 64) return null;
-  try {
-    const res = await rpc("confirm_member", { p_token: token });
-    if (!res.ok) {
-      console.error("member: confirm failed", res.body.slice(0, 300));
-      return null;
-    }
-    return (JSON.parse(res.body) as string | null) ?? null;
-  } catch (err) {
-    console.error("member: confirm failed", err);
-    return null;
-  }
-}
+export const metadata: Metadata = { title: "Membership confirmed", robots: { index: false, follow: false } };
 
 export default async function ConfirmPage(props: PageProps<"/account/confirm">) {
-  const { token } = await props.searchParams;
-  const name = await confirm(typeof token === "string" ? token : "");
+  const { token, welcome } = await props.searchParams;
+  // Links in the first confirmation emails pointed here directly.
+  if (typeof token === "string") redirect(`/api/member/confirm?token=${encodeURIComponent(token)}`);
+  const name = typeof welcome === "string" ? welcome.slice(0, 40) : "";
 
   return (
     <section>
@@ -30,24 +17,20 @@ export default async function ConfirmPage(props: PageProps<"/account/confirm">) 
         {name ? (
           <>
             <Eyebrow className="mt-8">Free membership</Eyebrow>
-            <h1 className="mt-4 font-display text-4xl font-bold tracking-[-0.02em] text-navy sm:text-5xl">
-              You&apos;re in, {name.split(" ")[0]}.
-            </h1>
+            <h1 className="mt-4 font-display text-4xl font-bold tracking-[-0.02em] text-navy sm:text-5xl">You&apos;re in, {name}.</h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Your membership is confirmed. I&apos;ll email you each checklist and guide as it&apos;s ready, and a short note
-              when I publish something worth reading.
+              Your membership is confirmed and the members&apos; library is open on this device. Every checklist, worksheet and
+              guide is waiting for you there.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <ButtonLink href="/insights">Read the insights</ButtonLink>
-              <ButtonLink href="/services/insurance-review" variant="outline">Try the free insurance review</ButtonLink>
+              <ButtonLink href="/resources">Open the library</ButtonLink>
+              <ButtonLink href="/insights" variant="outline">Read the insights</ButtonLink>
             </div>
           </>
         ) : (
           <>
             <h1 className="mt-8 font-display text-4xl font-bold tracking-[-0.02em] text-navy">That link has expired.</h1>
-            <p className="mt-5 text-lg leading-relaxed text-muted">
-              Confirmation links last seven days. Join again and I&apos;ll send you a fresh one.
-            </p>
+            <p className="mt-5 text-lg leading-relaxed text-muted">Confirmation links last seven days. Join again and I&apos;ll send you a fresh one.</p>
             <div className="mt-10">
               <ButtonLink href="/account">Join free</ButtonLink>
             </div>

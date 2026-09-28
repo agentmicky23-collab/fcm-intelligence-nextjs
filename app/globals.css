@@ -100,3 +100,12 @@ body {
 /* When a new page opens, the router scrolls its first element into view. Offset that by the
    sticky header's height so pages open at the very top, not tucked under the header. */
 #main > * { scroll-margin-top: 5rem; }
+
+/* Resources: GitHub-style task lists become tickable checklists */
+.resource ul.contains-task-list { list-style: none; padding-left: 0; }
+.resource li.task-list-item { padding-left: 0; }
+.resource li.task-list-item input[type="checkbox"] {
+  margin-top: 0.4em; width: 1.05rem; height: 1.05rem; flex-shrink: 0; accent-color: var(--color-red);
+}
+.resource table { margin-top: 1em; }
+.resource td:last-child { min-width: 5.5rem; border-bottom: 1px solid var(--color-line); }
