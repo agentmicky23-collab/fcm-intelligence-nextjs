@@ -8,7 +8,6 @@ export const site = {
   url: "https://fcmintelligence.com",
   tagline: "Straight answers on buying and running a Post Office, from someone who runs 43 of them.",
   contactEmail: "mikesh@interimenterprises.co.uk",
-  staffAppUrl: "https://app.fcmintelligence.com",
   // Filled in once Mikesh sends the links. Empty values are hidden.
   social: {
     linkedin: "",
