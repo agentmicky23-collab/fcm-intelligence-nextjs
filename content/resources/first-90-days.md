@@ -13,7 +13,7 @@ The first 90 days set the tone for everything after. Most of the damage in a new
 - [ ] Payroll ready to run under your name
 - [ ] Bank account and card terminal set up
 - [ ] Handover date and time agreed with the seller, and who will be there
-- [ ] Your own Post Office training booked or done [CHECK: current Post Office onboarding and training steps for new postmasters]
+- [ ] Post Office's week of counter training done. It's compulsory, but it happens in a classroom on a practice system with no real customers, so plan time on a live counter with an experienced postmaster too
 - [ ] Staff list, contracts and holiday balances in hand
 - [ ] Your reserve untouched and ready
 
@@ -23,10 +23,14 @@ This week is about control. Know what you've got, lock it down, and let the team
 
 **Cash and compliance**
 
-- [ ] Count cash and stock at handover with the seller present, and both sign it off [CHECK: current Post Office handover and cash transfer process]
+- [ ] Handover day: expect the branch to be closed for most of the day while Post Office auditors count every bit of cash, every stamp and all the stock
+- [ ] Have your own independent check of that count before you sign. Auditors are human and they do make mistakes. Once you've signed, a shortfall found that evening or the next day is yours
+- [ ] Any losses or gains from the audit are settled by the outgoing postmaster before the branch is signed over
+- [ ] Sign for the safe keys, alarm codes and access codes, and check each one works
 - [ ] Change locks, alarm codes and safe codes
 - [ ] Check who has keys and take back any you don't need out there
 - [ ] Balance every day, without exception
+- [ ] Learn your cash delivery and collection days, usually once or twice a week, and hold only the cash you need between them
 - [ ] Log any discrepancy the same day, however small
 - [ ] Check the security kit works: alarm, CCTV, shutters, panic buttons
 

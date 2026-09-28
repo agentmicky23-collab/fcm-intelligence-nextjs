@@ -109,6 +109,7 @@ export const stages: Stage[] = [
           "Business Plan Writing included",
           "Post Office Interview Preparation included",
           "Six one-to-one sessions",
+          "On site at the handover audit to check cash, stamps and stock independently",
           "Unlimited email and WhatsApp support",
           "Optional site visit",
           "Post-acquisition operations plan and 30-day check-in",
@@ -147,7 +148,7 @@ export const stages: Stage[] = [
         name: "Operator Training",
         price: "Enquiry only",
         summary:
-          "Training for new postmasters and their teams, from people who run the counter every day. The cost depends on the course length and where it happens.",
+          "Training for new postmasters and their teams on a live counter with real customers, alongside experienced postmasters. It goes well beyond the classroom week Post Office requires. The cost depends on the course length and where it happens.",
         includes: [
           "1, 3, 5 or 10-day courses",
           "At one of our branches: £100 + VAT a day",

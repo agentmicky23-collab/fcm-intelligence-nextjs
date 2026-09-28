@@ -49,7 +49,7 @@ The asking price is the number everyone looks at. The costs that hurt new postma
 | Safe and cash handling | Condition, and whether your insurer accepts it. | |
 | Alarm and CCTV | Working, maintained, and whose name the contract is in. | |
 | Shutters and locks | Condition, and the cost of changing locks and codes on day one. | |
-| Post Office equipment | What Post Office provides and what the operator pays for. [CHECK: current Post Office terms on branch equipment] | |
+| Post Office equipment | It's asset tagged and stays Post Office property. Only the retail side is yours, so make sure none of it is in the price. | |
 | Signage and fit-out | Anything tired enough that customers notice. | |
 | **Subtotal** | | |
 
@@ -70,7 +70,7 @@ The asking price is the number everyone looks at. The costs that hurt new postma
 | Cost | What to check | Your estimate (£) |
 |---|---|---|
 | Buildings and contents | Quotes, not last year's figure. | |
-| Cash and stock cover | What cover Post Office expects you to hold. [CHECK: current Post Office insurance requirements] | |
+| Cash and stock cover | You must insure the cash in your counter tills, typically £2,500 a counter. Post Office insures the cash in its safes, but many postmasters also insure their safe reserve, often around £80,000. Price it on what your branch actually holds. | |
 | Employer's liability | A legal requirement once you employ staff. | |
 | Solicitor | For the purchase, and for a lease if there is one. | |
 | Accountant | For the purchase, then every year. | |
