@@ -22,7 +22,7 @@ const columns = [
   {
     title: "Account",
     links: [
-      { href: "/account", label: "Member sign in" },
+      { href: "/account", label: "Join free" },
       { href: site.staffAppUrl, label: "Staff login" },
     ],
   },

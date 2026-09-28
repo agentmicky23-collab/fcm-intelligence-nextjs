@@ -1,27 +1,21 @@
-import { createHash, randomInt } from "node:crypto";
+import { randomInt } from "node:crypto";
 import { limits, type EnquiryPayload, type EnquiryResult } from "@/lib/enquiry";
+import { sendEmail } from "@/lib/server/email";
+import { emailPattern, oneLine, senderHash, text } from "@/lib/server/request";
+import { rpc } from "@/lib/server/supabase";
 import { stages } from "@/lib/services";
 import { site } from "@/lib/site";
 
 // Enquiries are saved to Supabase (fcm-intelligence project, table public.enquiries), then emailed.
-// The URL and publishable key are public by design: the key can only call submit_enquiry() and
-// mark_enquiry_notified(); it can't read the table.
-const supabaseUrl = process.env.SUPABASE_URL ?? "https://dykudrjpcliuyahjuiag.supabase.co";
-const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "sb_publishable_nuvi3t_j2k7XMv57L1YWhw_wAn1r-lu";
-const resendKey = process.env.RESEND_API_KEY;
 const notifyTo = process.env.ENQUIRY_NOTIFY_TO ?? site.contactEmail;
-const notifyFrom = process.env.ENQUIRY_FROM ?? "FCM Intelligence <reports@fcmreport.com>";
 
 const services = new Set(stages.flatMap((s) => s.services.map((x) => x.slug)));
 const kinds = new Set(["general", "service", "insurance-review"]);
-const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const referenceAlphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 
 type Clean = Omit<EnquiryPayload, "company_url" | "elapsedMs"> & { suspect: boolean };
 
 const reply = (body: EnquiryResult, status = 200) => Response.json(body, { status });
-const oneLine = (s: string) => s.replace(/[\r\n]+/g, " ").trim();
-const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
 function clean(input: unknown): Clean | null {
   if (!input || typeof input !== "object") return null;
@@ -59,29 +53,7 @@ function clean(input: unknown): Clean | null {
   };
 }
 
-/** A daily-salted hash of the sender's IP, so repeat submissions can be limited without storing the IP. */
-function senderHash(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
-  const day = new Date().toISOString().slice(0, 10);
-  const salt = process.env.ENQUIRY_HASH_SALT ?? "fcm-enquiries";
-  return createHash("sha256").update(`${ip}|${day}|${salt}`).digest("hex").slice(0, 32);
-}
-
 const newReference = () => Array.from({ length: 6 }, () => referenceAlphabet[randomInt(referenceAlphabet.length)]).join("");
-
-async function rpc(fn: string, args: Record<string, unknown>) {
-  const headers: Record<string, string> = { apikey: supabaseKey, "Content-Type": "application/json" };
-  // Legacy anon keys are JWTs and go in Authorization too; new publishable keys don't.
-  if (!supabaseKey.startsWith("sb_")) headers.Authorization = `Bearer ${supabaseKey}`;
-  const res = await fetch(`${supabaseUrl}/rest/v1/rpc/${fn}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(args),
-    cache: "no-store",
-    signal: AbortSignal.timeout(8000),
-  });
-  return { ok: res.ok, body: await res.text() };
-}
 
 /** Saves the enquiry. Returns its id, "rate_limited", or null if the database couldn't be reached. */
 async function save(e: Clean, reference: string, ipHash: string): Promise<string | "rate_limited" | null> {
@@ -128,31 +100,13 @@ function emailBody(e: Clean, reference: string) {
 }
 
 /** Emails the enquiry to Mikesh. Returns whether it was accepted for delivery. */
-async function notify(e: Clean, reference: string) {
-  if (!resendKey) {
-    console.error("enquiry: RESEND_API_KEY is not set, so no email was sent", reference);
-    return false;
-  }
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: notifyFrom,
-        to: [notifyTo],
-        reply_to: e.email,
-        subject: `Enquiry ${reference}: ${e.subject} from ${e.name}`,
-        text: emailBody(e, reference),
-      }),
-      cache: "no-store",
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) console.error("enquiry: email failed", reference, res.status, (await res.text()).slice(0, 300));
-    return res.ok;
-  } catch (err) {
-    console.error("enquiry: email failed", reference, err);
-    return false;
-  }
+function notify(e: Clean, reference: string) {
+  return sendEmail({
+    to: notifyTo,
+    replyTo: e.email,
+    subject: `Enquiry ${reference}: ${e.subject} from ${e.name}`,
+    text: emailBody(e, reference),
+  });
 }
 
 export async function POST(req: Request) {
