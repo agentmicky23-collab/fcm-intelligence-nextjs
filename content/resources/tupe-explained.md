@@ -81,7 +81,7 @@ Ask your solicitor about protections in the sale agreement, such as warranties a
 - [ ] Tell the seller in writing what, if anything, you plan to change
 - [ ] Get your solicitor to review the sale agreement for staff protections
 - [ ] Plan payroll from completion, and check right to work records [CHECK: time allowed for a new employer to carry out its own checks after a TUPE transfer]
-- [ ] Check what Post Office requires for staff who will use its systems [CHECK: current training and vetting requirements]
+- [ ] Complete a P250 pack for every member of staff who will use the Post Office system. Post Office won't handle HR or vet your staff for you, so the P250 needs each person's full details, a basic disclosure (criminal record check) and proof of their right to work in the UK. Until Post Office approves it, they get no Horizon login, and without a login they can't serve on the counter
 - [ ] Meet the team on day one. Reassure them, listen, and change nothing yet
 
 ## A note on changing law
