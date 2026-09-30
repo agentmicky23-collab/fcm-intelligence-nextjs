@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { explainer } from "@/lib/explainer";
+import type { Explainer } from "@/lib/explainer";
 
 /**
  * The explainer video. Only the cover image loads with the page; the video itself
  * starts downloading when someone presses play, at the size that suits their screen.
  */
-export function ExplainerVideo() {
+export function ExplainerVideo({ video: explainer }: { video: Explainer }) {
   const [playing, setPlaying] = useState(false);
 
   return (
@@ -31,7 +31,7 @@ export function ExplainerVideo() {
           type="button"
           onClick={() => setPlaying(true)}
           className="group absolute inset-0 h-full w-full text-left"
-          aria-label={`Play video: ${explainer.title} (1 minute 32 seconds)`}
+          aria-label={`Play video: ${explainer.title} (${explainer.length})`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={explainer.poster} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
@@ -43,7 +43,7 @@ export function ExplainerVideo() {
               </svg>
             </span>
           </span>
-          <span className="absolute bottom-4 right-4 bg-night/80 px-3 py-1 text-sm font-semibold text-white">1:32</span>
+          <span className="absolute bottom-4 right-4 bg-night/80 px-3 py-1 text-sm font-semibold text-white">{explainer.length}</span>
         </button>
       )}
     </div>

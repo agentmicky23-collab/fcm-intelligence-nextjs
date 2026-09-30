@@ -3,13 +3,21 @@ import Link from "next/link";
 import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { stages, type Service } from "@/lib/services";
 import { site } from "@/lib/site";
+import { ExplainerBlock } from "@/components/ExplainerBlock";
 import { Faq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
+import { explainers } from "@/lib/explainer";
 import { serviceFaqs } from "@/lib/faqs";
 import { allServices, breadcrumbs, pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta("/services", "Post Office Consultancy, Training and Support", "Reports, consultations and hands-on support for buying, starting and running a Post Office, from an operator of 43 branches. All prices plus VAT.");
 
+
+// Explainer videos shown under each stage's services.
+const stageVideos: Record<string, string[]> = {
+  buying: ["guided-acquisition"],
+  running: ["branch-health-check"],
+};
 
 function ServiceCard({ service }: { service: Service }) {
   const href = service.href ?? `/contact?service=${service.slug}`;
@@ -119,6 +127,9 @@ export default function ServicesPage() {
                 <ServiceCard key={service.slug} service={service} />
               ))}
             </div>
+            {stageVideos[stage.id]?.map((slug) => (
+              <ExplainerBlock key={slug} video={explainers[slug]} page="/services" className="mt-16" />
+            ))}
           </Container>
         </section>
       ))}
