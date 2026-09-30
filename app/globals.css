@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #050e1f;
-  --color-navy-900: #07142a;
-  --color-navy: #0b1d3a;
-  --color-navy-700: #13294f;
-  --color-navy-600: #1d3663;
-  --color-night: #081427;
+  --color-navy-950: #020816;
+  --color-navy-900: #040c20;
+  --color-navy: #06173a;
+  --color-navy-700: #0c2452;
+  --color-navy-600: #163575;
+  --color-night: #030a1b;
   --color-red: #e0241b;
   --color-red-light: #ff6b61;
   --color-red-dark: #b81c14;
@@ -87,6 +87,47 @@ body {
 }
 .prose-fcm th { color: var(--color-navy); }
 
+/* Neon depth: dark sections lit from above, red that glows like a neon tube, and layered
+   shadows so panels lift off the page. In the components layer so utilities still win. */
+@layer components {
+  :is(.bg-navy, .bg-night, .bg-navy-900, .bg-navy-950):not(.rounded-full) {
+    background-image:
+      radial-gradient(120% 80% at 70% -10%, rgb(40 90 200 / 0.28), transparent 60%),
+      radial-gradient(90% 70% at 0% 110%, rgb(224 36 27 / 0.1), transparent 60%);
+    box-shadow: inset 0 -40px 80px -40px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+  .bg-red, .bg-red-dark {
+    box-shadow: 0 0 6px rgb(224 36 27 / 0.9), 0 0 22px rgb(224 36 27 / 0.55), 0 0 60px rgb(224 36 27 / 0.3);
+  }
+  [class*="bg-red/"] { box-shadow: 0 0 18px rgb(224 36 27 / 0.35); }
+  .border-red { box-shadow: 0 0 14px rgb(224 36 27 / 0.45), inset 0 0 10px rgb(224 36 27 / 0.15); }
+  :is(.bg-navy, .bg-night) :is(.text-red, .text-red-light) {
+    text-shadow: 0 0 8px rgb(224 36 27 / 0.8), 0 0 24px rgb(224 36 27 / 0.45);
+  }
+  .text-red, .text-red-dark { text-shadow: 0 0 14px rgb(224 36 27 / 0.25); }
+  :is(.bg-navy, .bg-night) :is(h1, h2) {
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.06), 0 12px 40px rgb(0 0 0 / 0.55);
+  }
+  .grid.gap-px {
+    box-shadow: 0 2px 4px rgb(3 10 27 / 0.06), 0 18px 40px -14px rgb(3 10 27 / 0.3), 0 40px 80px -30px rgb(3 10 27 / 0.25);
+  }
+  .bg-white:is(.p-6, .p-7, .p-8) { box-shadow: inset 0 1px 0 #fff, inset 0 -18px 30px -24px rgb(3 10 27 / 0.18); }
+  .bg-navy:is(.p-6, .p-8) {
+    background-image: linear-gradient(160deg, rgb(60 110 220 / 0.22), transparent 55%);
+    box-shadow: inset 0 0 0 1px rgb(120 160 255 / 0.1), 0 24px 50px -20px rgb(0 0 0 / 0.8), 0 0 30px -10px rgb(224 36 27 / 0.25);
+  }
+  :is(section, div.relative).bg-red {
+    background-image: radial-gradient(90% 120% at 20% 0%, rgb(255 140 130 / 0.3), transparent 55%), linear-gradient(180deg, transparent 60%, rgb(90 0 10 / 0.35));
+  }
+  .rounded-full.bg-navy {
+    box-shadow: 0 3px 6px rgb(3 10 27 / 0.35), inset 0 -2px 3px rgb(0 0 0 / 0.35), inset 0 2px 2px rgb(120 160 255 / 0.25);
+  }
+  :is(a, button).bg-red {
+    box-shadow: inset 0 0 0 1px rgb(255 130 120 / 0.35), 0 0 18px rgb(224 36 27 / 0.65), 0 10px 26px -8px rgb(224 36 27 / 0.7);
+  }
+  header { box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6); }
+}
+
 /* Printing (the example report's "Save as PDF") */
 @media print {
   header, footer, .no-print { display: none !important; }
@@ -94,7 +135,7 @@ body {
   .report-section { break-inside: avoid; }
   .report [style*="scale"] { transform: none !important; }
   .report [style*="opacity"] { opacity: 1 !important; }
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: none !important; text-shadow: none !important; }
 }
 
 /* When a new page opens, the router scrolls its first element into view. Offset that by the

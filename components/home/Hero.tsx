@@ -13,11 +13,11 @@ function CountUp({ to }: { to: number }) {
   const reduce = useReducedMotion();
   const [n, setN] = useState(1);
   useEffect(() => {
-    if (!seen || reduce) return;
-    const c = animate(1, to, { duration: 1.8, delay: 0.5, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setN(Math.round(v)) });
+    if (!seen) return;
+    const c = animate(1, to, { duration: reduce ? 0 : 1.8, delay: reduce ? 0 : 0.5, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setN(Math.round(v)) });
     return () => c.stop();
   }, [seen, reduce, to]);
-  return <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>{reduce ? to : n}</span>;
+  return <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>{n}</span>;
 }
 
 const bars = [

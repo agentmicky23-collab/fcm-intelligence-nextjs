@@ -37,7 +37,7 @@ export function ExplainerVideo({ video: explainer }: { video: Explainer }) {
           <img src={explainer.poster} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
           <span aria-hidden className="absolute inset-0 bg-night/25 transition-colors group-hover:bg-night/10" />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-20 w-24 -skew-x-[18deg] items-center justify-center bg-red shadow-lg transition-transform group-hover:scale-105 group-focus-visible:ring-4 group-focus-visible:ring-white sm:h-24 sm:w-28">
+            <span className="flex h-20 w-24 -skew-x-[18deg] items-center justify-center bg-red transition-transform group-hover:scale-105 group-focus-visible:ring-4 group-focus-visible:ring-white sm:h-24 sm:w-28">
               <svg viewBox="0 0 24 24" className="h-9 w-9 skew-x-[18deg] fill-white" aria-hidden>
                 <path d="M8 5v14l11-7z" />
               </svg>
