@@ -11,6 +11,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { explainers } from "@/lib/explainer";
 import { reportFaqs } from "@/lib/faqs";
 import { breadcrumbs, pageMeta, serviceSchema } from "@/lib/seo";
+import { orderHref } from "@/lib/checkout";
 
 export const metadata: Metadata = pageMeta("/reports", "Post Office Acquisition Reports", "Insight (£199 + VAT) and Intelligence (£499 + VAT) reports on any UK Post Office for sale: remuneration, location, competition, staffing, risks and negotiation.");
 
@@ -73,7 +74,7 @@ export default function ReportsPage() {
                   ))}
                 </ul>
                 <div className="mt-8">
-                  <ButtonLink href={`/contact?service=${r.slug}`} variant={i === 1 ? "red" : "navy"}>Order the {r.name}</ButtonLink>
+                  <ButtonLink href={orderHref(r.slug === "insight-report" ? "insight" : "intelligence")} variant={i === 1 ? "red" : "navy"}>Order the {r.name}</ButtonLink>
                 </div>
               </div>
             </div>

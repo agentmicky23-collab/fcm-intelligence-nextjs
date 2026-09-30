@@ -8,6 +8,7 @@ import { PrintButton } from "@/components/report/PrintButton";
 import { ButtonLink, Slant } from "@/components/ui";
 import { example as r } from "@/lib/example-report";
 import { reportSections } from "@/lib/report";
+import { orderHref } from "@/lib/checkout";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta("/reports/example", "Example Post Office Intelligence Report", "A full example of an FCM Intelligence Report on a fictional Post Office branch: all 15 sections, with charts, maps and a verdict.");
@@ -516,7 +517,7 @@ export default function ExampleReportPage() {
               <p className="mt-3 text-white/80">Insight from £199. Intelligence, as above, £499. Prices plus VAT.</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <ButtonLink href="/contact?service=intelligence-report" variant="white">Order a report</ButtonLink>
+              <ButtonLink href={orderHref("intelligence")} variant="white">Order a report</ButtonLink>
               <Link href="/reports" className="inline-flex min-h-12 items-center px-4 text-[15px] font-semibold text-white">Compare reports →</Link>
             </div>
           </div>
