@@ -5,10 +5,12 @@ import { ReportMap } from "@/components/report/ReportMap";
 import { ButtonLink, Container, Eyebrow, SectionHeading, Slant } from "@/components/ui";
 import { example } from "@/lib/example-report";
 import { stages } from "@/lib/services";
+import { ExplainerVideo } from "@/components/ExplainerVideo";
 import { Faq } from "@/components/Faq";
 import { JsonLd } from "@/components/JsonLd";
+import { explainer, transcript } from "@/lib/explainer";
 import { reportFaqs } from "@/lib/faqs";
-import { breadcrumbs, pageMeta, serviceSchema } from "@/lib/seo";
+import { abs, breadcrumbs, orgId, pageMeta, serviceSchema } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta("/reports", "Post Office Acquisition Reports", "Insight (£199 + VAT) and Intelligence (£499 + VAT) reports on any UK Post Office for sale: remuneration, location, competition, staffing, risks and negotiation.");
 
@@ -123,8 +125,44 @@ export default function ReportsPage() {
               </li>
             ))}
           </ol>
+
+          <div className="mt-20 grid items-start gap-10 lg:grid-cols-[1fr_20rem]">
+            <ExplainerVideo />
+            <div>
+              <Eyebrow>Watch</Eyebrow>
+              <h3 className="mt-4 font-display text-2xl font-bold leading-tight tracking-[-0.02em] text-navy">{explainer.title}</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-muted">{explainer.description}</p>
+              <details className="group mt-6 border-t border-line pt-4">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-red-dark hover:text-navy [&::-webkit-details-marker]:hidden">
+                  <span className="group-open:hidden">Read the transcript →</span>
+                  <span className="hidden group-open:inline">Hide the transcript</span>
+                </summary>
+                <div className="mt-4 space-y-3 text-[15px] leading-relaxed text-ink">
+                  {transcript.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              </details>
+              <p className="mt-6 text-xs text-muted">Animated explainer, narrated in Mikesh Parekh&apos;s voice.</p>
+            </div>
+          </div>
         </Container>
       </section>
+      <JsonLd
+        data={{
+          "@type": "VideoObject",
+          name: explainer.title,
+          description: explainer.description,
+          thumbnailUrl: [explainer.poster],
+          uploadDate: explainer.uploadDate,
+          duration: explainer.duration,
+          contentUrl: explainer.sources.hd,
+          inLanguage: "en-GB",
+          transcript: transcript.join(" "),
+          publisher: { "@id": orgId },
+          isPartOf: abs("/reports"),
+        }}
+      />
       <Faq items={reportFaqs} />
     </>
   );
