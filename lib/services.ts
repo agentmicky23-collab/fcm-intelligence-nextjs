@@ -101,8 +101,9 @@ export const stages: Stage[] = [
         slug: "guided-acquisition",
         name: "Guided Acquisition",
         price: "£4,997",
+        unit: "start to finish",
         summary:
-          "I walk the whole journey with you: the offer, due diligence, the Post Office interview and the handover.",
+          "I walk the whole journey with you, from the first look to the handover and beyond, however long it takes. There's no time limit.",
         includes: [
           "Intelligence Report included",
           "Business Plan Writing included",
