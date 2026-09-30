@@ -52,6 +52,7 @@ export default function Page() {
         <Part title="Prices and services">
           <ul>
             <li>All prices on the site are in pounds and exclude VAT, which is added at the current rate.</li>
+            <li>When you order a report online, you pay when you order and we have an agreement once the payment goes through. You get a receipt and a VAT invoice by email.</li>
             <li>Sending an enquiry doesn&apos;t commit you to anything. We only have an agreement once we&apos;ve both confirmed the work, price and timing in writing.</li>
             <li>The monthly Branch Health Check subscription has a three-month minimum term, and can be cancelled any time after that.</li>
           </ul>

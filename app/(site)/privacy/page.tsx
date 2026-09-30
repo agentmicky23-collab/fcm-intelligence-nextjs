@@ -34,6 +34,12 @@ export default function Page() {
               and, if you go ahead, to provide the service. The lawful basis is taking steps at your request before a contract.
             </li>
             <li>
+              <strong>Report orders.</strong> When you order a report, I keep your name, email, phone number if you give
+              it, your billing address and the branch details you enter, and use them to research and deliver the report
+              and to keep tax records. Card details go straight to the payment provider; I never see or store them. The
+              lawful basis is performing our contract, and the legal duty to keep accounting records.
+            </li>
+            <li>
               <strong>Insurance review.</strong> Your answers stay in your browser unless you send an enquiry at the end. If
               you do, your answers and the gaps they show are sent with it, so I can review your cover.
             </li>
@@ -57,6 +63,7 @@ export default function Page() {
             <li><strong>Vercel</strong> hosts the website.</li>
             <li><strong>Supabase</strong> stores enquiries and membership details, on servers in Ireland.</li>
             <li><strong>Resend</strong> sends the site&apos;s emails.</li>
+            <li><strong>Stripe</strong> takes payments for reports and issues receipts and VAT invoices.</li>
           </ul>
           <p>
             Some of these providers may process information outside the UK. Where they do, it is protected by safeguards
@@ -67,6 +74,7 @@ export default function Page() {
         <Part title="How long I keep it">
           <ul>
             <li>Enquiries: for up to two years after we last spoke, or longer if we work together and the law requires it.</li>
+            <li>Report orders: six years from the end of the financial year of the order, as UK tax law requires.</li>
             <li>Membership: until you unsubscribe. After that I keep only your email address, so you&apos;re not emailed again by mistake.</li>
           </ul>
         </Part>
