@@ -107,7 +107,7 @@ export const explainers: Record<string, Explainer> = {
     slug: "welcome",
     title: "A welcome from Mikesh",
     description: "Thirty seconds from Mikesh Parekh on who he is and what you'll find here.",
-    ...explainerMedia("welcome", "welcome-v2"),
+    ...explainerMedia("welcome", "welcome-v3"),
     duration: "PT33S",
     length: "0:33",
     uploadDate: "2026-09-30",
