@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { ExplainerVideo } from "@/components/ExplainerVideo";
+import { explainers } from "@/lib/explainer";
 import { ease } from "./anim";
 
 function CountUp({ to }: { to: number }) {
@@ -79,21 +81,26 @@ export function Hero() {
             </div>
           </motion.div>
         </div>
-        <div className="relative hidden md:block">
-          <div className="absolute bottom-0 right-6 text-right">
-            <p className="font-display text-[200px] font-extrabold italic leading-[0.8] tracking-[-0.05em] text-white">
-              <CountUp to={43} />
+        <motion.div
+          className="relative self-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease, delay: 0.5 }}
+        >
+          <ExplainerVideo video={explainers.welcome} />
+          <div className="flex items-end justify-between gap-6 bg-night py-4 md:px-5">
+            <p className="text-sm text-white/60">
+              A 30-second welcome from Mikesh.
+              <span className="mt-1 block text-xs text-white/40">{explainers.welcome.aiLabel}</span>
             </p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.6, duration: 0.8 }}
-              className="mt-3 text-sm font-medium uppercase tracking-[0.2em] text-white/70"
-            >
-              Branches operated
-            </motion.p>
+            <p className="shrink-0 text-right">
+              <span className="block font-display text-6xl font-extrabold italic leading-none tracking-[-0.05em] text-white">
+                <CountUp to={43} />
+              </span>
+              <span className="mt-1 block text-xs font-medium uppercase tracking-[0.2em] text-white/60">Branches operated</span>
+            </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

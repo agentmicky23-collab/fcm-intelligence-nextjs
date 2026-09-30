@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMeta("/services", "Post Office Consultancy
 
 // Explainer videos shown under each stage's services.
 const stageVideos: Record<string, string[]> = {
-  buying: ["guided-acquisition"],
+  buying: ["guided-acquisition", "handover-day"],
   running: ["branch-health-check"],
 };
 

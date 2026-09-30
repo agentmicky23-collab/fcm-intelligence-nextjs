@@ -5,6 +5,9 @@ import { Hero } from "@/components/home/Hero";
 import { Practices } from "@/components/home/Practices";
 import { Process } from "@/components/home/Process";
 import { Rules } from "@/components/home/Rules";
+import { videoSchema } from "@/components/ExplainerBlock";
+import { JsonLd } from "@/components/JsonLd";
+import { explainers } from "@/lib/explainer";
 import { credentials } from "@/lib/home";
 import { pageMeta } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -19,6 +22,7 @@ export const metadata: Metadata = pageMeta(
 export default function HomePage() {
   return (
     <MotionConfig reducedMotion="user">
+      <JsonLd data={videoSchema(explainers.welcome, "/")} />
       <Hero />
       <section className="border-b border-navy/8 bg-white">
         <ul className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-14 gap-y-3 px-5 py-7 font-display text-[15px] font-semibold text-navy sm:px-8">

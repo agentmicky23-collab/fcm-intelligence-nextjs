@@ -25,23 +25,26 @@ export function ExplainerBlock({ video, page, className = "" }: { video: Explain
             ))}
           </div>
         </details>
-        <p className="mt-6 text-xs text-muted">Animated explainer, narrated in Mikesh Parekh&apos;s voice.</p>
+        <p className="mt-6 text-xs text-muted">{video.aiLabel ?? "Animated explainer, narrated in Mikesh Parekh's voice."}</p>
       </div>
-      <JsonLd
-        data={{
-          "@type": "VideoObject",
-          name: video.title,
-          description: video.description,
-          thumbnailUrl: [video.poster],
-          uploadDate: video.uploadDate,
-          duration: video.duration,
-          contentUrl: video.sources.hd,
-          inLanguage: "en-GB",
-          transcript: transcript.join(" "),
-          publisher: { "@id": orgId },
-          isPartOf: abs(page),
-        }}
-      />
+      <JsonLd data={videoSchema(video, page)} />
     </div>
   );
+}
+
+/** schema.org VideoObject for an explainer, so search engines and AI assistants can index it. */
+export function videoSchema(video: Explainer, page: string) {
+  return {
+    "@type": "VideoObject",
+    name: video.title,
+    description: video.description,
+    thumbnailUrl: [video.poster],
+    uploadDate: video.uploadDate,
+    duration: video.duration,
+    contentUrl: video.sources.hd,
+    inLanguage: "en-GB",
+    transcript: transcriptOf(video).join(" "),
+    publisher: { "@id": orgId },
+    isPartOf: abs(page),
+  };
 }

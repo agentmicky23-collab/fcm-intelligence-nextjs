@@ -16,6 +16,8 @@ export type Explainer = {
   length: string; // shown on the play button
   uploadDate: string;
   narration: Line[];
+  starts?: number[]; // when each line begins, if the scenes aren't 10 seconds each
+  aiLabel?: string;
 };
 
 function explainerMedia(slug: string, file = slug) {
@@ -85,6 +87,38 @@ export const explainers: Record<string, Explainer> = {
       { line: "And once the keys are yours, we give you an operations plan and check in after your first thirty days.", seconds: 6.8 },
     ],
   },
+  "handover-day": {
+    slug: "handover-day",
+    title: "What happens on handover day",
+    description: "Fifty seconds on the transfer audit: what gets counted, what you sign for, the risk if a count is wrong, and why an independent check matters.",
+    ...explainerMedia("handover-day"),
+    duration: "PT53S",
+    length: "0:53",
+    uploadDate: "2026-09-30",
+    narration: [
+      { line: "Once the Post Office approves you, you're given a handover date. That day, the branch closes while everything is counted.", seconds: 8.1 },
+      { line: "Every note, every stamp and all the stock is audited in branch, and any losses or gains are settled by the seller.", seconds: 8.7 },
+      { line: "Then you sign for it all, along with the safe keys, alarm codes and access codes. From that moment, it's yours.", seconds: 7.5 },
+      { line: "But auditors are human. If they've miscounted and you find the shortfall that evening, you're the one who's liable.", seconds: 7.5 },
+      { line: "That's why I'm on site with you, as a strategic partner of Post Office, checking everything independently before you sign.", seconds: 7.6 },
+    ],
+  },
+  welcome: {
+    slug: "welcome",
+    title: "A welcome from Mikesh",
+    description: "Thirty seconds from Mikesh Parekh on who he is and what you'll find here.",
+    ...explainerMedia("welcome"),
+    duration: "PT31S",
+    length: "0:31",
+    uploadDate: "2026-09-30",
+    aiLabel: "AI-generated from Mikesh Parekh's likeness and voice.",
+    starts: [0.28, 13.3, 18.25],
+    narration: [
+      { line: "Hello, I'm Mikesh. I've been running Post Offices for fifteen years, alongside an amazing team of like-minded people who've helped me build, run and rebuild my businesses.", seconds: 12.1 },
+      { line: "I've done the hard work, and made the mistakes, so you don't have to.", seconds: 3.9 },
+      { line: "Now I'm growing my team, so we can help you grow too. Welcome. Let's get started.", seconds: 6.0 },
+    ],
+  },
 };
 
 export const explainer = explainers["how-a-report-works"];
@@ -101,7 +135,7 @@ const stamp = (t: number) => {
 export function captionsVtt(e: Explainer) {
   const cues: string[] = [];
   e.narration.forEach(({ line, seconds }, i) => {
-    const start = i * 10 + 0.25;
+    const start = e.starts?.[i] ?? i * 10 + 0.25;
     const breaks = [...line.matchAll(/[,:?.] /g)].map((m) => (m.index ?? 0) + 1);
     const mid = breaks.sort((a, b) => Math.abs(a - line.length / 2) - Math.abs(b - line.length / 2))[0];
     const parts = mid ? [line.slice(0, mid).trim(), line.slice(mid).trim()] : [line];
