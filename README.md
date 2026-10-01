@@ -20,6 +20,7 @@ Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Markdown articles in
 | `ENQUIRY_NOTIFY_TO` | Where enquiries and paid orders are emailed (defaults to the contact email). |
 | `STRIPE_SECRET_KEY` | Switches on online report checkout. Without it, the order buttons go to the enquiry form. Redeploy after adding it. |
 | `STRIPE_WEBHOOK_SECRET` | Signing secret of the Stripe webhook pointing at `/api/stripe/webhook` (event: `checkout.session.completed`). |
+| `ORDER_INGEST_KEY` | Lets the Stripe webhook save paid report orders to the Supabase `orders` table (via `record_order`) for the OpenClaw report agents. Without it, orders are only emailed. |
 
 Paid orders live in Stripe (with the branch details in the payment's metadata); the webhook emails Mikesh and the customer.
 

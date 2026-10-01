@@ -16,7 +16,7 @@ export async function sendEmail(message: {
     return false;
   }
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch(`${process.env.RESEND_API_BASE ?? "https://api.resend.com"}/emails`, { // overridable for local testing
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,11 +1,13 @@
 import { sendEmail } from "@/lib/server/email";
 import { logoAttachment } from "@/lib/server/emails/layout";
 import { orderConfirmation, orderNotice } from "@/lib/server/emails/order";
+import { markOrderNotified, ordersEnabled, recordOrder, type RecordedOrder } from "@/lib/server/orders";
 import { verifyWebhook } from "@/lib/server/stripe";
 import { site } from "@/lib/site";
 
 // Stripe calls this when a report is paid for. Needs STRIPE_WEBHOOK_SECRET (the endpoint's signing secret).
-// Orders live in Stripe; this emails Mikesh the details and sends the customer a confirmation.
+// It saves the order for the report agents (when ORDER_INGEST_KEY is set), emails Mikesh the details and
+// sends the customer a confirmation. Stripe retries on any 5xx, so each step is safe to repeat.
 const notifyTo = process.env.ENQUIRY_NOTIFY_TO ?? site.contactEmail;
 
 export async function POST(req: Request) {
@@ -23,6 +25,20 @@ export async function POST(req: Request) {
   }
   if (session.payment_status !== "paid") return Response.json({ received: true, pending: true });
 
+  // Save the order first: if this fails, Stripe retries and nothing is lost.
+  let order: RecordedOrder | null = null;
+  if (ordersEnabled()) {
+    try {
+      order = await recordOrder(session);
+    } catch (err) {
+      console.error("order: could not save", session.id, err);
+      return new Response("could not save order", { status: 500 });
+    }
+    if (order.notified) return Response.json({ received: true, order: order.id, duplicate: true });
+  } else {
+    console.warn("order: ORDER_INGEST_KEY not set, so the order was not saved for the report agents", session.id);
+  }
+
   const notice = orderNotice(session);
   const told = await sendEmail({ to: notifyTo, ...notice });
   const confirmation = orderConfirmation(session);
@@ -32,5 +48,6 @@ export async function POST(req: Request) {
 
   // If neither email went, ask Stripe to try again later rather than lose the order.
   if (!told && !confirmed) return new Response("email failed", { status: 500 });
-  return Response.json({ received: true });
+  if (order) await markOrderNotified(order.id);
+  return Response.json({ received: true, order: order?.id });
 }
