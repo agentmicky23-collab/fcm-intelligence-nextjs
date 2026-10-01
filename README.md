@@ -32,3 +32,12 @@ npm install
 npm run dev     # http://localhost:3000
 npm run build
 ```
+
+## Reports from the OpenClaw agents
+
+- Agents write reports to the Supabase `reports` table in the format of `fcm-report-schema-v3.json` (in the vault, `08-REPORT-AGENTS/v3/`).
+- `lib/report-rules.ts` holds the fixed rules (section keys, tier lists, grade scale, weights, verdicts); `lib/report-check.ts` checks a report against them; `lib/uk-rates.ts` and `lib/employer-cost.ts` hold the statutory rates and the staffing calculation.
+- `POST /api/reports/[orderId]/check` (OpenClaw key) returns the check. `POST /api/reports/[orderId]/ready` emails Mikesh only when there are no critical issues (`?notify=0` returns the review link without emailing).
+- `GET /api/tools/employer-cost?rate=12.71&hours=30` returns the true cost of an employee.
+- Update `lib/uk-rates.ts` every April.
+

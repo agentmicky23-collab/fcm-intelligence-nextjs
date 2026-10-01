@@ -43,6 +43,9 @@ function S2({ s }: { s: Rec }) {
       )}
       <Table title="What the asking price includes" rows={s.asking_price_components} cols={[{ key: "component", label: "Component", strong: true }, { key: "value", label: "Value" }, { key: "notes", label: "Notes" }]} />
       <Table title="Against the benchmarks" rows={s.benchmark_comparison} cols={[{ key: "metric", label: "Measure", strong: true }, { key: "this_business", label: "This business" }, { key: "benchmark", label: "Benchmark" }, { key: "assessment", label: "Assessment" }]} />
+      <FiledAccounts v={s.filed_accounts} />
+      <Table title="What the seller has stated (not yet verified)" rows={s.listing_figures} cols={[{ key: "item", label: "Item", strong: true }, { key: "value", label: "Stated" }, { key: "source", label: "Where" }, { key: "note", label: "Note" }]} />
+      <Table title="Where sources disagree" rows={s.source_conflicts} cols={[{ key: "item", label: "Item", strong: true }, { key: "source_a", label: "One source says" }, { key: "source_b", label: "Another says" }, { key: "action", label: "What to check" }]} />
       <Callout title="Gap in the financial information" text={str(s.financial_gap_warning)} />
       <View text={str(s.key_insight)} />
     </>
@@ -81,6 +84,7 @@ function S4({ s }: { s: Rec }) {
           {str(s.true_hourly_uplift) && <span className="text-sm text-red-dark">{str(s.true_hourly_uplift)}</span>}
         </div>
       )}
+      <WorkedExample v={s.worked_example} />
       <Table title="Hidden costs" rows={s.hidden_costs} cols={[{ key: "cost", label: "Cost", strong: true }, { key: "amount", label: "Amount" }, { key: "frequency", label: "How often" }]} />
       <Callout title="TUPE" text={str(s.tupe_note)} />
       <View text={str(s.key_insight)} />
@@ -306,7 +310,7 @@ function S14({ s }: { s: Rec }) {
 
 function S15({ s }: { s: Rec }) {
   const q = rec(s.seller_questions);
-  const offer = rec(s.suggested_offer_range);
+  const offer = rec(s.negotiating_range ?? s.suggested_offer_range);
   const neg = rec(s.negotiation);
   const bands = (["low", "mid", "high"] as const).map((k) => ({ k, range: str(rec(offer[k]).range), reasoning: str(rec(offer[k]).reasoning) })).filter((b) => b.range);
   return (
@@ -320,7 +324,7 @@ function S15({ s }: { s: Rec }) {
       <List title="Questions for the landlord" items={strs(s.landlord_questions)} />
       {bands.length > 0 && (
         <div>
-          <Heading>Suggested offer range</Heading>
+          <Heading>Negotiating range (FCM view, not a valuation)</Heading>
           <div className="mt-3 grid gap-px border border-line bg-line sm:grid-cols-3">
             {bands.map((b) => (
               <div key={b.k} className={`bg-white p-5 ${b.k === "mid" ? "border-t-[3px] border-red" : ""}`}>
@@ -338,6 +342,71 @@ function S15({ s }: { s: Rec }) {
       </div>
       <View text={str(neg.approach)} label="How to approach it" />
     </>
+  );
+}
+
+/** Section 2: the company's filed accounts from Companies House, when found. */
+function FiledAccounts({ v }: { v: unknown }) {
+  const f = rec(v);
+  if (!str(f.company_name) && !str(f.status)) return null;
+  const years = arr(f.years);
+  const money2 = (x: unknown) => (num(x) === null ? "-" : `£${num(x)!.toLocaleString("en-GB")}`);
+  const rows: [string, string][] = [
+    ["Net assets", "net_assets"], ["Cash", "cash"], ["Owed within a year", "creditors"], ["Turnover", "turnover"], ["Gross profit", "gross_profit"], ["Staff costs", "staff_costs"], ["Employees", "employees"],
+  ];
+  const shown = rows.filter(([, k]) => years.some((y) => num(y[k]) !== null));
+  return (
+    <div className="border border-line bg-white p-5">
+      <Heading>Filed accounts (Companies House)</Heading>
+      <p className="mt-2 text-sm text-muted">
+        {[str(f.company_name), str(f.company_number) && `no. ${str(f.company_number)}`, str(f.status), str(f.accounts_type) && `${str(f.accounts_type)} accounts`].filter(Boolean).join(" · ")}
+      </p>
+      {years.length > 0 && shown.length > 0 && (
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[480px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b-2 border-navy text-navy">
+                <th className="py-2 pr-4 font-semibold">Year ending</th>
+                {years.map((y, i) => <th key={i} className="py-2 pr-4 font-semibold">{str(y.period_end)}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map(([label, k]) => (
+                <tr key={k} className="border-b border-line">
+                  <td className="py-2 pr-4 font-medium text-navy">{label}</td>
+                  {years.map((y, i) => <td key={i} className="py-2 pr-4 text-ink">{k === "employees" ? str(y[k]) || "-" : money2(y[k])}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <List title="Points to note" items={strs(f.red_flags)} />
+      {str(f.note) && <p className="mt-3 text-sm text-muted">{str(f.note)}</p>}
+    </div>
+  );
+}
+
+/** Section 4: one employee's real cost, from the cost-to-employer calculation. */
+function WorkedExample({ v }: { v: unknown }) {
+  const w = rec(v);
+  if (num(w.hourly_rate) === null) return null;
+  const rows: [string, unknown][] = [
+    ["Wage", w.hourly_rate], ["Holiday pay", w.holiday_per_hour], ["Employer National Insurance", w.ni_per_hour], ["Employer pension", w.pension_per_hour],
+  ];
+  return (
+    <div className="bg-light p-5">
+      <Heading>What one {str(w.hours_per_week)}-hour-a-week employee really costs</Heading>
+      <table className="mt-3 w-full max-w-md text-sm">
+        <tbody>
+          {rows.filter(([, x]) => num(x) !== null).map(([l, x]) => (
+            <tr key={l} className="border-b border-line"><td className="py-2 text-ink">{l}</td><td className="py-2 text-right font-medium text-navy">£{num(x)!.toFixed(2)}/hr</td></tr>
+          ))}
+          <tr><td className="py-2 font-semibold text-navy">True cost per hour worked</td><td className="py-2 text-right font-display text-xl font-bold text-navy">£{(num(w.cost_per_worked_hour) ?? 0).toFixed(2)}</td></tr>
+        </tbody>
+      </table>
+      {num(w.annual_cost) !== null && <p className="mt-2 text-sm text-muted">£{Math.round(num(w.annual_cost)!).toLocaleString("en-GB")} a year in total{str(w.uplift) ? `, ${str(w.uplift)} above the hourly rate` : ""}.</p>}
+    </div>
   );
 }
 

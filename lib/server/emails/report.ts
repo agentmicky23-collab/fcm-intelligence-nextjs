@@ -37,16 +37,35 @@ export function reportReadyEmail(o: { to: string; name: string; business: string
 }
 
 /** To Mikesh when the agents have finished a report and it's waiting for his approval. */
-export function reportReviewEmail(o: { orderId: string; business: string; tier: Tier; customer: string; grade: string; verdict: string; url: string }) {
+type Summary = { dataGaps: string[]; estimates: string[]; needsJudgement: string[]; pendingDocuments: string[]; retries: string };
+
+export function reportReviewEmail(o: { orderId: string; business: string; tier: Tier; customer: string; grade: string; verdict: string; url: string; warnings?: string[]; summary?: Summary }) {
   const name = reportName(o.tier);
+  const sm = o.summary;
+  const groups: [string, string[]][] = [
+    ["Needs your judgement", sm?.needsJudgement ?? []],
+    ["Documents the customer has that we haven't received", sm?.pendingDocuments ?? []],
+    ["Data that wasn't available", sm?.dataGaps ?? []],
+    ["Figures that are FCM estimates", sm?.estimates ?? []],
+    ["Warnings from the automatic check", o.warnings ?? []],
+  ];
   const content = [
     html.kicker(`Ready for review · ${o.orderId}`),
     html.heading(`${o.business}`),
-    html.para(`The ${escapeHtml(name)} for <strong>${escapeHtml(o.customer)}</strong> has passed the agents' checks${o.grade ? ` with an overall grade of <strong>${escapeHtml(o.grade)}</strong>` : ""}.${o.verdict ? ` Verdict: ${escapeHtml(o.verdict)}.` : ""}`),
+    html.para(`The ${escapeHtml(name)} for <strong>${escapeHtml(o.customer)}</strong> has passed the agents' checks and the automatic report check${o.grade ? `, with an overall grade of <strong>${escapeHtml(o.grade)}</strong>` : ""}.${o.verdict ? ` Verdict: ${escapeHtml(o.verdict)}.` : ""}`),
     html.button("Review and approve", o.url),
+    ...groups.filter(([, items]) => items.length).flatMap(([title, items]) => [html.subheading(title), html.list(items.slice(0, 8))]),
     html.small("Nothing goes to the customer until you press Approve &amp; send on the report page."),
   ].join("\n");
-  const text = [`${name} ready for review: ${o.business} (${o.orderId})`, `Customer: ${o.customer}`, o.grade && `Grade: ${o.grade}`, o.verdict && `Verdict: ${o.verdict}`, "", `Review and approve: ${o.url}`].filter((l) => l !== "").join("\n");
+  const text = [
+    `${name} ready for review: ${o.business} (${o.orderId})`,
+    `Customer: ${o.customer}`,
+    o.grade ? `Grade: ${o.grade}` : "",
+    o.verdict ? `Verdict: ${o.verdict}` : "",
+    "",
+    `Review and approve: ${o.url}`,
+    ...groups.filter(([, items]) => items.length).flatMap(([title, items]) => ["", `${title}:`, ...items.slice(0, 8).map((i) => `- ${i}`)]),
+  ].join("\n").replace(/\n{3,}/g, "\n\n");
   return { subject: `Review: ${name}, ${o.business} (${o.orderId})`, text, html: brandedEmail({ preheader: `${o.business} is ready for your approval.`, content, footer: "Sent by the FCM Intelligence report pipeline." }) };
 }
 

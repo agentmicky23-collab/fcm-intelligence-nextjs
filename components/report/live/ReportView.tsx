@@ -5,7 +5,7 @@ import { ScoreRing } from "@/components/report/charts";
 import { PrintButton } from "@/components/report/PrintButton";
 import { Slant } from "@/components/ui";
 import { inTier, reportSections, type Tier } from "@/lib/report";
-import { num, str, type Report } from "@/lib/report-data";
+import { num, rec, str, strs, type Report } from "@/lib/report-data";
 import { site } from "@/lib/site";
 import { SectionShell } from "./parts";
 import { sectionBodies } from "./Sections";
@@ -35,6 +35,11 @@ export function ReportView({ report, tier, orderId, banner, showAll = false }: {
   ].filter(Boolean) as { label: string; value: string }[];
 
   // What each tier includes is fixed by what we sell, not by the list the agents wrote into the report.
+  // Be upfront about what couldn't be verified.
+  const gaps = strs(m.data_gaps);
+  const identity = rec(m.identity);
+  const identityNote = str(identity.confidence) === "probable" ? `The premises were identified as ${str(m.full_address) || "this address"} from ${str(identity.method) || "the listing"}, but not confirmed. Check the address with the seller before relying on the location sections.` : "";
+
   const visible = new Set(reportSections.filter((s) => inTier(s, tier)).map((s) => s.n));
   const shown = reportSections.filter((s) => showAll || visible.has(s.n));
   const locked = reportSections.filter((s) => !visible.has(s.n));
@@ -86,6 +91,18 @@ export function ReportView({ report, tier, orderId, banner, showAll = false }: {
                 </div>
               ))}
             </dl>
+          </section>
+        )}
+
+        {(gaps.length > 0 || identityNote) && (
+          <section className="border-b border-line bg-light">
+            <div className="mx-auto max-w-[1280px] px-5 py-8 sm:px-8">
+              <p className="font-display text-lg font-bold text-navy">What this report couldn&apos;t check</p>
+              <ul className="mt-3 space-y-1.5 text-[15px] text-ink">
+                {identityNote && <li className="flex gap-3"><span aria-hidden className="mt-[9px] h-2 w-1.5 shrink-0 -skew-x-[18deg] bg-red" />{identityNote}</li>}
+                {gaps.map((g, i) => <li key={i} className="flex gap-3"><span aria-hidden className="mt-[9px] h-2 w-1.5 shrink-0 -skew-x-[18deg] bg-red" />{g}</li>)}
+              </ul>
+            </div>
           </section>
         )}
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Grow, Reveal } from "@/components/report/charts";
-import { arr, num, str, type Image, type Rec } from "@/lib/report-data";
+import { arr, isRec, num, str, type Image, type Rec } from "@/lib/report-data";
 
 // Building blocks for showing an agent-written report. Each one renders nothing when its data is missing,
 // so a thin section still reads cleanly.
@@ -28,14 +28,25 @@ export function SectionShell({ n, title, s, intelligenceOnly, children }: { n: n
       {headline && <p className="mt-4 max-w-3xl font-display text-xl font-semibold leading-snug text-navy">{headline}</p>}
       {detail && <p className="mt-3 max-w-3xl text-[16px] leading-relaxed text-muted">{detail}</p>}
       <div className="mt-8 space-y-8">{children}</div>
-      <Sources text={str(s.sources)} />
+      <Caveat text={str(s.advice_caveat)} />
+      <Sources value={s.sources} />
     </section>
   );
 }
 
-export function Sources({ text }: { text: string }) {
+/** Sources: a line of text (v2) or a list of {name, url, accessed, date_range} (v3). */
+export function Sources({ value }: { value: unknown }) {
+  const items = Array.isArray(value)
+    ? value.map((v) => (isRec(v) ? [str(v.name), str(v.date_range) && `(${str(v.date_range)})`, str(v.accessed) && `accessed ${str(v.accessed)}`].filter(Boolean).join(" ") : str(v))).filter(Boolean)
+    : [];
+  const text = items.length ? items.join("; ") : str(value);
   if (!text) return null;
   return <p className="mt-10 border-t border-line pt-4 text-xs leading-relaxed text-muted"><span className="font-semibold text-navy">Sources: </span>{text}</p>;
+}
+
+export function Caveat({ text }: { text: string }) {
+  if (!text) return null;
+  return <p className="mt-8 text-sm italic leading-relaxed text-muted">{text}</p>;
 }
 
 export function Heading({ children }: { children: ReactNode }) {
