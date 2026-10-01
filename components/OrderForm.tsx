@@ -140,8 +140,10 @@ export function OrderForm({ initialTier, cancelled }: { initialTier: OrderTier; 
         <input type="checkbox" name="terms" required className="mt-1 h-4 w-4 accent-red" />
         <span>
           I agree to the{" "}
-          <Link href="/terms" className="font-medium text-red-dark underline underline-offset-4">terms</Link> and have read the{" "}
-          <Link href="/privacy" className="font-medium text-red-dark underline underline-offset-4">privacy notice</Link>.
+          <Link href="/terms#reports" className="font-medium text-red-dark underline underline-offset-4">terms</Link> and have read the{" "}
+          <Link href="/privacy" className="font-medium text-red-dark underline underline-offset-4">privacy policy</Link>. Please start
+          work on my report straight away. I understand that I can&apos;t cancel once it&apos;s delivered, and that if I cancel before
+          then I may only get part of my payment back.
         </span>
       </label>
 

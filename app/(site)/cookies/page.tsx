@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalPart as Part } from "@/components/Legal";
+import { LegalCompany, LegalHeader, LegalPart as Part } from "@/components/Legal";
 import { MapsChoice } from "@/components/MapsChoice";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
@@ -36,12 +36,10 @@ export default function Page() {
   return (
     <section>
       <Container className="max-w-3xl py-20">
-        <h1 className="font-display text-4xl font-bold tracking-[-0.02em] text-navy">Cookies policy</h1>
-        <p className="mt-4 text-sm text-muted">Last updated 1 October 2026</p>
-        <p className="mt-6 text-lg leading-relaxed text-muted">
-          Cookies are small files a website saves in your browser. This site uses very few, and none for advertising or
-          tracking. This page lists every one and tells you how to control them.
-        </p>
+        <LegalHeader
+          title="Cookies policy"
+          intro="Cookies are small files a website saves in your browser. This site uses very few, and none for advertising or tracking. This page lists every one and tells you how to control them."
+        />
 
         <Part title="The short version">
           <ul>
@@ -103,6 +101,10 @@ export default function Page() {
             You can also block them altogether. If you block or delete them, the site still works, but you&apos;ll need to sign
             in to the members&apos; library again and any unfinished insurance review will be lost.
           </p>
+        </Part>
+
+        <Part title="Who I am">
+          <LegalCompany />
         </Part>
 
         <Part title="Changes and questions">

@@ -1,91 +1,188 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalPart as Part } from "@/components/Legal";
+import { LegalCompany, LegalHeader, LegalPart as Part } from "@/components/Legal";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = pageMeta("/terms", "Terms of use", "The terms for using the FCM Intelligence website.");
+export const metadata: Metadata = pageMeta("/terms", "Terms and conditions", "The terms for using the FCM Intelligence website and buying reports and services.");
 
+const link = "text-red-dark underline";
 
 export default function Page() {
   return (
     <section>
       <Container className="max-w-3xl py-20">
-        <h1 className="font-display text-4xl font-bold tracking-[-0.02em] text-navy">Terms of use</h1>
-        <p className="mt-6 bg-red/15 px-4 py-3 text-sm text-red-dark">
-          Draft for review: these terms are still being checked and may change before the site launches.
-        </p>
-        <p className="mt-6 text-lg leading-relaxed text-muted">
-          These terms cover using this website. Paid work is also covered by the written agreement we make before it starts.
-        </p>
+        <LegalHeader
+          title="Terms and conditions"
+          intro="These terms cover using this website and buying a report from it. Please read them before you order. If anything isn't clear, email me and I'll explain."
+        />
 
-        <Part title="Who I am">
+        <Part title="1. Who I am">
+          <LegalCompany />
           <p>
-            {site.name} is run by {site.owner} through {site.company}. Contact:{" "}
-            <a className="text-red-dark underline" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
-          </p>
-          <p>{site.name} is independent. It isn&apos;t part of, or endorsed by, Post Office Limited.</p>
-        </Part>
-
-        <Part title="Information, not advice">
-          <p>
-            The insights, resources, tools and example report on this site are general information from my own experience.
-            They aren&apos;t financial, legal, tax or insurance advice, and they can&apos;t account for your circumstances. Before
-            you buy a business, sign a lease or change your insurance, take advice from a qualified professional.
-          </p>
-          <p>
-            The insurance review and the Branch Health Check estimate give a guide based on what you enter. Estimates are
-            confirmed, or corrected, in a written quote.
+            {site.name} is independent. It isn&apos;t part of Post Office Limited, and Post Office doesn&apos;t endorse or check
+            anything on this site or in my reports.
           </p>
         </Part>
 
-        <Part title="Reports">
+        <Part title="2. Information, not advice">
+          <p>
+            Everything on this site, and everything in a report, is information and opinion from my experience of running
+            Post Office branches. It isn&apos;t financial, investment, legal, tax, HR, employment or insurance advice, and it
+            can&apos;t take account of your personal circumstances. {site.company} isn&apos;t authorised or regulated by the
+            Financial Conduct Authority.
+          </p>
+          <p>
+            Before you buy a business, sign a lease, take on staff or change your insurance, get advice from a qualified
+            solicitor, accountant or other professional. The decision to buy, and what you pay, is always yours.
+          </p>
+          <p>
+            The free tools on the site, such as the insurance review and the Branch Health Check estimate, give a guide based
+            on what you enter. They&apos;re not a quote or a recommendation.
+          </p>
+        </Part>
+
+        <Part title="3. Reports" id="reports">
+          <p>
+            I offer two reports on a Post Office you&apos;re thinking of buying: the Insight Report and the Intelligence Report.
+            What each one covers is set out on the <Link href="/reports" className={link}>reports page</Link>.
+          </p>
           <ul>
-            <li>Reports are researched from public sources and the information you give me. I check them before they reach you, but I can&apos;t guarantee that third-party information is complete or current.</li>
-            <li>Figures in a report are estimates unless they come from the business&apos;s own accounts.</li>
-            <li>A report is for your own use. Please don&apos;t resell or republish it.</li>
-            <li>The example report is for a fictional branch, and its figures are illustrative.</li>
+            <li>
+              <strong>Sources.</strong> Reports are researched from public sources, such as official statistics, public
+              registers, maps and published reviews, together with the sale listing and anything you send me. I take
+              reasonable care to check them, but I can&apos;t guarantee that information from other people is complete,
+              accurate or up to date, and it can change after I&apos;ve looked at it.
+            </li>
+            <li>
+              <strong>Estimates.</strong> Figures that don&apos;t come from the business&apos;s own accounts are estimates, and are
+              labelled as such. Treat them as a guide, not a forecast.
+            </li>
+            <li>
+              <strong>Your information.</strong> Please give me the correct branch name, postcode and listing. If the details
+              are wrong, the report may be about the wrong business. If you send me documents, such as accounts or a lease,
+              you confirm you&apos;re allowed to share them with me for your report.
+            </li>
+            <li>
+              <strong>Delivery.</strong> I send your report by email to the address you give at checkout. I&apos;ll let you know
+              when to expect it when I confirm your order, and tell you straight away if it&apos;s going to take longer. If
+              it hasn&apos;t arrived when expected, check your junk folder, then email me.
+            </li>
+            <li>
+              <strong>Errors.</strong> If you find a factual mistake that materially affects a report&apos;s conclusions, tell me
+              within 14 days of delivery and I&apos;ll correct it free of charge.
+            </li>
+            <li>
+              <strong>Using your report.</strong> Your report is for you, to help you decide whether to buy the business it
+              covers. You can share it with your own solicitor, accountant, lender or business partner for that purpose.
+              Please don&apos;t resell it, publish it, post it online or pass it to anyone else.
+            </li>
+            <li>
+              <strong>The example report</strong> is for a fictional branch. Its figures are for illustration only.
+            </li>
           </ul>
         </Part>
 
-        <Part title="Prices and services">
+        <Part title="4. Prices and payment">
           <ul>
-            <li>All prices on the site are in pounds and exclude VAT, which is added at the current rate.</li>
-            <li>When you order a report online, you pay when you order and we have an agreement once the payment goes through. You get a receipt and a VAT invoice by email.</li>
-            <li>Sending an enquiry doesn&apos;t commit you to anything. We only have an agreement once we&apos;ve both confirmed the work, price and timing in writing.</li>
-            <li>The monthly Branch Health Check subscription has a three-month minimum term, and can be cancelled any time after that.</li>
+            <li>Prices are in pounds sterling and are shown before VAT. VAT is added at the current rate and shown on its own line before you pay.</li>
+            <li>Payment is taken by Stripe, our payment provider. I never see or store your card details.</li>
+            <li>Our contract starts when your payment goes through. You&apos;ll get an order confirmation from me, and a receipt and VAT invoice from Stripe.</li>
+            <li>If a price on the site is clearly wrong, I&apos;ll tell you before starting work, and you can cancel for a full refund.</li>
           </ul>
         </Part>
 
-        <Part title="Using the site">
+        <Part title="5. Cancelling a report and refunds" id="refunds">
+          <p>
+            Each report is researched and written for the branch you choose, and work starts as soon as you order. When you
+            order, you ask me to start straight away. So:
+          </p>
           <ul>
-            <li>The content, design and logo belong to {site.company}. You&apos;re welcome to share links, but please don&apos;t copy the content without permission.</li>
-            <li>Please don&apos;t misuse the site, for example by sending spam through the forms or trying to disrupt it.</li>
-            <li>Links to other websites are for convenience. I&apos;m not responsible for their content.</li>
+            <li>Once your report has been delivered, it can&apos;t be cancelled or refunded.</li>
+            <li>
+              If you buy for your business (which most buyers of a Post Office do), the report isn&apos;t refundable once work has
+              started.
+            </li>
+            <li>
+              If I can&apos;t produce your report, for example because the listing has been withdrawn or there isn&apos;t enough
+              information, I&apos;ll offer you a full refund or a report on a different branch instead.
+            </li>
+          </ul>
+          <p>
+            <strong>If you&apos;re buying as a consumer</strong>, not for a business, the law gives you 14 days from your order to
+            cancel. Because you asked me to start straight away, if you cancel before your report is delivered I&apos;ll refund
+            what you paid less a fair amount for the work already done. That right ends once the report has been delivered.
+            To cancel, email {site.contactEmail} with your name and the branch the report is about. I&apos;ll refund you within 14
+            days, to the card you paid with.
+          </p>
+          <p>None of this affects your other legal rights, for example if a report isn&apos;t provided with reasonable care and skill.</p>
+        </Part>
+
+        <Part title="6. Consultancy and other services">
+          <p>
+            Sending an enquiry doesn&apos;t commit you to anything. For consultancy, training, health checks, retainers and
+            interim management, we have an agreement once we&apos;ve both confirmed the work, price and timing in writing.
+            Those written terms apply alongside these.
+          </p>
+          <ul>
+            <li>The monthly Branch Health Check has a three-month minimum term, and can be cancelled at any time after that.</li>
+            <li>
+              Interim management has a six-month minimum term. It can only start once Post Office has been told and has
+              completed its compliance checks.
+            </li>
           </ul>
         </Part>
 
-        <Part title="Liability">
+        <Part title="7. Using the site">
+          <ul>
+            <li>The content, reports, design and logo belong to {site.company}. You&apos;re welcome to share links, but please don&apos;t copy the content without permission.</li>
+            <li>Please don&apos;t misuse the site, for example by sending spam through the forms, trying to get into parts of it you shouldn&apos;t, or trying to disrupt it.</li>
+            <li>Links to other websites are there for convenience. I&apos;m not responsible for their content.</li>
+            <li>I try to keep the site accurate and available, but I can&apos;t promise it will always be either.</li>
+          </ul>
+        </Part>
+
+        <Part title="8. Liability">
           <p>
-            I work hard to keep the site accurate, but it&apos;s provided as it is, and I can&apos;t promise it will always be
-            available or error-free. As far as the law allows, I&apos;m not liable for losses from relying on general
-            information on this site. Nothing in these terms limits liability that can&apos;t legally be limited, such as for
-            fraud, or for death or personal injury caused by negligence.
+            Nothing in these terms limits or excludes liability that can&apos;t legally be limited, such as for death or personal
+            injury caused by negligence, or for fraud.
+          </p>
+          <p>
+            <strong>If you&apos;re a business customer:</strong> I&apos;m not liable for loss of profit, loss of business or
+            opportunity, or any indirect or consequential loss, or for decisions you make based on a report or anything on
+            this site. My total liability to you for a report is limited to the price you paid for it.
+          </p>
+          <p>
+            <strong>If you&apos;re a consumer:</strong> I&apos;m responsible for loss you suffer that was a foreseeable result of me
+            breaking these terms or failing to use reasonable care and skill. I&apos;m not responsible for loss that wasn&apos;t
+            foreseeable, or for business losses.
           </p>
         </Part>
 
-        <Part title="Your information">
+        <Part title="9. Your information">
           <p>
-            How I handle personal information is explained in the{" "}
-            <Link href="/privacy" className="text-red-dark underline">privacy policy</Link>.
+            How I handle personal information is explained in the <Link href="/privacy" className={link}>privacy policy</Link>, and
+            the site&apos;s cookies in the <Link href="/cookies" className={link}>cookies policy</Link>.
           </p>
         </Part>
 
-        <Part title="Changes and law">
+        <Part title="10. Complaints">
           <p>
-            I may update these terms. The version on this page applies when you use the site. These terms are governed by
-            the law of England and Wales.
+            If you&apos;re unhappy with anything, email {site.contactEmail}. I&apos;ll reply within five working days and try to put
+            it right.
+          </p>
+        </Part>
+
+        <Part title="11. Changes and the law">
+          <p>
+            I may update these terms. The version that applies to a report is the one in force when you ordered it, and the
+            date at the top shows when they last changed.
+          </p>
+          <p>
+            These terms are governed by the law of England and Wales, and the courts of England and Wales can deal with any
+            dispute. If you&apos;re a consumer living in Scotland or Northern Ireland, you can also bring proceedings in your
+            local courts.
           </p>
         </Part>
       </Container>

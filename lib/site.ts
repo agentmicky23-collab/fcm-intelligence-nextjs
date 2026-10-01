@@ -5,6 +5,12 @@ export const site = {
   name: "FCM Intelligence",
   owner: "Mikesh Parekh",
   company: "Firstclass Managerial Ltd",
+  // Shown on the legal pages and in the footer, as the Companies Act requires.
+  companyNumber: "10772880",
+  registeredOffice: "57-59 Penny Meadow, Ashton-under-Lyne, OL6 6HE",
+  vatNumber: "", // shown once Mikesh confirms it
+  // The date the terms, privacy and cookies pages were last changed. Recorded with each report order.
+  legalUpdated: "1 October 2026",
   url: "https://fcmintelligence.com",
   tagline: "Straight answers on buying and running a Post Office, from someone who runs 43 of them.",
   contactEmail: "mikesh@interimenterprises.co.uk",

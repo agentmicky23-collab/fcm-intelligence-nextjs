@@ -1,6 +1,7 @@
 import { haveOptions, isOrderTier, orderLimits, orderTiers, type OrderResult } from "@/lib/checkout";
 import { emailPattern, oneLine, text } from "@/lib/server/request";
 import { createCheckoutSession } from "@/lib/server/stripe";
+import { site } from "@/lib/site";
 
 // Starts a Stripe Checkout for a report. VAT is added by Stripe Tax on its own line.
 const reply = (body: OrderResult, status = 200) => Response.json(body, { status });
@@ -43,6 +44,8 @@ export async function POST(req: Request) {
     message: text(p.message, 480),
     ...Object.fromEntries([...haveKeys].map((k) => [k, String(have.includes(k))])),
     source: "fcmintelligence.com",
+    // What the buyer agreed to: the terms in force, and to work starting straight away.
+    terms_accepted: `${site.legalUpdated}; start now`,
   };
 
   const origin = new URL(req.url).origin;

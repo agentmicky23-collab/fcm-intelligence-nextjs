@@ -70,6 +70,10 @@ export function Footer() {
         <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>
             © {new Date().getFullYear()} {site.company}. FCM Intelligence is independent and is not part of or endorsed by Post Office Limited.
+            <span className="mt-1 block">
+              Registered in England and Wales, company no. {site.companyNumber}. Registered office: {site.registeredOffice}.
+              {site.vatNumber && ` VAT no. ${site.vatNumber}.`}
+            </span>
           </p>
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-white">Privacy</Link>
