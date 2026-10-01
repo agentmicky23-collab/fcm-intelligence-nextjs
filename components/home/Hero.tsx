@@ -90,7 +90,7 @@ export function Hero() {
           <ExplainerVideo video={explainers.welcome} />
           <div className="flex items-end justify-between gap-6 bg-night py-4 md:px-5">
             <p className="text-sm text-white/60">
-              A 30-second welcome from Mikesh.
+              A short welcome from Mikesh.
               <span className="mt-1 block text-xs text-white/40">{explainers.welcome.aiLabel}</span>
             </p>
             <p className="shrink-0 text-right">
