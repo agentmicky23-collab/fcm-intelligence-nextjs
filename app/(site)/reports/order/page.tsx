@@ -29,6 +29,7 @@ export default async function OrderPage(props: PageProps<"/reports/order">) {
             {[
               "Prices are plus VAT, shown on its own line at checkout",
               "You get a receipt and a VAT invoice by email",
+              "Typically delivered within 48 hours. I'll confirm when to expect yours",
               "I'll email you if I need anything else from you",
             ].map((t) => (
               <li key={t} className="flex gap-3">

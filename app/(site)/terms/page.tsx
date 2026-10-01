@@ -65,9 +65,10 @@ export default function Page() {
               you confirm you&apos;re allowed to share them with me for your report.
             </li>
             <li>
-              <strong>Delivery.</strong> I send your report by email to the address you give at checkout. I&apos;ll let you know
-              when to expect it when I confirm your order, and tell you straight away if it&apos;s going to take longer. If
-              it hasn&apos;t arrived when expected, check your junk folder, then email me.
+              <strong>Delivery.</strong> I send your report by email to the address you give at checkout. Reports are
+              typically delivered within 48 hours, but at busy times they can take longer. I&apos;ll tell you when to expect
+              yours when I confirm your order, and let you know straight away if anything changes. If it hasn&apos;t arrived
+              when expected, check your junk folder, then email me.
             </li>
             <li>
               <strong>Errors.</strong> If you find a factual mistake that materially affects a report&apos;s conclusions, tell me
