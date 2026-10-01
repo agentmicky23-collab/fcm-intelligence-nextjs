@@ -9,7 +9,7 @@ The most common mistake I see first-time buyers make has nothing to do with the 
 
 ## Buy below your maximum
 
-My rule is simple. If your budget is £200,000, you buy at around £150,000. You never spend 100% of what you have.
+My rule is simple. If your budget is £200,000, you buy at around £120,000 to £130,000, and keep the rest back. You never spend 100% of what you have.
 
 Keep 35 to 40% in reserve. That money is for the things you can't see coming: problems that turn up during the deal, surprises at takeover, and the first six months while you find your feet. Stock, staff, repairs, a slow quarter. Something will happen. You need a safety net when it does.
 

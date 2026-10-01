@@ -29,7 +29,7 @@ const faqSection = () =>
 function intro() {
   return `# ${site.name}
 
-> ${site.name} is the advisory business of ${site.owner}, a UK Post Office operator who runs around 43 branches, two Banking Hubs and two petrol station forecourts, and has run up to 100 branches over 15 years. It offers acquisition reports on Post Offices for sale, consultancy, training, operational support for single and multiple branch operators, shared management (Mikesh's management team, built for 100 branches, working for other operators' branches), and free resources for buyers. ${site.name} is a strategic partner to Post Office. The business is ${site.company}. All prices are in GBP and exclude VAT.
+> ${site.name} is the advisory business of ${site.owner}, a UK Post Office operator who runs around 43 branches, two Banking Hubs and two petrol station forecourts, and has run up to 100 branches over 15 years. It offers acquisition reports on Post Offices for sale, consultancy, training, operational support for single and multiple branch operators, interim management (Mikesh's team running a branch for a minimum of six months, with Post Office notified, for owners who need a break), and free resources for buyers. ${site.name} is a strategic partner to Post Office. The business is ${site.company}. All prices are in GBP and exclude VAT.
 
 Key facts: ${credentials.join(" · ")}. Contact: ${site.contactEmail}, or the enquiry form at ${url("/contact")}.`;
 }

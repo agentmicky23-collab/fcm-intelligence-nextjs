@@ -3,7 +3,7 @@
 export const practices = [
   { title: "Acquisitions & due diligence", line: "Independent assessment before you commit.", href: "/services" },
   { title: "Business plans & finance", line: "Plans, projections and accounts lenders trust.", href: "/services" },
-  { title: "HR & employment", line: "TUPE, contracts and people matters, handled properly.", href: "/services" },
+  { title: "Interim management", line: "Need a break? My team can run your branch while you're away.", href: "/services" },
   { title: "Health, safety & compliance", line: "Audit-ready branches and safe workplaces.", href: "/services" },
   { title: "Operations & growth", line: "Performance reviews and multi-branch strategy.", href: "/services" },
   { title: "Insight & Intelligence reports", line: "Location and business reports from £199 + VAT.", href: "/reports" },

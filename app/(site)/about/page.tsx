@@ -15,7 +15,7 @@ const numbers = [
   { value: "43", label: "branches today" },
   { value: "200+", label: "staff" },
   { value: "10", label: "Crown conversions in 2025" },
-  { value: "7", label: "forecourts run, 2 today" },
+  { value: "7", label: "forecourts last year, 2 today" },
   { value: "2", label: "Banking Hubs" },
   { value: "10", label: "more branches in the pipeline" },
 ];
@@ -92,7 +92,7 @@ export default function AboutPage() {
               Village, Eccles, Leeds Markets and Old Swan.
             </p>
             <p>
-              The numbers haven&apos;t only gone up. Of the seven forecourts he has run, two remain. Branches have been opened,
+              The numbers haven&apos;t only gone up. Last year the business ran seven petrol station forecourts; when the numbers stopped working on five, it let them go. Branches have been opened,
               turned around, sold and, when they stopped working, closed. Parekh is unusually open about that. He has been through
               robberies and threats, good years and genuinely bad ones, with profit and debt coming in cycles. With three Post
               Offices, he says, he could have lived simply. With everything he has built, it is harder: bigger businesses, bigger
@@ -100,9 +100,9 @@ export default function AboutPage() {
             </p>
             <p>
               Every year the business lets go of sites that aren&apos;t profitable, rebuilds, and keeps the ones that perform. Its
-              management team is built to run up to 100 branches. With 43 in the estate, Parekh now offers that spare capacity to
-              other operators, helping them buy, manage and grow their own branches at a fraction of the cost of employing their own
-              management.
+              management team is built to run up to 100 branches. With 43 in the estate, Parekh now puts that capacity to work for
+              other operators: tools, advice and hands-on help to improve sales and find where money is being lost, and interim
+              management for owners who need a break, at a fraction of the cost of employing their own management.
             </p>
           </article>
         </Container>

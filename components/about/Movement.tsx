@@ -4,7 +4,7 @@ import { Grow } from "@/components/report/charts";
 
 const rows = [
   { label: "Post Office branches", peak: 100, peakLabel: "Up to 100 run over 15 years", now: 43, nowLabel: "43 today" },
-  { label: "Petrol station forecourts", peak: 7, peakLabel: "7 run", now: 2, nowLabel: "2 today" },
+  { label: "Petrol station forecourts", peak: 7, peakLabel: "7 last year", now: 2, nowLabel: "2 today" },
 ];
 
 /** Peak against today: businesses are opened, grown, sold and sometimes closed. */
