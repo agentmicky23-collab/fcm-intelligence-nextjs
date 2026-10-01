@@ -21,6 +21,7 @@ Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Markdown articles in
 | `STRIPE_SECRET_KEY` | Switches on online report checkout. Without it, the order buttons go to the enquiry form. Redeploy after adding it. |
 | `STRIPE_WEBHOOK_SECRET` | Signing secret of the Stripe webhook pointing at `/api/stripe/webhook` (event: `checkout.session.completed`). |
 | `OPENCLAW_OPS_KEY` | A long random value (24+ characters) that OpenClaw sends to `/api/reports/[orderId]/ready`. Set the same value in OpenClaw as `FCM_SITE_OPS_KEY`. |
+| `CRON_SECRET` | Any long random value. Lets Vercel run the daily report pipeline check (`/api/cron/pipeline-check`, 12:00 UTC), which emails Mikesh about orders that are late, stuck, failed or waiting for approval. |
 | `ORDER_INGEST_KEY` | Lets the Stripe webhook save paid report orders to the Supabase `orders` table (via `record_order`) for the OpenClaw report agents. Without it, orders are only emailed. |
 
 Paid orders live in Stripe (with the branch details in the payment's metadata); the webhook emails Mikesh and the customer.

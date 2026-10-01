@@ -42,3 +42,23 @@ export function checkOpsKey(header: string | null) {
   const got = (header ?? "").replace(/^Bearer\s+/i, "");
   return want.length >= 24 && got.length === want.length && timingSafeEqual(Buffer.from(got), Buffer.from(want));
 }
+
+export type StaleOrder = {
+  id: string;
+  status: string;
+  business_name: string;
+  business_postcode: string | null;
+  report_tier: string;
+  customer_email: string;
+  error_message: string | null;
+  created_at: string;
+  hours_since_paid: number;
+  problem: "not_started" | "stuck" | "failed" | "awaiting_approval";
+};
+
+/** Orders that need Mikesh's attention, for the daily check. */
+export async function staleOrders(): Promise<StaleOrder[]> {
+  const res = await rpc("stale_orders", { p_key: key() });
+  if (!res.ok) throw new Error(`stale_orders failed: ${res.body.slice(0, 200)}`);
+  return JSON.parse(res.body) as StaleOrder[];
+}
