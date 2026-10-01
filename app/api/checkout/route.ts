@@ -44,8 +44,8 @@ export async function POST(req: Request) {
     message: text(p.message, 480),
     ...Object.fromEntries([...haveKeys].map((k) => [k, String(have.includes(k))])),
     source: "fcmintelligence.com",
-    // What the buyer agreed to: the terms in force, and to work starting straight away.
-    terms_accepted: `${site.legalUpdated}; start now`,
+    // What the buyer agreed to: the terms in force, buying for business, no refunds.
+    terms_accepted: `${site.legalUpdated}; business purchase; no refunds`,
   };
 
   const origin = new URL(req.url).origin;

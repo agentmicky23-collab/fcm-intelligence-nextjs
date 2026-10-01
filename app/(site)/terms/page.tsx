@@ -15,7 +15,7 @@ export default function Page() {
       <Container className="max-w-3xl py-20">
         <LegalHeader
           title="Terms and conditions"
-          intro="These terms cover using this website and buying a report from it. Please read them before you order. If anything isn't clear, email me and I'll explain."
+          intro="These terms cover using this website and buying a report from it. Please read them before you order, especially section 5: report sales are final and there are no refunds. If anything isn't clear, email me before you order and I'll explain."
         />
 
         <Part title="1. Who I am">
@@ -89,34 +89,28 @@ export default function Page() {
             <li>Prices are in pounds sterling and are shown before VAT. VAT is added at the current rate and shown on its own line before you pay.</li>
             <li>Payment is taken by Stripe, our payment provider. I never see or store your card details.</li>
             <li>Our contract starts when your payment goes through. You&apos;ll get an order confirmation from me, and a receipt and VAT invoice from Stripe.</li>
-            <li>If a price on the site is clearly wrong, I&apos;ll tell you before starting work, and you can cancel for a full refund.</li>
           </ul>
         </Part>
 
-        <Part title="5. Cancelling a report and refunds" id="refunds">
+        <Part title="5. No refunds" id="refunds">
           <p>
-            Each report is researched and written for the branch you choose, and work starts as soon as you order. When you
-            order, you ask me to start straight away. So:
+            Reports are sold to business customers only: people buying, or thinking of buying, a Post Office or other
+            business. When you order, you confirm you&apos;re buying the report for that business purpose and not as a private
+            consumer.
+          </p>
+          <p>
+            Each report is researched and written for the branch you choose, and work starts as soon as you pay.{" "}
+            <strong>All report sales are final. Once you&apos;ve paid, an order can&apos;t be cancelled and there are no refunds.</strong>
           </p>
           <ul>
-            <li>Once your report has been delivered, it can&apos;t be cancelled or refunded.</li>
-            <li>
-              If you buy for your business (which most buyers of a Post Office do), the report isn&apos;t refundable once work has
-              started.
-            </li>
+            <li>If you&apos;ve made a mistake in the branch details, tell me straight away and I&apos;ll correct them if I can.</li>
             <li>
               If I can&apos;t produce your report, for example because the listing has been withdrawn or there isn&apos;t enough
-              information, I&apos;ll offer you a full refund or a report on a different branch instead.
+              information, I&apos;ll produce a report on a different branch of your choice instead.
             </li>
+            <li>If you find a factual mistake that materially affects the conclusions, I&apos;ll correct it free of charge, as set out above.</li>
           </ul>
-          <p>
-            <strong>If you&apos;re buying as a consumer</strong>, not for a business, the law gives you 14 days from your order to
-            cancel. Because you asked me to start straight away, if you cancel before your report is delivered I&apos;ll refund
-            what you paid less a fair amount for the work already done. That right ends once the report has been delivered.
-            To cancel, email {site.contactEmail} with your name and the branch the report is about. I&apos;ll refund you within 14
-            days, to the card you paid with.
-          </p>
-          <p>None of this affects your other legal rights, for example if a report isn&apos;t provided with reasonable care and skill.</p>
+          <p>Nothing in these terms takes away any right you have by law that can&apos;t be excluded.</p>
         </Part>
 
         <Part title="6. Consultancy and other services">
@@ -149,14 +143,14 @@ export default function Page() {
             injury caused by negligence, or for fraud.
           </p>
           <p>
-            <strong>If you&apos;re a business customer:</strong> I&apos;m not liable for loss of profit, loss of business or
+            <strong>Reports, and business customers:</strong> I&apos;m not liable for loss of profit, loss of business or
             opportunity, or any indirect or consequential loss, or for decisions you make based on a report or anything on
             this site. My total liability to you for a report is limited to the price you paid for it.
           </p>
           <p>
-            <strong>If you&apos;re a consumer:</strong> I&apos;m responsible for loss you suffer that was a foreseeable result of me
-            breaking these terms or failing to use reasonable care and skill. I&apos;m not responsible for loss that wasn&apos;t
-            foreseeable, or for business losses.
+            <strong>If you use the site as a consumer:</strong> I&apos;m responsible for loss you suffer that was a foreseeable
+            result of me breaking these terms or failing to use reasonable care and skill. I&apos;m not responsible for loss that
+            wasn&apos;t foreseeable, or for business losses.
           </p>
         </Part>
 
