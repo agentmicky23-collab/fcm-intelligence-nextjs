@@ -107,7 +107,7 @@ export const explainers: Record<string, Explainer> = {
     slug: "welcome",
     title: "A welcome from Mikesh",
     description: "Mikesh Parekh on fifteen years of running Post Offices, why he built this site, and what you'll find here.",
-    ...explainerMedia("welcome", "welcome-v4"),
+    ...explainerMedia("welcome", "welcome-v5"),
     duration: "PT53S",
     length: "0:53",
     uploadDate: "2026-10-01",
