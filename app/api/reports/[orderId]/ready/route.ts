@@ -8,6 +8,7 @@ import { site } from "@/lib/site";
 
 // OpenClaw calls this when the agents have written a report to Supabase and it has passed Sentinel and Oracle.
 // Mikesh gets an email with the private preview link and the Approve & send button.
+// With ?notify=0 it only returns the preview link (for Oracle to review the live page) and sends nothing.
 const notifyTo = process.env.ENQUIRY_NOTIFY_TO ?? site.contactEmail;
 
 export async function POST(req: Request, ctx: { params: Promise<{ orderId: string }> }) {
@@ -18,6 +19,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ orderId: strin
 
   const report = normalise(stored.report);
   const reviewUrl = new URL(reportPath(orderId, "review"), site.url).toString();
+  if (new URL(req.url).searchParams.get("notify") === "0") return Response.json({ ok: true, review_url: reviewUrl, status: stored.status });
   const email = reportReviewEmail({
     orderId,
     business: str(report.meta.business_name) || str(report.order.business_name) || orderId,
