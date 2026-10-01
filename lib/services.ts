@@ -215,6 +215,21 @@ export const stages: Stage[] = [
         cta: "Build your quote →",
       },
       {
+        slug: "shared-management",
+        name: "Shared Management",
+        price: "Price on request",
+        unit: "per month",
+        summary:
+          "My team is built for 100 branches and runs 43. Use it for yours: the people and systems behind my estate, at a fraction of the cost of employing your own managers.",
+        includes: [
+          "HR and people matters, including contracts and TUPE",
+          "Bookkeeping and remuneration tracking",
+          "Regional managers watching branch performance",
+          "Help buying, setting up and growing new sites",
+          "Scoped to the branches and support you need",
+        ],
+      },
+      {
         slug: "advisory-retainer",
         name: "Advisory Retainer",
         price: "£300",

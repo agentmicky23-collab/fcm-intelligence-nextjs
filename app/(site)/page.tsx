@@ -1,4 +1,5 @@
 import { MotionConfig } from "motion/react";
+import { Capacity } from "@/components/home/Capacity";
 import { Closing } from "@/components/home/Closing";
 import { Growth } from "@/components/home/Growth";
 import { Hero } from "@/components/home/Hero";
@@ -36,6 +37,7 @@ export default function HomePage() {
       </section>
       <Growth />
       <Practices />
+      <Capacity />
       <Rules />
       <Process />
       <Closing />

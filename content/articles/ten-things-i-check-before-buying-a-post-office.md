@@ -1,6 +1,6 @@
 ---
 title: "The 10 things I check before buying any Post Office"
-description: "After 15 years and more than 45 branches, this is the list I run through on every single deal, before I'd even think about an offer."
+description: "After 15 years and up to 100 branches, this is the list I run through on every single deal, before I'd even think about an offer."
 date: "2026-09-26"
 category: "Buying"
 ---

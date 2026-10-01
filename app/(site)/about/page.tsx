@@ -16,6 +16,8 @@ const numbers = [
   { value: "200+", label: "staff" },
   { value: "10", label: "Crown conversions in 2025" },
   { value: "7", label: "forecourts run, 2 today" },
+  { value: "2", label: "Banking Hubs" },
+  { value: "10", label: "more branches in the pipeline" },
 ];
 
 const team = [
@@ -56,7 +58,7 @@ export default function AboutPage() {
       </section>
 
       <section className="border-b border-line bg-white">
-        <dl className="mx-auto grid max-w-[1280px] grid-cols-2 gap-px bg-line sm:grid-cols-3 lg:grid-cols-6">
+        <dl className="mx-auto grid max-w-[1280px] grid-cols-2 gap-px bg-line sm:grid-cols-4">
           {numbers.map((n) => (
             <div key={n.label} className="flex flex-col-reverse bg-white px-5 py-7 sm:px-8">
               <dt className="mt-1 text-sm text-muted">{n.label}</dt>
@@ -85,7 +87,7 @@ export default function AboutPage() {
             <h2>Growth, and the other direction</h2>
             <p>
               From that one branch he built an operation that has, at its height, run up to 100 Post Office branches. Today it
-              runs 43, alongside a Banking Hub in Alsager and two petrol station forecourts, with more than 200 staff. In 2025
+              runs around 43, alongside two Banking Hubs, including Alsager, two petrol station forecourts and a food franchise, with more than 200 staff. Another ten Post Offices are in the pipeline. In 2025
               alone it took on ten Crown conversions, branches previously run directly by Post Office, including Didsbury
               Village, Eccles, Leeds Markets and Old Swan.
             </p>
@@ -95,6 +97,12 @@ export default function AboutPage() {
               robberies and threats, good years and genuinely bad ones, with profit and debt coming in cycles. With three Post
               Offices, he says, he could have lived simply. With everything he has built, it is harder: bigger businesses, bigger
               bills and a tough economy.
+            </p>
+            <p>
+              Every year the business lets go of sites that aren&apos;t profitable, rebuilds, and keeps the ones that perform. Its
+              management team is built to run up to 100 branches. With 43 in the estate, Parekh now offers that spare capacity to
+              other operators, helping them buy, manage and grow their own branches at a fraction of the cost of employing their own
+              management.
             </p>
           </article>
         </Container>
