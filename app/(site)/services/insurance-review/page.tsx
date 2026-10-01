@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { ExplainerBlock } from "@/components/ExplainerBlock";
 import { InsuranceReview } from "@/components/insurance/InsuranceReview";
+import { explainers } from "@/lib/explainer";
 import { Container, Eyebrow, Slant } from "@/components/ui";
 import { pageMeta } from "@/lib/seo";
 
@@ -28,6 +30,11 @@ export default function InsuranceReviewPage() {
       <section>
         <Container className="py-16 md:py-20">
           <InsuranceReview />
+        </Container>
+      </section>
+      <section className="bg-white">
+        <Container className="py-16 md:py-20">
+          <ExplainerBlock video={explainers["insurance-review"]} page="/services/insurance-review" />
         </Container>
       </section>
     </>

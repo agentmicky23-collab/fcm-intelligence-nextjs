@@ -8,7 +8,9 @@ import { JoinCta } from "@/components/JoinCta";
 import { Container, Slant } from "@/components/ui";
 import { formatDate, getArticle, getArticles } from "@/lib/articles";
 import { site } from "@/lib/site";
+import { ExplainerBlock } from "@/components/ExplainerBlock";
 import { JsonLd } from "@/components/JsonLd";
+import { explainers } from "@/lib/explainer";
 import { abs, breadcrumbs, orgId, personId, shareImage } from "@/lib/seo";
 
 export const dynamicParams = false;
@@ -94,6 +96,9 @@ export default async function ArticlePage(props: PageProps<"/insights/[slug]">) 
       <section className="bg-white">
         <Container className="max-w-3xl py-14 md:py-16">
           <p className="mb-10 font-display font-bold tracking-[-0.02em] text-xl leading-relaxed text-navy">{article.description}</p>
+          {explainers[article.slug] && (
+            <ExplainerBlock video={explainers[article.slug]} page={`/insights/${article.slug}`} stacked className="mb-12 border-b border-line pb-12" />
+          )}
           <div className="prose-fcm">
             <Markdown remarkPlugins={[remarkGfm]}>{article.body}</Markdown>
           </div>

@@ -5,10 +5,21 @@ import { transcriptOf, type Explainer } from "@/lib/explainer";
 import { abs, orgId } from "@/lib/seo";
 
 /** An explainer video with its title, transcript and search data. */
-export function ExplainerBlock({ video, page, className = "" }: { video: Explainer; page: string; className?: string }) {
+export function ExplainerBlock({
+  video,
+  page,
+  className = "",
+  stacked = false,
+}: {
+  video: Explainer;
+  page: string;
+  className?: string;
+  /** Video above its text, for narrow columns such as an article. */
+  stacked?: boolean;
+}) {
   const transcript = transcriptOf(video);
   return (
-    <div className={`grid items-start gap-10 lg:grid-cols-[1fr_20rem] ${className}`}>
+    <div className={`grid items-start ${stacked ? "gap-6" : "gap-10 lg:grid-cols-[1fr_20rem]"} ${className}`}>
       <ExplainerVideo video={video} />
       <div>
         <Eyebrow>Watch</Eyebrow>

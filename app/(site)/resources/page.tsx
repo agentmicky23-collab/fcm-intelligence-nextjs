@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ExplainerBlock } from "@/components/ExplainerBlock";
 import { RequestAccess } from "@/components/RequestAccess";
+import { explainers } from "@/lib/explainer";
 import { ButtonLink, Container, Eyebrow, Slant } from "@/components/ui";
 import { currentMember } from "@/lib/server/member";
 import { resources } from "@/lib/resources";
@@ -54,6 +56,12 @@ export default async function ResourcesPage() {
               <span aria-hidden className="absolute bottom-0 left-0 h-[3px] w-12 bg-red transition-all duration-500 group-hover:w-full" />
             </Link>
           ))}
+        </Container>
+      </section>
+
+      <section className="bg-white">
+        <Container className="py-16 md:py-20">
+          <ExplainerBlock video={explainers["members-library"]} page="/resources" />
         </Container>
       </section>
 
