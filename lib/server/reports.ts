@@ -36,11 +36,9 @@ export async function markDelivered(orderId: string, emailId: string | null) {
   if (!res.ok) throw new Error(`mark_report_delivered failed: ${res.body.slice(0, 200)}`);
 }
 
-/** The key OpenClaw sends when it tells the site a report is ready. Derived, so there's no extra secret to store. */
-export const opsKey = () => (key() ? createHmac("sha256", key()).update("openclaw-ops").digest("base64url") : "");
-
+/** OpenClaw proves who it is with OPENCLAW_OPS_KEY: a value Mikesh chooses and sets both in Vercel and in OpenClaw. */
 export function checkOpsKey(header: string | null) {
-  const want = opsKey();
+  const want = process.env.OPENCLAW_OPS_KEY ?? "";
   const got = (header ?? "").replace(/^Bearer\s+/i, "");
-  return Boolean(want) && got.length === want.length && timingSafeEqual(Buffer.from(got), Buffer.from(want));
+  return want.length >= 24 && got.length === want.length && timingSafeEqual(Buffer.from(got), Buffer.from(want));
 }
