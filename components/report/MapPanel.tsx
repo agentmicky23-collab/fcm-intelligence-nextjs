@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { setMapsConsent, useMapsConsent } from "@/lib/consent";
 
 type Ring = { metres: number; label: string };
 type Marker = { east: number; north: number; label: string; kind: "full" | "partial" | "place" };
@@ -12,6 +14,7 @@ const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY;
 /**
  * A real Google map, centred on the branch, with distance rings and markers drawn on top.
  * The map is fixed in place so the overlay stays aligned; a link opens it in Google Maps.
+ * Google sets cookies, so the map itself only loads after the visitor agrees; until then the rings sit on a plain panel.
  */
 export function MapPanel({ lat, lng, rings, markers = [], label, className = "", heightClass = "h-[360px] sm:h-[440px]" }: {
   lat: number;
@@ -24,6 +27,7 @@ export function MapPanel({ lat, lng, rings, markers = [], label, className = "",
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 900, h: 440 });
+  const allowed = useMapsConsent();
 
   useEffect(() => {
     const el = ref.current;
@@ -48,17 +52,30 @@ export function MapPanel({ lat, lng, rings, markers = [], label, className = "",
   return (
     <figure className={className}>
       <div ref={ref} className={`relative overflow-hidden border border-line bg-light ${heightClass}`}>
-        <iframe
-          key={src}
-          title={label}
-          src={src}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="absolute inset-0 h-full w-full grayscale-[85%]"
-          tabIndex={-1}
-        />
-        {/* Holds the map still so the rings stay true to scale */}
-        <div className="absolute inset-0" aria-hidden />
+        {allowed ? (
+          <>
+            <iframe
+              key={src}
+              title={label}
+              src={src}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 h-full w-full grayscale-[85%]"
+              tabIndex={-1}
+            />
+            {/* Holds the map still so the rings stay true to scale */}
+            <div className="absolute inset-0" aria-hidden />
+          </>
+        ) : (
+          <div className="no-print absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center justify-between gap-3 border-t border-line bg-white/95 px-4 py-3 text-xs text-muted">
+            <span>
+              The street map comes from Google, which sets its own cookies. <Link href="/cookies" className="font-medium text-red-dark underline underline-offset-2">Cookies policy</Link>
+            </span>
+            <button type="button" onClick={() => setMapsConsent(true)} className="min-h-9 bg-navy px-4 text-xs font-semibold text-white hover:bg-red">
+              Show the map
+            </button>
+          </div>
+        )}
 
         <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
           <g transform={`translate(${size.w / 2} ${size.h / 2})`}>

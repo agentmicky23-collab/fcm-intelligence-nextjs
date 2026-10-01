@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPart as Part } from "@/components/Legal";
 import { Container } from "@/components/ui";
 import { site } from "@/lib/site";
@@ -90,7 +91,8 @@ export default function Page() {
         <Part title="Cookies">
           <p>
             The site doesn&apos;t use advertising or tracking cookies. The insurance review saves your answers in your own
-            browser so you can come back and finish later; they stay on your device unless you send an enquiry.
+            browser so you can come back and finish later; they stay on your device unless you send an enquiry. The{" "}
+            <Link href="/cookies" className="text-red-dark underline">cookies policy</Link> lists everything the site sets.
           </p>
         </Part>
       </Container>

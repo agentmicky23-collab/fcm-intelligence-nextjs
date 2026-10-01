@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page("/contact", 0.6),
     page("/privacy", 0.2, "yearly"),
     page("/terms", 0.2, "yearly"),
+    page("/cookies", 0.2, "yearly"),
     ...articles.map((a) => page(`/insights/${a.slug}`, 0.7, "yearly", a.date)),
     ...resources.map((r) => page(`/resources/${r.slug}`, 0.6)),
   ];
