@@ -220,7 +220,9 @@ export function Pictures({ title, images }: { title?: string; images: Image[] })
           <div key={i}>
             {/* eslint-disable-next-line @next/next/no-img-element -- report images are stored in Supabase and sized by the agents */}
             <img src={m.url} alt={m.caption || title || "Report image"} loading="lazy" className="w-full border border-line bg-light object-cover" />
-            {m.caption && <figcaption className="mt-2 text-xs text-muted">{m.caption}</figcaption>}
+            {(m.caption || (m.kind === "photo" && m.credit)) && (
+              <figcaption className="mt-2 text-xs text-muted">{[m.caption, m.kind === "photo" && m.credit && `Photo: ${m.credit}`].filter(Boolean).join(" · ")}</figcaption>
+            )}
           </div>
         ))}
       </div>

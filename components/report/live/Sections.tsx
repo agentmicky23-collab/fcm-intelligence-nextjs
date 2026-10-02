@@ -1,13 +1,30 @@
 import type { ReactNode } from "react";
 import { arr, mapsOf, num, rec, str, strs, type Rec, type Report } from "@/lib/report-data";
 import { Badge, Bars, Callout, Cards, Heading, List, Para, Pictures, StatBoxes, Table, View } from "./parts";
+import { numbered, placeKind, poKind, weighted } from "./map-points";
+import { SiteMap } from "./SiteMap";
+import { StreetView } from "./StreetView";
 
-// One renderer per section of fcm-report-schema-v2. Every field the agents write is shown somewhere.
+// One renderer per section of the FCM report schema (v2 and v3). Every field the agents write is shown somewhere.
 
 const money = (v: unknown) => {
   const n = num(v);
   return n === null ? str(v) : `£${n.toLocaleString("en-GB")}`;
 };
+
+const MILE = 1609.344;
+const walkRings = [{ metres: 400, label: "5 min walk" }, { metres: 800, label: "10 min walk" }];
+const mapCol = { key: "map_n", label: "Map", render: (r: Rec) => (r.map_n ? <span className="font-display font-bold text-navy">{String(r.map_n)}</span> : "") };
+const withMapCol = <T,>(rows: Rec[], cols: T[]) => (rows.some((r) => r.map_n) ? [mapCol as unknown as T, ...cols] : cols);
+const addressOf = (report: Report) =>
+  str(report.meta.full_address) || [str(report.meta.address_line_1), str(report.meta.town), str(report.meta.postcode)].filter(Boolean).join(", ") || str(report.meta.business_name);
+
+/** A link to the listing on Google, where its photos and reviews live (we don't copy them). */
+function googleLink(g: Rec, report: Report) {
+  const q = encodeURIComponent([str(g.business_name), str(g.address) || addressOf(report)].filter(Boolean).join(", "));
+  const id = str(g.place_id);
+  return /^https:\/\/((www\.)?google\.[a-z.]+\/maps|maps\.app\.goo\.gl\/)/.test(str(g.url)) ? str(g.url) : `https://www.google.com/maps/search/?api=1&query=${q}${id ? `&query_place_id=${encodeURIComponent(id)}` : ""}`;
+}
 
 function S1({ s }: { s: Rec }) {
   const scores = arr(s.category_scores)
@@ -122,25 +139,39 @@ function S5({ s, report }: { s: Rec; report: Report }) {
             <List title="What customers like" items={strs(g.positive_themes)} />
             <List title="What they complain about" items={strs(g.negative_themes)} />
           </div>
+          <a href={googleLink(g, report)} target="_blank" rel="noopener noreferrer" className="no-print mt-5 inline-block border-b-2 border-red pb-0.5 text-sm font-semibold text-navy hover:text-red">
+            See the photos and reviews on Google ↗
+          </a>
         </div>
       ))}
       {num(s.combined_review_count) !== null && listings.length > 1 && <p className="text-sm text-muted">{str(s.combined_review_count)} reviews across all listings.</p>}
       <Table title="Social media" rows={s.social_media_audit} cols={[{ key: "platform", label: "Platform", strong: true }, { key: "status", label: "Status" }, { key: "assessment", label: "Assessment" }]} />
       <List title="Quick wins" items={strs(s.quick_wins)} />
-      <Pictures title="Photos from Google" images={report.images.photos.slice(0, 4)} />
     </>
   );
 }
 
 function S6({ s, report }: { s: Rec; report: Report }) {
   const lc = rec(s.location_classification);
+  const marks = report.location ? numbered(s.landmarks, report.location, (r) => str(r.name), (r) => placeKind(`${str(r.type)} ${str(r.name)}`)) : null;
+  const landmarks = marks?.rows ?? arr(s.landmarks);
   return (
     <>
       <Discrepancy v={s.address_discrepancy} />
       {str(lc.type) && <Callout title={`Location type: ${str(lc.type)}`} text={str(lc.description)} />}
-      <Pictures images={mapsOf(report, "location")} />
-      <Pictures title="Street view" images={report.images.streetView} />
-      <Table title="Nearby landmarks" rows={s.landmarks} cols={[{ key: "name", label: "Place", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "impact", label: "Impact", badge: true }, { key: "note", label: "Note" }]} />
+      {report.location ? (
+        <SiteMap centre={report.location} rings={walkRings} points={marks?.points ?? []} label="Location and nearby landmarks" />
+      ) : (
+        <Pictures images={mapsOf(report, "location")} />
+      )}
+      {report.location && (
+        <div>
+          <Heading>The street</Heading>
+          <div className="mt-3"><StreetView at={report.location} heading={num(report.meta.street_view_heading)} address={addressOf(report)} /></div>
+        </div>
+      )}
+      <Pictures title="Photos" images={report.images.photos} />
+      <Table title="Nearby landmarks" rows={landmarks} cols={withMapCol(landmarks, [{ key: "name", label: "Place", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "impact", label: "Impact", badge: true }, { key: "note", label: "Note" }])} />
       <Table title="Parking" rows={s.parking} cols={[{ key: "type", label: "Parking", strong: true }, { key: "distance", label: "Distance" }, { key: "availability", label: "Availability" }]} />
     </>
   );
@@ -188,7 +219,16 @@ function S8({ s, report }: { s: Rec; report: Report }) {
     <>
       {str(s.overall_vs_average) && <p className="font-display text-xl font-semibold text-navy">{str(s.overall_vs_average)}</p>}
       <Table title="Recorded crime" rows={s.crime_data} cols={[{ key: "crime_type", label: "Type", strong: true }, { key: "incidents", label: "Incidents" }, { key: "vs_average", label: "Vs average" }, { key: "level", label: "Level", badge: true }, { key: "assessment", label: "Assessment" }]} />
-      <Pictures title="Crime heatmap" images={mapsOf(report, "crime_heatmap")} />
+      {report.location && weighted(s.crime_locations).length > 0 ? (
+        <div>
+          <Heading>Where crimes were recorded</Heading>
+          <div className="mt-3">
+            <SiteMap centre={report.location} rings={[{ metres: MILE, label: "1 mile" }]} points={weighted(s.crime_locations)} label="Recorded crime within a mile" legendExtra="police.uk places each crime at an approximate nearby point, not the exact address" />
+          </div>
+        </div>
+      ) : (
+        <Pictures title="Crime heatmap" images={mapsOf(report, "crime_heatmap")} />
+      )}
       <Table title="Security recommendations" rows={s.security_recommendations} cols={[{ key: "item", label: "Measure", strong: true }, { key: "priority", label: "Priority", badge: true }, { key: "est_cost", label: "Est. cost" }, { key: "reasoning", label: "Why" }]} />
       <Para label="In practice" text={str(s.practical_context) || str(s.narrative)} />
     </>
@@ -196,14 +236,26 @@ function S8({ s, report }: { s: Rec; report: Report }) {
 }
 
 function S9({ s, report }: { s: Rec; report: Report }) {
+  const c = report.location;
+  const pos = c ? numbered(s.full_service_pos, c, (r) => str(r.branch_name), poKind) : null;
+  const drops = c ? numbered(s.drop_collect_points, c, (r) => str(r.location), () => "partial", pos!.next) : null;
+  const shops = c ? numbered(s.grocery_competition, c, (r) => str(r.name), () => "shop", drops!.next) : null;
+  const points = [...(pos?.points ?? []), ...(drops?.points ?? []), ...(shops?.points ?? [])];
+  const poRows = pos?.rows ?? arr(s.full_service_pos);
+  const dropRows = drops?.rows ?? arr(s.drop_collect_points);
+  const shopRows = shops?.rows ?? arr(s.grocery_competition);
   return (
     <>
       <StatBoxes items={s.stat_boxes} />
       <Callout title="The key distinction" text={str(s.key_distinction)} />
-      <Pictures images={mapsOf(report, "competition")} />
-      <Table title="Full-service Post Offices nearby" rows={s.full_service_pos} cols={[{ key: "branch_name", label: "Branch", strong: true }, { key: "address", label: "Address" }, { key: "distance", label: "Distance" }, { key: "type", label: "Type" }, { key: "threat_level", label: "Threat", badge: true }]} />
-      <Table title="Drop-off and collection points" rows={s.drop_collect_points} cols={[{ key: "location", label: "Location", strong: true }, { key: "address", label: "Address" }, { key: "distance", label: "Distance" }, { key: "threat_level", label: "Threat", badge: true }]} />
-      <Table title="Grocery competition" rows={s.grocery_competition} cols={[{ key: "name", label: "Store", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "threat_level", label: "Threat", badge: true }, { key: "notes", label: "Notes" }]} />
+      {c && points.length ? (
+        <SiteMap centre={c} rings={[{ metres: MILE, label: "1 mile" }, { metres: 3 * MILE, label: "3 miles" }]} points={points} label="Post Offices and competition nearby" />
+      ) : (
+        <Pictures images={mapsOf(report, "competition")} />
+      )}
+      <Table title="Full-service Post Offices nearby" rows={poRows} cols={withMapCol(poRows, [{ key: "branch_name", label: "Branch", strong: true }, { key: "address", label: "Address" }, { key: "distance", label: "Distance" }, { key: "type", label: "Type" }, { key: "threat_level", label: "Threat", badge: true }])} />
+      <Table title="Drop-off and collection points" rows={dropRows} cols={withMapCol(dropRows, [{ key: "location", label: "Location", strong: true }, { key: "address", label: "Address" }, { key: "distance", label: "Distance" }, { key: "threat_level", label: "Threat", badge: true }])} />
+      <Table title="Grocery competition" rows={shopRows} cols={withMapCol(shopRows, [{ key: "name", label: "Store", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "threat_level", label: "Threat", badge: true }, { key: "notes", label: "Notes" }])} />
       <Table title="Bank closures" rows={s.bank_closures} cols={[{ key: "bank", label: "Bank", strong: true }, { key: "former_address", label: "Where" }, { key: "closure_date", label: "Closed" }]} />
       <Callout title="Bank closure opportunity" text={str(s.bank_closure_opportunity)} />
       <View text={str(s.competitive_positioning)} label="Competitive position" />
@@ -212,11 +264,17 @@ function S9({ s, report }: { s: Rec; report: Report }) {
 }
 
 function S10({ s, report }: { s: Rec; report: Report }) {
+  const gen = report.location ? numbered(s.footfall_generators, report.location, (r) => str(r.facility), (r) => placeKind(`${str(r.type)} ${str(r.facility)}`)) : null;
+  const generators = gen?.rows ?? arr(s.footfall_generators);
   return (
     <>
       <StatBoxes items={s.stat_boxes} />
-      <Pictures images={mapsOf(report, "footfall")} />
-      <Table title="What brings people past" rows={s.footfall_generators} cols={[{ key: "facility", label: "Place", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "impact", label: "Impact", badge: true }, { key: "daily_impact", label: "Daily effect" }]} />
+      {report.location && gen?.points.length ? (
+        <SiteMap centre={report.location} rings={walkRings} points={gen.points} label="What brings people past the door" />
+      ) : (
+        <Pictures images={mapsOf(report, "footfall")} />
+      )}
+      <Table title="What brings people past" rows={generators} cols={withMapCol(generators, [{ key: "facility", label: "Place", strong: true }, { key: "type", label: "Type" }, { key: "distance", label: "Distance" }, { key: "impact", label: "Impact", badge: true }, { key: "daily_impact", label: "Daily effect" }])} />
       <Table title="A trading day" rows={s.trading_timeline} cols={[{ key: "time_slot", label: "Time", strong: true }, { key: "intensity", label: "How busy", badge: true }, { key: "drivers", label: "Why" }]} />
       <View text={str(s.key_insight)} />
     </>

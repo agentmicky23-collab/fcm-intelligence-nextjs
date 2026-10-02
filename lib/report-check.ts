@@ -2,6 +2,7 @@
 // report always gets the same answer. "critical" issues block the report; "warnings" are shown to Mikesh.
 
 import { employerCost } from "@/lib/employer-cost";
+import { distanceText, latLng, metresBetween, parseDistance } from "@/lib/geo";
 import { arr, isRec, num, rec, sectionKeys, str, type SectionKey } from "@/lib/report-data";
 import { gradeFor, grades, overall, schemaVersion, tierSections, unscoredSections, verdicts, weights } from "@/lib/report-rules";
 import type { Tier } from "@/lib/report";
@@ -152,6 +153,48 @@ export function checkReport(raw: unknown, opts: { orderId: string; tier: Tier })
     if (/key=|AIza|googleapis\.com/.test(text)) crit(`images.${path}`, "Image URL contains a Google API address or key", "Download the image, upload it to Supabase storage and use that URL.");
     else if (!pattern.test(text)) crit(`images.${path}`, `Not a Supabase report-images URL for this order: ${text.slice(0, 90)}`, `Upload to report-images/${opts.orderId}/ and use the public URL.`);
   }
+  // Google's terms don't allow storing or republishing Places photos or Street View. The website shows Street View
+  // live and links to the Google listing instead; maps are drawn by the website from coordinates.
+  const im = rec(parse(r.images));
+  for (const f of ["google_business_photos", "street_view"]) {
+    if (Array.isArray(im[f]) && im[f].length)
+      crit(`images.${f}`, "Stored Google photos or Street View images", "Remove them. The website shows Street View live and links to the Google listing; use images.photos only for photos we're allowed to use (seller, customer, FCM, or openly licensed with a credit).");
+  }
+  const googleSource = /google|street ?view/i;
+  if (googleSource.test(str(rec(im.cover_image).source))) crit("images.cover_image", "Cover image is from Google", "Use a photo we're allowed to use, or leave cover_image out.");
+  arr(im.photos).forEach((p, i) => {
+    if (googleSource.test(str(p.source))) crit(`images.photos[${i}]`, "Photo is from Google", "Remove it; only photos we're allowed to use (with a credit) go in images.photos.");
+    else if (!str(p.credit) && !str(p.source)) warn(`images.photos[${i}]`, "Photo has no credit", "Add credit: who took it or the licence (e.g. \"Seller\", \"Geograph, CC BY-SA 2.0, J Smith\").");
+  });
+
+  // --- Coordinates for the maps
+  const centre = latLng(meta.lat, meta.lng);
+  if (!centre) crit("metadata.lat", "Missing or not in the UK (metadata.lat and metadata.lng)", "Add the branch's coordinates from postcodes.io or the Post Office branch finder. The maps and Street View use them.");
+  else {
+    if (arr(im.maps).length) warn("images.maps", "Map images aren't needed", "Remove them; the website draws the maps from the coordinates.");
+    const lists: [string, unknown, string][] = [
+      ["sections.s9_competition_mapping.full_service_pos", s("s9_competition_mapping").full_service_pos, "branch_name"],
+      ["sections.s9_competition_mapping.drop_collect_points", s("s9_competition_mapping").drop_collect_points, "location"],
+      ["sections.s9_competition_mapping.grocery_competition", s("s9_competition_mapping").grocery_competition, "name"],
+      ["sections.s10_footfall_analysis.footfall_generators", s("s10_footfall_analysis").footfall_generators, "facility"],
+    ];
+    for (const [where, rows, nameKey] of lists) {
+      const missing: string[] = [];
+      arr(rows).forEach((row, i) => {
+        const p = latLng(row.lat, row.lng);
+        if (!p) {
+          if (!/subject/i.test(`${str(row[nameKey])} ${str(row.distance)}`)) missing.push(str(row[nameKey]) || `item ${i + 1}`);
+          return;
+        }
+        const stated = parseDistance(row.distance);
+        const actual = metresBetween(centre, p);
+        if (stated !== null && Math.abs(stated - actual) > Math.max(150, actual * 0.3))
+          warn(`${where}[${i}].distance`, `Says ${str(row.distance)}, but the coordinates are ${distanceText(actual)} apart`, "Check the coordinates and the distance; distances are straight-line from the branch.");
+      });
+      if (missing.length) warn(where, `No coordinates for ${missing.length}: ${missing.slice(0, 4).join(", ")}${missing.length > 4 ? "…" : ""}`, "Add lat and lng so they appear on the map.");
+    }
+  }
+
   const known = new Set(urls.map((u) => u.text.split("/").pop()));
   for (const k of sectionKeys) {
     for (const [f, v] of Object.entries(s(k))) {

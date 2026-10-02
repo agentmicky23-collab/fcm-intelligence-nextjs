@@ -26,7 +26,7 @@ const used = [
   {
     name: "fcm-maps-consent",
     kind: "Browser storage",
-    purpose: "Remembers that you chose to show Google Maps, so I don't ask again.",
+    purpose: "Remembers that you chose to show Google Maps and Street View, so I don't ask again.",
     type: "Strictly necessary",
     lasts: "Until you clear it",
   },
@@ -81,6 +81,18 @@ export default function Page() {
             .
           </p>
           <MapsChoice />
+        </Part>
+
+        <Part title="Maps and Street View in reports">
+          <p>
+            The maps in reports are drawn by FCM Intelligence from OpenStreetMap. The street background loads from
+            OpenFreeMap, which receives your IP address (as any website does) but sets no cookies and stores nothing in
+            your browser.
+          </p>
+          <p>
+            Reports can also show the premises on Google Street View. It only loads when you choose to show it, and the
+            same choice above controls it.
+          </p>
         </Part>
 
         <Part title="Paying for a report">

@@ -2,6 +2,7 @@
 // safely. Reports were written by AI agents over several weeks, so fields can be missing, renamed or stored as
 // JSON strings; everything here tolerates that rather than failing the page.
 
+import { latLng, type LatLng } from "@/lib/geo";
 import type { Tier } from "@/lib/report";
 
 export type Rec = Record<string, unknown>;
@@ -68,20 +69,25 @@ export const sectionKeys = [
 ] as const;
 export type SectionKey = (typeof sectionKeys)[number];
 
-export type Image = { url: string; caption: string; kind: string };
+export type Image = { url: string; caption: string; kind: string; credit: string };
 
 export type Report = {
   meta: Rec;
   order: Rec;
   sections: Partial<Record<SectionKey, Rec>>;
-  images: { cover: Image | null; photos: Image[]; streetView: Image[]; maps: Image[] };
+  /** The branch's coordinates (metadata.lat / metadata.lng), for the maps and Street View. */
+  location: LatLng | null;
+  /** Our own or licensed photos only. Google photos and Street View images are never shown from storage. */
+  images: { cover: Image | null; photos: Image[]; maps: Image[] };
 };
+
+const isGoogle = (v: unknown) => /google|street ?view|maps\.googleapis/i.test(`${str(rec(v).source)} ${str(rec(v).url)}`);
 
 
 function image(v: unknown, kind: string): Image | null {
   const r = rec(v);
   const url = str(r.url);
-  return /^https:\/\//.test(url) ? { url, caption: str(r.caption), kind: str(r.map_type) || kind } : null;
+  return /^https:\/\//.test(url) ? { url, caption: str(r.caption), kind: str(r.map_type) || kind, credit: str(r.credit) || str(r.source) } : null;
 }
 
 export function normalise(raw: Rec): Report {
@@ -101,14 +107,15 @@ export function normalise(raw: Rec): Report {
     const m = image(im[field], kind);
     if (m && !maps.some((x) => x.url === m.url)) maps.push({ ...m, kind });
   }
+  const meta = rec(parse(raw.metadata));
   return {
-    meta: rec(parse(raw.metadata)),
+    meta,
     order: rec(parse(raw.order)),
     sections,
+    location: latLng(meta.lat, meta.lng) ?? latLng(rec(meta.location).lat, rec(meta.location).lng),
     images: {
-      cover: image(im.cover_image, "cover"),
-      photos: (Array.isArray(im.google_business_photos) ? im.google_business_photos : []).map((p) => image(p, "photo")).filter((x): x is Image => !!x),
-      streetView: (Array.isArray(im.street_view) ? im.street_view : []).map((p) => image(p, "street")).filter((x): x is Image => !!x),
+      cover: isGoogle(im.cover_image) ? null : image(im.cover_image, "cover"),
+      photos: (Array.isArray(im.photos) ? im.photos : []).filter((p) => !isGoogle(p)).map((p) => image(p, "photo")).filter((x): x is Image => !!x),
       maps,
     },
   };

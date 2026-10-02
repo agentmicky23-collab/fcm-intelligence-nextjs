@@ -22,6 +22,8 @@ Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Markdown articles in
 | `STRIPE_WEBHOOK_SECRET` | Signing secret of the Stripe webhook pointing at `/api/stripe/webhook` (event: `checkout.session.completed`). |
 | `OPENCLAW_OPS_KEY` | A long random value (24+ characters) that OpenClaw sends to `/api/reports/[orderId]/ready`. Set the same value in OpenClaw as `FCM_SITE_OPS_KEY`. |
 | `CRON_SECRET` | Any long random value. Lets Vercel run the daily report pipeline check (`/api/cron/pipeline-check`, 12:00 UTC), which emails Mikesh about orders that are late, stuck, failed or waiting for approval. |
+| `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` | Optional. A Google Maps Embed API key restricted to fcmintelligence.com. With it, Street View opens inside the report (after the visitor agrees to Google's cookies); without it, the button opens Google Maps. |
+| `NEXT_PUBLIC_MAP_STYLE_URL` | Optional. A different MapLibre style for the report maps. Default: OpenFreeMap Positron (free, no key, no cookies). |
 | `ORDER_INGEST_KEY` | Lets the Stripe webhook save paid report orders to the Supabase `orders` table (via `record_order`) for the OpenClaw report agents. Without it, orders are only emailed. |
 
 Paid orders live in Stripe (with the branch details in the payment's metadata); the webhook emails Mikesh and the customer.
@@ -40,4 +42,5 @@ npm run build
 - `POST /api/reports/[orderId]/check` (OpenClaw key) returns the check. `POST /api/reports/[orderId]/ready` emails Mikesh only when there are no critical issues (`?notify=0` returns the review link without emailing).
 - `GET /api/tools/employer-cost?rate=12.71&hours=30` returns the true cost of an employee.
 - Update `lib/uk-rates.ts` every April.
+- Maps: `components/report/live/SiteMap.tsx` draws the location, competition, footfall and crime maps from the coordinates in the report (MapLibre on OpenStreetMap). Street View is shown live (`StreetView.tsx`). No Google photos, Street View or map images are stored or shown; the check blocks them.
 
