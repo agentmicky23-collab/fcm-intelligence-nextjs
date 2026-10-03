@@ -351,7 +351,7 @@ export function RemunerationAnalyser({ viewer }: { viewer: string }) {
 
       <div className="mt-8 grid gap-3 text-xs leading-relaxed text-white/45 md:grid-cols-3">
         <p>All figures are before VAT. The yearly figure is the weekly average × 52, so one statement can over- or under-state a year: travel money peaks in summer and mail before Christmas. Add a full year of statements for the truest picture.</p>
-        <p>The what-ifs use the rates printed on {demo ? "the example" : "your"} statement. Where a service pays a percentage, the average is weighted by what you actually sold. Post Office can change rates; this isn&apos;t advice or a forecast.</p>
+        <p>The what-ifs use the rates printed on {demo ? "the example" : "your"} statement. Where a service pays a percentage, the average is weighted by what you actually sold. Post Office can change rates. This is for information and education, not financial advice or a forecast, and FCM Intelligence isn&apos;t part of, or endorsed by, Post Office Limited.</p>
         <p>Only the lines and totals are read. The branch, remuneration and VAT numbers, names and addresses on the statement are ignored, and nothing leaves this device.</p>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { ImportantInformation } from "./ImportantInformation";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { MotionConfig } from "motion/react";
@@ -133,6 +134,7 @@ export function ReportView({ report, tier, orderId, banner, showAll = false }: {
           </nav>
 
           <div className="min-w-0">
+            <ImportantInformation reportDate={str(m.report_date) ? date(str(m.report_date)) : null} />
             {shown.map((sec) => {
               const data = report.sections[sectionKeyFor(sec.n)];
               const Body = sectionBodies[sec.n];
@@ -153,8 +155,9 @@ export function ReportView({ report, tier, orderId, banner, showAll = false }: {
             )}
 
             <p className="mt-12 border-t border-line pt-6 text-xs leading-relaxed text-muted">
-              This report is information and opinion, not financial, legal or tax advice. Figures that don&apos;t come from the business&apos;s own accounts are estimates.
-              It&apos;s for your own use in deciding whether to buy this business. See the <Link href="/terms#reports" className="underline">terms</Link>.
+              This report is information and opinion for your own use, not financial, investment, legal or tax advice, and not a recommendation to buy.
+              Figures that don&apos;t come from the business&apos;s own filed accounts are the seller&apos;s or FCM&apos;s estimates, labelled as such. Check everything
+              independently before you commit. See the <Link href="/terms#reports" className="underline">terms</Link>.
             </p>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { MotionConfig } from "motion/react";
 import { Draw, Grow, Pop, Reveal, Rise, ScoreRing } from "@/components/report/charts";
 import { MapPanel } from "@/components/report/MapPanel";
 import { PrintButton } from "@/components/report/PrintButton";
+import { ImportantInformation } from "@/components/report/live/ImportantInformation";
 import { ButtonLink, Slant } from "@/components/ui";
 import { example as r } from "@/lib/example-report";
 import { reportSections } from "@/lib/report";
@@ -138,6 +139,7 @@ export default function ExampleReportPage() {
 
           <div className="min-w-0">
             {/* 1 */}
+            <ImportantInformation reportDate={null} />
             <Section n={1} intro="Twelve areas scored out of 100. Anything under 65 needs attention before you commit.">
               <ul className="space-y-3">
                 {r.categories.map((c, i) => (
