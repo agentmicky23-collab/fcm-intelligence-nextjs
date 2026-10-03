@@ -3,7 +3,7 @@
 // Branch Check: the action plan. Reads everything loaded and turns it into findings with a £ value
 // where we can put one, and the actions to take. Advice is FCM's own; numbers are the member's own.
 
-import { lastTwelve, opsMonth, opsSeries, periodViews, type BranchData, type OeiRules } from "@/lib/branch-hub";
+import { LOSS_RISK_MONTHLY, lastTwelve, lossRiskMonths, opsMonth, opsSeries, periodViews, type BranchData, type OeiRules } from "@/lib/branch-hub";
 import { breakdown, services, type Statement } from "@/lib/remuneration";
 
 const gbp = (n: number) => `${n < 0 ? "−" : ""}£${Math.round(Math.abs(n)).toLocaleString("en-GB")}`;
@@ -31,6 +31,36 @@ export function buildPlan(data: BranchData, statement: Statement | null, rules: 
   const items: Item[] = [];
   const years = sessionYears(data);
   const remPerYear = statement ? breakdown(statement).perYear : null;
+
+  // ── Loss risk: reversals, rejected and spoilt labels (where money can go missing) ──
+  const risk = lossRiskMonths(data);
+  if (risk.length) {
+    const last12 = risk.slice(-12);
+    const flagged = last12.filter((m) => m.flagged);
+    const total = last12.reduce((a, m) => a + m.rejected + m.reversals + m.spoilt, 0);
+    const which = (m: (typeof risk)[number]) =>
+      [m.reversals > LOSS_RISK_MONTHLY && `reversals ${gbp(m.reversals)}`, m.rejected > LOSS_RISK_MONTHLY && `rejected labels ${gbp(m.rejected)}`, m.spoilt > LOSS_RISK_MONTHLY && `spoilt labels ${gbp(m.spoilt)}`].filter(Boolean).join(", ");
+    const withCash = flagged.filter((m) => m.pouchShort > 0 || m.missedDeclarations > 0 || (m.balance ?? 0) < 0);
+    items.push(
+      flagged.length
+        ? {
+            priority: "now",
+            area: "Loss risk",
+            title: `Red flag: ${flagged.length} month${flagged.length === 1 ? "" : "s"} over £${LOSS_RISK_MONTHLY} in reversals or spoilt and rejected labels`,
+            found: `${flagged.slice(-4).map((m) => `${monthName(m.month)}: ${which(m)}`).join("; ")}. ${gbp(total)} in the last 12 months.${withCash.length ? ` ${withCash.length} of these months also had a pouch shortage, a missed declaration or a short balance.` : ""}`,
+            worth: "These are where money can go missing at the counter. It isn't proof, but it needs looking into now.",
+            worthValue: total + 100000,
+            actions: [
+              "Pull the reversal and label reports for those months: who made each one, when, and for how much.",
+              "Question any reversal or reprint where no customer was at the counter.",
+              "Set them against that day's cash declaration and any pouch or balance difference; look for one user, shift or day repeating.",
+              "Tighten the routine: reversals and reprints signed off by you or a supervisor, and checked weekly.",
+              "If it points to someone, take advice before acting, and keep it confidential.",
+            ],
+          }
+        : { priority: "good", area: "Loss risk", title: `No month over £${LOSS_RISK_MONTHLY} in reversals or spoilt and rejected labels (last 12 months)`, found: `${gbp(total)} in total over the year.`, actions: ["Keep checking them each month: they're the early warning for losses."] },
+    );
+  }
 
   // ── Footfall ──
   let valuePerVisit: number | null = null;

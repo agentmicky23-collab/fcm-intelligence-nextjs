@@ -359,3 +359,48 @@ export function lastTwelve(series: { month: string; value: number }[], end: stri
   const before = series.filter((s) => s.month >= prevFrom && s.month < from).reduce((a, s) => a + s.value, 0);
   return { now, before, from };
 }
+
+// ── Loss risk: the three counter measures where money can go missing ────────────────────────────
+
+/** FCM's red-flag line: a month above this in rejected labels, reversals or spoilt labels needs looking into. */
+export const LOSS_RISK_MONTHLY = 500;
+
+export type LossMonth = {
+  month: string;
+  rejected: number;
+  reversals: number;
+  spoilt: number;
+  flagged: boolean;
+  pouchShort: number;
+  missedDeclarations: number;
+  balance: number | null;
+  correctionsTaken: number;
+};
+
+/** Month by month: the three measures, whether the month is flagged, and the cash signs in the same month. */
+export function lossRiskMonths(data: BranchData): LossMonth[] {
+  const ops = data.ops ?? [];
+  const series = (type: string) => new Map(opsSeries(ops, type).map((s) => [s.month, s.value]));
+  const rejected = series("Rejected Postage Labels Value");
+  const reversals = series("Reversals Value");
+  const spoilt = series("Spoilt Postage Labels Value");
+  const balance = series("Trading Period Rollover Result");
+  const taken = series("Transaction Corrections - Debit Loss Value");
+  const months = [...new Set([...rejected.keys(), ...reversals.keys(), ...spoilt.keys()])].sort();
+  const pouch = new Map<string, number>();
+  for (const p of data.pouches ?? []) if (p.type === "Shortage") pouch.set(p.date.slice(0, 7), (pouch.get(p.date.slice(0, 7)) ?? 0) + p.amount);
+  const missed = new Map<string, number>();
+  for (const d of data.days ?? []) if (d.declared === "not complete") missed.set(d.date.slice(0, 7), (missed.get(d.date.slice(0, 7)) ?? 0) + 1);
+  return months.map((m) => {
+    const r = { rejected: rejected.get(m) ?? 0, reversals: reversals.get(m) ?? 0, spoilt: spoilt.get(m) ?? 0 };
+    return {
+      month: m,
+      ...r,
+      flagged: r.rejected > LOSS_RISK_MONTHLY || r.reversals > LOSS_RISK_MONTHLY || r.spoilt > LOSS_RISK_MONTHLY,
+      pouchShort: pouch.get(m) ?? 0,
+      missedDeclarations: missed.get(m) ?? 0,
+      balance: balance.has(m) ? balance.get(m)! : null,
+      correctionsTaken: taken.get(m) ?? 0,
+    };
+  });
+}

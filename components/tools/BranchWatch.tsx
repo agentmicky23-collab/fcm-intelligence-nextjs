@@ -3,7 +3,7 @@
 // Branch Check: the cash and losses watch and counter accuracy. Built only from the member's own
 // Branch Hub exports; the advice is FCM's own general counter practice, not Post Office material.
 
-import { lastTwelve, opsMonth, opsSeries, type BranchData } from "@/lib/branch-hub";
+import { LOSS_RISK_MONTHLY, lastTwelve, lossRiskMonths, opsMonth, opsSeries, type BranchData, type LossMonth } from "@/lib/branch-hub";
 
 const gbp = (n: number, dp = 0) => `${n < 0 ? "−" : ""}£${Math.abs(n).toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 const int = (n: number) => Math.round(n).toLocaleString("en-GB");
@@ -253,6 +253,7 @@ export function CounterAccuracy({ data }: { data: BranchData }) {
 
   return (
     <>
+      <LossRisk data={data} />
       <section className="mt-8">
         <h2 className="font-display text-xl font-bold">Counter accuracy</h2>
         <p className="mt-1 max-w-3xl text-sm text-white/55">Mistakes at the counter over the last 12 months, against the 12 before. Each chart shows the last 24 months.</p>
@@ -298,5 +299,145 @@ export function CounterAccuracy({ data }: { data: BranchData }) {
         ))}
       </div>
     </>
+  );
+}
+
+// ── Loss risk ───────────────────────────────────────────────────────────────────────────────────
+
+const RISK = [
+  { key: "reversals", label: "Reversals", colour: "#e0241b" },
+  { key: "rejected", label: "Rejected postage labels", colour: "#C9A227" },
+  { key: "spoilt", label: "Spoilt postage labels", colour: "#7F77DD" },
+] as const;
+
+export function LossRisk({ data }: { data: BranchData }) {
+  const all = lossRiskMonths(data);
+  if (!all.length) return null;
+  const window = all.slice(-24);
+  const last12 = all.slice(-12);
+  const flagged12 = last12.filter((m) => m.flagged);
+  const flagged24 = window.filter((m) => m.flagged);
+  const total12 = last12.reduce((a, m) => a + m.rejected + m.reversals + m.spoilt, 0);
+  const worst = [...window].sort((a, b) => b.rejected + b.reversals + b.spoilt - (a.rejected + a.reversals + a.spoilt))[0];
+
+  // Do the cash signs move with it? Only months where we have the cash files.
+  const firstCash = [...(data.days ?? []).map((d) => d.date.slice(0, 7)), ...(data.pouches ?? []).map((p) => p.date.slice(0, 7))].sort()[0];
+  const withCash = firstCash ? all.filter((m) => m.month >= firstCash) : [];
+  const groupAvg = (rows: LossMonth[], f: (m: LossMonth) => number) => (rows.length ? rows.reduce((a, m) => a + f(m), 0) / rows.length : 0);
+  const hi = withCash.filter((m) => m.flagged);
+  const lo = withCash.filter((m) => !m.flagged);
+  const compare =
+    hi.length >= 2 && lo.length >= 2
+      ? [
+          { label: "Pouch shortages", hi: groupAvg(hi, (m) => m.pouchShort), lo: groupAvg(lo, (m) => m.pouchShort), money: true },
+          { label: "Corrections taken", hi: groupAvg(hi, (m) => m.correctionsTaken), lo: groupAvg(lo, (m) => m.correctionsTaken), money: true },
+          { label: "Balance result", hi: groupAvg(hi, (m) => m.balance ?? 0), lo: groupAvg(lo, (m) => m.balance ?? 0), money: true },
+          { label: "Days declarations missed", hi: groupAvg(hi, (m) => m.missedDeclarations), lo: groupAvg(lo, (m) => m.missedDeclarations), money: false },
+        ]
+      : [];
+
+  const max = Math.sqrt(Math.max(LOSS_RISK_MONTHLY * 2, ...window.map((m) => m.rejected + m.reversals + m.spoilt)));
+  const h = (v: number) => (v > 0 ? (Math.sqrt(v) / max) * 110 : 0);
+  const line = h(LOSS_RISK_MONTHLY);
+
+  return (
+    <section className={`mt-8 rounded-2xl border p-5 ${flagged12.length ? "border-red/60 bg-red/[0.08]" : "border-emerald-400/40 bg-emerald-400/[0.05]"}`}>
+      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-red-light">
+        <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-red" /> Loss risk check
+      </p>
+      <h2 className="mt-2 font-display text-xl font-bold">
+        {flagged12.length ? `${flagged12.length} month${flagged12.length === 1 ? "" : "s"} over £${LOSS_RISK_MONTHLY} in the last 12` : `No month over £${LOSS_RISK_MONTHLY} in the last 12`}
+        <span className="text-base font-normal text-white/60"> · {flagged24.length} in the last 24</span>
+      </h2>
+      <p className="mt-1 max-w-3xl text-sm text-white/70">
+        Reversals, rejected postage labels and spoilt postage labels are where money can go missing at the counter. Any month above £{LOSS_RISK_MONTHLY} in any of them needs looking into. It isn&apos;t proof of anything (training gaps and faulty printers cause them too), but it&apos;s where losses usually start, and it often comes with declarations slipping and pouch or balance differences.
+      </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Last 12 months</p>
+          <p className="mt-1 font-display text-2xl font-bold">{gbp(total12)}</p>
+          <p className="text-xs text-white/50">reversed, rejected and spoilt</p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Highest month (24 months)</p>
+          <p className="mt-1 font-display text-2xl font-bold">{worst ? gbp(worst.rejected + worst.reversals + worst.spoilt) : "–"}</p>
+          <p className="text-xs text-white/50">{worst ? `${monthName(worst.month)} · reversals ${gbp(worst.reversals)}` : ""}</p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Latest month</p>
+          <p className={`mt-1 font-display text-2xl font-bold ${all.at(-1)!.flagged ? "text-red-light" : ""}`}>{gbp(all.at(-1)!.rejected + all.at(-1)!.reversals + all.at(-1)!.spoilt)}</p>
+          <p className="text-xs text-white/50">{monthName(all.at(-1)!.month)}{all.at(-1)!.flagged ? " · over the line" : ""}</p>
+        </div>
+      </div>
+
+      <div className="mt-5 overflow-x-auto">
+        <div className="relative min-w-[680px]">
+          <div className="relative flex items-end gap-1" style={{ height: 130 }}>
+            {window.map((m) => (
+              <div key={m.month} className="flex min-w-[22px] flex-1 flex-col justify-end" title={`${monthName(m.month)}: reversals ${gbp(m.reversals)}, rejected ${gbp(m.rejected)}, spoilt ${gbp(m.spoilt)}${m.flagged ? " (over £" + LOSS_RISK_MONTHLY + ")" : ""}`}>
+                {RISK.map((r) => (
+                  <div key={r.key} style={{ height: h(m.rejected + m.reversals + m.spoilt) * (m[r.key] / Math.max(1, m.rejected + m.reversals + m.spoilt)), background: r.colour }} className="first:rounded-t-[3px]" />
+                ))}
+              </div>
+            ))}
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 border-t-2 border-dashed border-white/80" style={{ bottom: line }}>
+              <span className="absolute -top-4 right-0 rounded bg-black/60 px-1 text-[10px] text-white">£{LOSS_RISK_MONTHLY} a month</span>
+            </div>
+          </div>
+          <div className="mt-1 flex gap-1">
+            {window.map((m) => (
+              <div key={m.month} className="flex min-w-[22px] flex-1 flex-col items-center gap-0.5 text-[9px]">
+                <span className={m.flagged ? "font-bold text-red-light" : "text-white/40"}>{monthName(m.month)[0]}</span>
+                <span title="Pouch shortage that month" className={`h-1.5 w-1.5 rounded-full ${m.pouchShort ? "bg-white" : "bg-white/10"}`} />
+                <span title="Declaration missed that month" className={`h-1.5 w-1.5 rounded-full ${m.missedDeclarations ? "bg-[#C9A227]" : "bg-white/10"}`} />
+                <span title="Monthly balance short" className={`h-1.5 w-1.5 rounded-full ${(m.balance ?? 0) < 0 ? "bg-red" : "bg-white/10"}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/60">
+        {RISK.map((r) => <span key={r.key} className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: r.colour }} />{r.label}</span>)}
+        <span>Dots, same month: <span className="inline-block h-1.5 w-1.5 rounded-full bg-white align-middle" /> pouch shortage · <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#C9A227] align-middle" /> declaration missed · <span className="inline-block h-1.5 w-1.5 rounded-full bg-red align-middle" /> balance short</span>
+        <span>{monthName(window[0].month)} to {monthName(window.at(-1)!.month)}. A month is flagged (red letter) when any one of the three goes over £{LOSS_RISK_MONTHLY}; bar heights are scaled so small months show.</span>
+      </div>
+
+      {compare.length > 0 && (
+        <div className="mt-5">
+          <p className="font-semibold">Months over the line, against the rest</p>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full min-w-[480px] text-sm">
+              <thead>
+                <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-white/45">
+                  <th className="py-1.5 font-medium">Average per month</th>
+                  <th className="py-1.5 text-right font-medium">Over £{LOSS_RISK_MONTHLY} ({hi.length})</th>
+                  <th className="py-1.5 text-right font-medium">Other months ({lo.length})</th>
+                </tr>
+              </thead>
+              <tbody>
+                {compare.map((c) => (
+                  <tr key={c.label} className="border-t border-white/10">
+                    <td className="py-1.5">{c.label}</td>
+                    <td className={`py-1.5 text-right font-semibold tabular-nums ${Math.abs(c.hi) > Math.abs(c.lo) * 1.2 ? "text-red-light" : ""}`}>{c.money ? gbp(c.hi) : c.hi.toFixed(1)}</td>
+                    <td className="py-1.5 text-right tabular-nums">{c.money ? gbp(c.lo) : c.lo.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-5 text-sm text-white/75">
+        <p className="font-semibold text-white">What to check for each month over the line</p>
+        <ul className="mt-1.5 space-y-1">
+          <li>• Pull the reversal and label reports for those dates and look at who made each one, at what time, and for how much.</li>
+          <li>• Check the customer was there: a reversal or reprint with no customer at the counter is the one to question.</li>
+          <li>• Set them against that day&apos;s cash declaration and any pouch or balance difference.</li>
+          <li>• Look for one user ID, one shift or one day of the week coming up again and again.</li>
+          <li>• If it points to someone, take advice before you act, and keep it confidential.</li>
+        </ul>
+      </div>
+    </section>
   );
 }
