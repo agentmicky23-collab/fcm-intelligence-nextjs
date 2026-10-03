@@ -150,3 +150,10 @@ body {
 }
 .resource table { margin-top: 1em; }
 .resource td:last-child { min-width: 5.5rem; border-bottom: 1px solid var(--color-line); }
+
+/* Remuneration Analyser sliders */
+.rem-range { appearance: none; height: 6px; border-radius: 999px; background: rgb(255 255 255 / 0.12); accent-color: var(--color-red); }
+.rem-range::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 999px; background: var(--color-red); border: 3px solid #fff; box-shadow: 0 0 0 4px rgb(224 36 27 / 0.25); cursor: pointer; }
+.rem-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 999px; background: var(--color-red); border: 3px solid #fff; cursor: pointer; }
+.rem-range-small::-webkit-slider-thumb { width: 16px; height: 16px; background: #fff; border-width: 2px; border-color: var(--color-red); box-shadow: none; }
+.rem-added { background: repeating-linear-gradient(135deg, var(--color-red) 0 6px, var(--color-red-light) 6px 12px); }
