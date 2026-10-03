@@ -28,6 +28,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
   const [uploading, setUploading] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [confirming, setConfirming] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [sent, setSent] = useState(false);
   const [editing, setEditing] = useState(false);
   // Once sent, the list of what was asked for has been answered.
@@ -270,10 +271,32 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
             <option value="">What is it? Choose first</option>
             {documentKinds.map((k) => <option key={k}>{k}</option>)}
           </select>
-          <label title={kind ? undefined : "Choose what the document is first"} className={`bg-navy ${readOnly || !kind ? "pointer-events-none opacity-50" : "cursor-pointer"} px-5 py-2.5 text-sm font-semibold text-white hover:bg-red`}>
-            Choose files
-            <input type="file" multiple disabled={!kind} className="sr-only" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
-          </label>
+          <div className="group relative">
+            <label title={kind ? undefined : "Choose what the document is first"} aria-describedby="ff-privacy" className={`inline-block bg-navy ${readOnly || !kind ? "pointer-events-none opacity-50" : "cursor-pointer"} px-5 py-2.5 text-sm font-semibold text-white hover:bg-red`}>
+              Choose files
+              <input type="file" multiple disabled={!kind} className="sr-only" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+            </label>
+            <div
+              id="ff-privacy"
+              role="tooltip"
+              className={`absolute left-0 top-full z-50 mt-3 w-[min(380px,calc(100vw-2.5rem))] rounded-xl border border-emerald-500/30 bg-[#04122b] p-5 text-left shadow-2xl transition-opacity duration-150 ${showPrivacy ? "visible opacity-100" : "invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"}`}
+            >
+              <p className="flex items-center gap-2 font-display text-base font-bold text-white">
+                <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 fill-emerald-300"><path d="M8 1 2 3.5v4C2 11 4.6 14.2 8 15c3.4-.8 6-4 6-7.5v-4L8 1Zm-1 10L4.5 8.5l1-1L7 9l3.5-3.5 1 1L7 11Z" /></svg>
+                How your documents are protected
+              </p>
+              <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-white/75">
+                <li><b className="text-white">Private, never public.</b> Your documents go into a private store, encrypted on the way and when stored. There is no public link to them.</li>
+                <li><b className="text-white">Only for your report.</b> Only Mikesh and FCM&apos;s own report system open them, to check the figures for this report. They are never shared with the Post Office, the seller, the broker or anyone else.</li>
+                <li><b className="text-white">Behind your private link.</b> This page only opens from the link sent to you (or for Mikesh, signed in). No one else can see what you add here.</li>
+                <li><b className="text-white">Cover up what we don&apos;t need.</b> We only need the figures. You&apos;re welcome to black out account numbers, branch codes and personal details before you upload.</li>
+                <li><b className="text-white">You stay in control.</b> Until you send the fact find, you can remove anything you&apos;ve added with the Remove button.</li>
+              </ul>
+            </div>
+          </div>
+          <button type="button" onClick={() => setShowPrivacy((v) => !v)} aria-expanded={showPrivacy} className={`basis-full text-left text-xs underline underline-offset-2 ${dark ? "text-emerald-300" : "text-emerald-700"}`}>
+            {showPrivacy ? "Hide" : "How your documents are protected"}
+          </button>
         </div>
         {problem && <p className="mt-3 text-sm text-red">{problem}</p>}
         {(files.length > 0 || uploading.length > 0) && (
