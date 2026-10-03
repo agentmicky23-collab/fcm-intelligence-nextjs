@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { fileKinds, financialYear, merge, periodViews, quickScore, readBranchFile, type BranchData, type OeiRules } from "@/lib/branch-hub";
 import { readPdf } from "@/lib/pdf-text";
 import { parseStatement, type Statement } from "@/lib/remuneration";
+import { ActionPlan } from "./ActionPlan";
 import { GrowthPlanner, StaffingPlanner } from "./BranchPlanner";
 import { CashWatch, CounterAccuracy } from "./BranchWatch";
 import { Protected } from "./Protected";
@@ -23,7 +24,7 @@ function heat(t: number) {
 }
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-type Tab = "oei" | "cash" | "counter" | "hours" | "parcels" | "growth" | "quick";
+type Tab = "plan" | "oei" | "cash" | "counter" | "hours" | "parcels" | "growth" | "quick";
 
 function Card({ label, value, note, tone }: { label: string; value: string; note?: string; tone?: "good" | "bad" }) {
   return (
@@ -591,7 +592,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
   const [loaded, setLoaded] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>("oei");
+  const [tab, setTab] = useState<Tab>("plan");
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -640,6 +641,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
   }
 
   const tabs: [Tab, string][] = [
+    ["plan", "Action plan"],
     ["oei", "Operational Excellence"],
     ["cash", "Cash and losses"],
     ["counter", "Counter accuracy"],
@@ -690,6 +692,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
           <p className="mt-8 text-sm text-white/55">{rulesError ? "Couldn't load this part. Refresh the page, or sign in again." : "Loading…"}</p>
         ) : (
           <div className="mt-2">
+            {tab === "plan" && <ActionPlan data={data} statement={statement} rules={rules} />}
             {tab === "oei" && rules && <OeiTab data={data} rules={rules} />}
             {tab === "cash" && <CashTab data={data} />}
             {tab === "counter" && <CounterAccuracy data={data} />}
