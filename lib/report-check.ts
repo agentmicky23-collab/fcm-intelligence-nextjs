@@ -107,7 +107,12 @@ export function checkReport(raw: unknown, opts: { orderId: string; tier: Tier })
     if (str(meta.overall_grade) && str(meta.overall_grade) !== computed.grade) crit("metadata.overall_grade", `"${str(meta.overall_grade)}" should be ${computed.grade}`, `Set it to ${computed.grade}.`);
   }
   const verdictsUsed = { "metadata.overall_verdict": str(meta.overall_verdict), "s1.verdict": str(s("s1_executive_summary").verdict), "s13.overall_verdict": str(s13.overall_verdict) };
-  for (const [where, v] of Object.entries(verdictsUsed)) {
+  if (computed.basis === "insufficient") {
+    const why = `Only ${computed.evidencePct}% of the scoring evidence is available, so the report can't have an overall view yet.`;
+    const s1 = s("s1_executive_summary");
+    for (const [where, v] of [["metadata.overall_score", meta.overall_score], ["metadata.overall_grade", meta.overall_grade], ["s1.score", s1.score], ["s1.grade", s1.grade], ...Object.entries(verdictsUsed)] as [string, unknown][])
+      if (v !== null && v !== undefined && v !== "") crit(where, `Set although there isn't enough evidence for an overall view`, `${why} Set it to null, and say in s1.verdict_detail what's needed for a verdict.`);
+  } else for (const [where, v] of Object.entries(verdictsUsed)) {
     if (!v) crit(where, "Missing verdict", `Use "${computed.verdict}".`);
     else if (!(verdicts as readonly string[]).includes(v)) crit(where, `"${v}" isn't one of the four verdicts`, `Use exactly one of: ${verdicts.join(", ")}. For this report: "${computed.verdict}".`);
     else if (computed.verdict && v !== computed.verdict) crit(where, `"${v}" doesn't follow from the scores`, `Use "${computed.verdict}"${computed.caps.length ? ` (${computed.caps.join("; ")})` : ""}.`);

@@ -66,11 +66,20 @@ export function ReportView({ report, tier, orderId, banner, showAll = false }: {
               <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl">{name}</h1>
               {place && <p className="mt-4 text-lg text-white/70">{place}</p>}
               {str(m.property_type) && <p className="mt-1 text-white/50">{str(m.property_type)}</p>}
-              {verdict && (
+              {verdict ? (
                 <div className="mt-10 max-w-xl border-l-[3px] border-red pl-5">
                   <p className="font-display text-2xl font-bold text-white">{verdict}</p>
                   {verdictDetail && <p className="mt-2 leading-relaxed text-white/70">{verdictDetail}</p>}
                 </div>
+              ) : (
+                score === null && (
+                  <div className="mt-10 max-w-xl border-l-[3px] border-white/40 pl-5">
+                    <p className="font-display text-2xl font-bold text-white">No verdict yet</p>
+                    <p className="mt-2 leading-relaxed text-white/70">
+                      {verdictDetail || "There isn't enough verified information for an overall score or verdict. The sections below say what's still needed."}
+                    </p>
+                  </div>
+                )
               )}
             </div>
             {score !== null && grade && (

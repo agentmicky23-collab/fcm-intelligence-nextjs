@@ -40,6 +40,9 @@ export const weights: Partial<Record<SectionKey, number>> = {
   s12_future_outlook: 5,
 };
 
+/** The share of the scoring weight that must have data before there's an overall score, grade and verdict. */
+export const MIN_EVIDENCE_PCT = 50;
+
 /** Sections that are never scored. */
 export const unscoredSections: SectionKey[] = ["s14_profit_improvement", "s15_due_diligence"];
 
@@ -74,9 +77,16 @@ export function overall(sectionScores: Partial<Record<SectionKey, number | null>
       used.push(k);
     } else missing.push(k);
   }
-  const score = weight ? Math.round(sum / weight) : null;
-  let verdict: Verdict | null = score === null ? null : verdictForScore(score);
+  const totalWeight = Object.values(weights).reduce((a, b) => a + (b ?? 0), 0);
+  const evidencePct = Math.round((weight / totalWeight) * 100);
   const caps: string[] = [];
+  // Too little evidence for an overall view: no score, grade or verdict rather than one built on a corner of the report.
+  if (evidencePct < MIN_EVIDENCE_PCT) {
+    if (weight) caps.push(`Only ${evidencePct}% of the scoring evidence is available (at least ${MIN_EVIDENCE_PCT}% is needed): no overall score, grade or verdict yet`);
+    return { score: null, grade: null, verdict: null, caps, basis: "insufficient" as const, sectionsUsed: used, sectionsWithoutData: missing, weightUsed: weight, evidencePct };
+  }
+  const score = Math.round(sum / weight);
+  let verdict: Verdict | null = verdictForScore(score);
   if (verdict && !opts.financialsVerified) {
     const v = atMost(verdict, "Proceed with Caution");
     if (v !== verdict) caps.push("No verified accounts: verdict capped at Proceed with Caution");
@@ -89,12 +99,13 @@ export function overall(sectionScores: Partial<Record<SectionKey, number | null>
   }
   return {
     score,
-    grade: score === null ? null : gradeFor(score),
+    grade: gradeFor(score),
     verdict,
     caps,
     basis: missing.length ? ("partial" as const) : ("full" as const),
     sectionsUsed: used,
     sectionsWithoutData: missing,
     weightUsed: weight,
+    evidencePct,
   };
 }
