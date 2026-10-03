@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import type { Breakdown, Service, Statement } from "@/lib/remuneration";
 
 const gbp = (n: number, dp = 0) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
@@ -55,6 +56,28 @@ export function StaffingView({
       return { x, minutes, extra, pay, perHour, itemsForDay, hoursNeeded, flatOut, pays: perHour >= costPerHour };
     })
     .sort((a, b) => b.perHour - a.perHour);
+
+  // While a box is being edited the order stays put; it re-sorts when you leave the box (or press Enter),
+  // and the rows slide to their new places.
+  const [frozen, setFrozen] = useState<string[] | null>(null);
+  const shown = frozen ? frozen.map((id) => rows.find((r) => r.x.id === id)).filter((r): r is (typeof rows)[number] => !!r) : rows;
+  const els = useRef(new Map<string, HTMLLIElement>());
+  const last = useRef(new Map<string, number>());
+  const orderKey = shown.map((r) => r.x.id).join("|");
+  useLayoutEffect(() => {
+    const next = new Map<string, number>();
+    els.current.forEach((el, id) => {
+      const top = el.getBoundingClientRect().top;
+      next.set(id, top);
+      const before = last.current.get(id);
+      if (before !== undefined && Math.abs(before - top) > 1) {
+        el.animate([{ transform: `translateY(${before - top}px)` }, { transform: "translateY(0)" }], { duration: 450, easing: "cubic-bezier(.2,.8,.2,1)" });
+      }
+    });
+    last.current = next;
+  }, [orderKey]);
+  const hold = { onFocus: () => setFrozen(shown.map((r) => r.x.id)), onBlur: () => setFrozen(null), onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && e.currentTarget.blur() };
+
   const top = Math.max(costPerHour * 1.15, ...rows.map((r) => r.perHour));
 
   return (
@@ -90,12 +113,12 @@ export function StaffingView({
       <section className="mt-8">
         <h2 className="font-display text-xl font-bold">What each service earns for an hour behind the counter</h2>
         <p className="mt-1 max-w-3xl text-sm text-white/55">
-          Pay per item from your statement, divided by how long each one takes. The white line is what an hour of staff time costs you. Above it, the service pays for the seat; below it, it doesn&apos;t, however busy you are. Set the minutes to what your counter really takes.
+          Pay per item from your statement, divided by how long each one takes. The white line is what an hour of staff time costs you. Above it, the service pays for the seat; below it, it doesn&apos;t, however busy you are. Set the minutes to what your counter really takes: the list re-orders when you leave the box.
         </p>
 
         <ul className="mt-5 space-y-3">
-          {rows.map((r) => (
-            <li key={r.x.id} className={`rounded-xl border p-4 ${r.pays ? "border-emerald-400/25 bg-emerald-400/[0.04]" : "border-white/10 bg-white/[0.03]"}`}>
+          {shown.map((r) => (
+            <li key={r.x.id} ref={(el) => { if (el) els.current.set(r.x.id, el); else els.current.delete(r.x.id); }} className={`rounded-xl border p-4 ${r.pays ? "border-emerald-400/25 bg-emerald-400/[0.04]" : "border-white/10 bg-white/[0.03]"}`}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <p className="font-semibold">{r.x.label}</p>
                 <p className="text-right">
@@ -121,12 +144,12 @@ export function StaffingView({
                 {r.x.extra && (
                   <label className="flex items-center gap-2 whitespace-nowrap">
                     {r.x.extra.label} £
-                    <input type="number" step={r.x.extra.step} min={r.x.extra.min} max={r.x.extra.max} value={r.extra} onChange={(e) => setSvc({ ...svc, [r.x.id]: { minutes: r.minutes, extra: Math.max(0, Number(e.target.value) || 0) } })} className="w-20 rounded border border-white/15 bg-white/[0.04] px-2 py-1 text-white" />
+                    <input {...hold} type="number" step={r.x.extra.step} min={r.x.extra.min} max={r.x.extra.max} value={r.extra} onChange={(e) => setSvc({ ...svc, [r.x.id]: { minutes: r.minutes, extra: Math.max(0, Number(e.target.value) || 0) } })} className="w-20 rounded border border-white/15 bg-white/[0.04] px-2 py-1 text-white" />
                   </label>
                 )}
                 <label className="flex items-center gap-2 whitespace-nowrap">
                   Minutes each
-                  <input type="number" step={0.5} min={0.5} max={60} value={r.minutes} onChange={(e) => setSvc({ ...svc, [r.x.id]: { minutes: Math.max(0.5, Number(e.target.value) || 0.5), extra: r.extra || undefined } })} className="w-16 rounded border border-white/15 bg-white/[0.04] px-2 py-1 text-white" />
+                  <input {...hold} type="number" step={0.5} min={0.5} max={60} value={r.minutes} onChange={(e) => setSvc({ ...svc, [r.x.id]: { minutes: Math.max(0.5, Number(e.target.value) || 0.5), extra: r.extra || undefined } })} className="w-16 rounded border border-white/15 bg-white/[0.04] px-2 py-1 text-white" />
                 </label>
               </div>
             </li>
