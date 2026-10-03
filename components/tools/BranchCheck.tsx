@@ -146,6 +146,51 @@ function ExcessCashCalendar({ days }: { days: { date: string; excessCash: number
   );
 }
 
+/** Pouch errors by month: surpluses above the line (blue), shortages below (red). Height = how many; label = £. */
+function PouchChart({ pouches }: { pouches: { date: string; amount: number; type: string }[] }) {
+  if (!pouches.length) return null;
+  const first = pouches[0].date.slice(0, 7);
+  const last = pouches.at(-1)!.date.slice(0, 7);
+  const months: string[] = [];
+  for (let d = new Date(first + "-15T12:00:00Z"); d.toISOString().slice(0, 7) <= last; d.setUTCMonth(d.getUTCMonth() + 1)) months.push(d.toISOString().slice(0, 7));
+  const agg = months.map((m) => {
+    const ps = pouches.filter((p) => p.date.startsWith(m));
+    const sh = ps.filter((p) => p.type === "Shortage");
+    const su = ps.filter((p) => p.type !== "Shortage");
+    return { m, shortN: sh.length, short: sh.reduce((a, p) => a + p.amount, 0), surN: su.length, sur: su.reduce((a, p) => a + p.amount, 0) };
+  });
+  const maxN = Math.max(1, ...agg.map((a) => Math.max(a.shortN, a.surN)));
+  const H = 90;
+  const k = (v: number) => (v >= 1000 ? `£${(v / 1000).toFixed(v % 1000 ? 1 : 0)}k` : `£${Math.round(v)}`);
+  return (
+    <div>
+      <div className="overflow-x-auto">
+        <div className="flex min-w-[640px] gap-1">
+          {agg.map((a) => (
+            <div key={a.m} className="flex min-w-[22px] flex-1 flex-col items-center" title={`${monthName(a.m + "-15")}: ${a.surN} surplus (${gbp(a.sur)}), ${a.shortN} shortage (${gbp(a.short)})`}>
+              <div className="flex w-full flex-col items-center justify-end" style={{ height: H + 16 }}>
+                {a.surN > 0 && <span className="text-[9px] text-white/60">{k(a.sur)}</span>}
+                <div className="w-full max-w-[26px] rounded-t-[4px] bg-[#378ADD]" style={{ height: (a.surN / maxN) * H }} />
+              </div>
+              <div className="h-px w-full bg-white/30" />
+              <div className="flex w-full flex-col items-center justify-start" style={{ height: H + 16 }}>
+                <div className="w-full max-w-[26px] rounded-b-[4px] bg-red" style={{ height: (a.shortN / maxN) * H }} />
+                {a.shortN > 0 && <span className={`text-[9px] ${a.short >= 1000 ? "font-bold text-red-light" : "text-white/60"}`}>{k(a.short)}</span>}
+              </div>
+              <span className="mt-1 text-[9px] text-white/40">{monthName(a.m + "-15").split(" ")[0][0]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-4 text-xs text-white/60">
+        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px] bg-[#378ADD]" /> Surpluses (above the line)</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px] bg-red" /> Shortages (below the line)</span>
+        <span>Bar height is how many; the label is the £ value. {monthName(first + "-15")} to {monthName(last + "-15")}.</span>
+      </div>
+    </div>
+  );
+}
+
 function Empty({ what }: { what: string }) {
   return <p className="rounded-xl border border-dashed border-white/15 p-6 text-sm text-white/55">Add your {what} export from Branch Hub to see this.</p>;
 }
@@ -320,7 +365,8 @@ function CashTab({ data }: { data: BranchData }) {
       <Section title="Cash pouch errors" sub="Shortages and surpluses found when your pouches were counted.">
         {pouchYears.length ? (
           <>
-            <div className="overflow-x-auto">
+            <PouchChart pouches={data.pouches ?? []} />
+            <div className="mt-6 overflow-x-auto">
               <table className="w-full min-w-[480px] text-sm">
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-white/45">
