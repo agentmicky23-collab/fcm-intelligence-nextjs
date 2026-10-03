@@ -19,6 +19,7 @@ function Shell({ children, signedIn }: { children: React.ReactNode; signedIn?: b
         </div>
         {signedIn && (
           <>
+            <Link href="/admin/new" className="bg-red px-4 py-2 text-xs font-semibold hover:bg-red-dark">+ New report</Link>
             <AutoRefresh />
             <form action="/api/admin/signout" method="post">
               <button className="rounded-md border border-white/15 px-3 py-1.5 text-xs text-white/70 hover:bg-white/10">Sign out</button>
@@ -67,13 +68,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const month = new Date().toISOString().slice(0, 7);
   const sentThisMonth = orders.filter((o) => o.status === "delivered" && (o.delivered_at ?? o.updated_at).startsWith(month)).length;
   const queued = orders.filter((o) => o.status === "received");
+  const factFinds = orders.filter((o) => o.status === "fact_find");
   const identityQuestions = events.filter((e) => e.kind === "waiting" && e.item === "identity" && orders.some((o) => o.id === e.order_id && o.status !== "delivered"));
 
   const stats = [
     { label: "In progress", value: active.length, note: stalled.length ? `${stalled.length} may have stalled` : "All moving", warn: stalled.length > 0 },
     { label: "Waiting for you", value: waiting.length, note: waiting.length ? "Read and approve" : "Nothing to approve", warn: waiting.length > 0 },
     { label: "Stopped", value: stopped.length, note: stopped.length ? "Need a look" : "No errors", warn: stopped.length > 0 },
-    { label: "Queued", value: queued.length, note: "Next run 07:00", warn: false },
+    { label: "Queued", value: queued.length, note: factFinds.length ? `+ ${factFinds.length} waiting for a fact find` : "Next run 07:00", warn: false },
     { label: "Sent this month", value: sentThisMonth, note: "Delivered to customers", warn: false },
   ];
 
@@ -89,7 +91,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         ))}
       </section>
 
-      {(waiting.length > 0 || stopped.length > 0 || identityQuestions.length > 0) && (
+      {(waiting.length > 0 || stopped.length > 0 || identityQuestions.length > 0 || factFinds.length > 0) && (
         <section className="glow mt-6 rounded-2xl border border-red/40 bg-red/[0.07] p-5">
           <p className="font-display text-lg font-bold">Needs you</p>
           <ul className="mt-3 space-y-3 text-sm">
@@ -108,6 +110,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                   <a href={reportPath(o.id, "review")} className="bg-red px-4 py-2 text-xs font-semibold hover:bg-red-dark">Read and approve</a>
                   <Link href={`/admin/orders/${o.id}`} className="border border-white/20 px-4 py-2 text-xs hover:bg-white/10">How it was made</Link>
                 </span>
+              </li>
+            ))}
+            {factFinds.map((o) => (
+              <li key={`ff-${o.id}`} className="flex flex-wrap items-center justify-between gap-3">
+                <span><b>{o.business_name}</b>: fact find not finished yet</span>
+                <Link href={`/admin/orders/${o.id}/fact-find`} className="border border-white/20 px-4 py-2 text-xs hover:bg-white/10">Open the fact find</Link>
               </li>
             ))}
             {stopped.map((o) => (

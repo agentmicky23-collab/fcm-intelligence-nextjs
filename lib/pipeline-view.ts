@@ -17,6 +17,7 @@ export const agents: { id: AgentId; name: string; role: string; does: string; co
 
 /** Order status → which station is working on it. */
 export const stationFor: Record<string, AgentId | "paid" | "sent" | "error"> = {
+  fact_find: "paid",
   received: "paid",
   research: "scout",
   writing: "sage",
@@ -28,7 +29,8 @@ export const stationFor: Record<string, AgentId | "paid" | "sent" | "error"> = {
 };
 
 export const statusLabel: Record<string, string> = {
-  received: "Paid, waiting for the next run",
+  fact_find: "Waiting for the fact find",
+  received: "Queued for the next run",
   research: "Scout is researching",
   writing: "Sage is writing",
   validating: "Sentinel is checking",

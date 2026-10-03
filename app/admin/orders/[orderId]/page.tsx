@@ -89,6 +89,9 @@ export default async function OrderPage({ params }: { params: Promise<{ orderId:
           </div>
           {o.error_message && <p className="mt-3 max-w-3xl rounded-lg border border-red/40 bg-red/10 p-3 text-sm text-red-light">{o.error_message}</p>}
         </div>
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/admin/orders/${o.id}/fact-find`} className="border border-white/20 px-4 py-2.5 text-sm hover:bg-white/10">{o.status === "fact_find" ? "Fill in the fact find" : "Fact find"}</Link>
+        </div>
         {stored && (
           <div className="flex flex-wrap gap-2">
             <a href={reportPath(o.id, "review")} className="bg-red px-4 py-2.5 text-sm font-semibold hover:bg-red-dark">Open the report</a>
