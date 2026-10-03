@@ -9,6 +9,14 @@ const int = (n: number) => Math.round(n).toLocaleString("en-GB");
 const monthName = (iso: string) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
 /** A trading period is named after the month it mostly covers (a period starting 29 June is July's). */
 const periodName = (start: string) => monthName(new Date(Date.parse(start + "T12:00:00Z") + 14 * 86400000).toISOString().slice(0, 10));
+/** Heat map colour: blue (quiet) through grey to red (busy). t runs 0 to 1. */
+const QUIET = [55, 138, 221];
+const MIDDLE = [214, 218, 226];
+const BUSY = [224, 36, 27];
+function heat(t: number) {
+  const [a, b, k] = t < 0.5 ? [QUIET, MIDDLE, t / 0.5] : [MIDDLE, BUSY, (t - 0.5) / 0.5];
+  return `rgb(${a.map((x, i) => Math.round(x + (b[i] - x) * k)).join(",")})`;
+}
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 type Tab = "oei" | "cash" | "counter" | "hours" | "parcels" | "quick";
@@ -359,11 +367,16 @@ function HoursTab({ data }: { data: BranchData }) {
   for (const r of use) grid.set(`${r.weekday}|${r.hour}`, (grid.get(`${r.weekday}|${r.hour}`) ?? 0) + r.transactions);
   const hours = [...new Set(rows.filter((r) => rows.some((x) => x.hour === r.hour && x.transactions > 0)).map((r) => r.hour))].sort();
   const days = DAYS.filter((d) => rows.some((r) => r.weekday === d && r.transactions > 0));
-  const max = Math.max(1, ...grid.values());
+  const counts = [...grid.values()].filter((v) => v > 0);
+  const max = Math.max(1, ...counts);
+  const min = Math.min(max, ...counts);
+  // Colour by rank, so a couple of very busy slots don't wash everything else out.
+  const sorted = [...counts].sort((a, b) => a - b);
+  const scale = (v: number) => (sorted.length < 2 ? 1 : sorted.lastIndexOf(v) / (sorted.length - 1));
   const total = [...grid.values()].reduce((a, b) => a + b, 0);
   const busiest = [...grid].sort((a, b) => b[1] - a[1]).slice(0, 3);
   return (
-    <Section title="When the counter is busy" sub="Transactions by day and hour for the period you exported. Darker means busier: plan two people for the darkest slots and one for the lightest.">
+    <Section title="When the counter is busy" sub="Transactions by day and hour for the period you exported. Red is busiest, blue is quietest: plan two people for the red slots and one for the blue.">
       <div role="radiogroup" aria-label="Category" className="mb-4 flex flex-wrap gap-2">
         {cats.map((c) => (
           <button key={c} role="radio" aria-checked={cat === c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1.5 text-xs ${cat === c ? "bg-white font-semibold text-[#06173a]" : "border border-white/15 text-white/70"}`}>{c}</button>
@@ -385,7 +398,7 @@ function HoursTab({ data }: { data: BranchData }) {
                   const v = grid.get(`${d}|${h}`) ?? 0;
                   return (
                     <td key={h} className="p-0.5">
-                      <div title={`${d} ${h}: ${int(v)} transactions`} className="flex h-9 w-11 items-center justify-center rounded-[4px] tabular-nums" style={{ background: v ? `rgba(224,36,27,${0.12 + (v / max) * 0.8})` : "rgba(255,255,255,0.03)", color: v / max > 0.5 ? "#fff" : "rgba(255,255,255,0.7)" }}>
+                      <div title={`${d} ${h}: ${int(v)} transactions`} className="flex h-10 w-12 items-center justify-center rounded-[4px] font-semibold tabular-nums" style={{ background: v ? heat(scale(v)) : "rgba(255,255,255,0.03)", color: v && Math.abs(scale(v) - 0.5) < 0.22 ? "#06173a" : "#fff" }}>
                         {v ? int(v) : ""}
                       </div>
                     </td>
@@ -395,6 +408,11 @@ function HoursTab({ data }: { data: BranchData }) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4 flex items-center gap-3 text-xs text-white/60" aria-hidden>
+        <span>Quieter ({int(min)})</span>
+        <span className="h-3 w-48 rounded-full" style={{ background: `linear-gradient(90deg, ${heat(0)}, ${heat(0.5)}, ${heat(1)})` }} />
+        <span>Busier ({int(max)})</span>
       </div>
       <p className="mt-3 text-sm text-white/65">{int(total)} transactions in this export. Busiest: {busiest.map(([k, v]) => `${k.split("|")[0]} ${k.split("|")[1]} (${int(v)})`).join(", ")}.</p>
     </Section>
