@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fileKinds, financialYear, merge, periodViews, quickScore, readBranchFile, type BranchData, type OeiRules } from "@/lib/branch-hub";
-import { StaffingPlanner } from "./BranchPlanner";
+import { readPdf } from "@/lib/pdf-text";
+import { parseStatement, type Statement } from "@/lib/remuneration";
+import { GrowthPlanner, StaffingPlanner } from "./BranchPlanner";
 import { CashWatch, CounterAccuracy } from "./BranchWatch";
 import { Protected } from "./Protected";
 
@@ -21,7 +23,7 @@ function heat(t: number) {
 }
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-type Tab = "oei" | "cash" | "counter" | "hours" | "parcels" | "quick";
+type Tab = "oei" | "cash" | "counter" | "hours" | "parcels" | "growth" | "quick";
 
 function Card({ label, value, note, tone }: { label: string; value: string; note?: string; tone?: "good" | "bad" }) {
   return (
@@ -582,6 +584,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
   const [rules, setRules] = useState<OeiRules | null>(null);
   const [rulesError, setRulesError] = useState(false);
   const [data, setData] = useState<BranchData>({});
+  const [statement, setStatement] = useState<Statement | null>(null);
   const [loaded, setLoaded] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
@@ -603,6 +606,15 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     let next = data;
     const names: string[] = [];
     for (const f of [...files].slice(0, 20)) {
+      if (/\.pdf$/i.test(f.name)) {
+        try {
+          setStatement(parseStatement(await readPdf(f)));
+          names.push("statement");
+        } catch {
+          skipped.push(f.name);
+        }
+        continue;
+      }
       if (!/\.(csv|xls)$/i.test(f.name)) {
         skipped.push(f.name);
         continue;
@@ -619,7 +631,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     }
     setData(next);
     setLoaded((l) => [...new Set([...l, ...names])]);
-    if (skipped.length) setProblem(`Not recognised: ${skipped.join(", ")}. Use the CSV or XLS exports from Branch Hub.`);
+    if (skipped.length) setProblem(`Not recognised: ${skipped.join(", ")}. Use the CSV or XLS exports from Branch Hub, or your remuneration statement PDF.`);
     setBusy(false);
     if (input.current) input.current.value = "";
   }
@@ -630,11 +642,12 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     ["counter", "Counter accuracy"],
     ["hours", "Busy hours and staffing"],
     ["parcels", "Parcels and footfall"],
+    ["growth", "Growth planner"],
     ["quick", "Quick check"],
   ];
 
   return (
-    <Protected viewer={viewer} onIdle={() => { setData({}); setLoaded([]); }}>
+    <Protected viewer={viewer} onIdle={() => { setData({}); setLoaded([]); setStatement(null); }}>
       <div className="text-white">
         <div
           className="rounded-2xl border border-dashed border-white/20 bg-white/[0.03] p-5"
@@ -647,17 +660,17 @@ export function BranchCheck({ viewer }: { viewer: string }) {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="font-display text-lg font-bold">{loaded.length ? "Your Branch Hub files" : "Add your Branch Hub exports"}</p>
-              <p className="text-sm text-white/60">Drop in the CSV or XLS files (as many as you like, all at once). Each one is recognised automatically.</p>
+              <p className="text-sm text-white/60">Drop in the CSV or XLS files (as many as you like, all at once) and your remuneration statement PDF. Each one is recognised automatically.</p>
               <p className="mt-1 text-xs text-emerald-300">Read on this device only. Never uploaded or stored.</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => input.current?.click()} disabled={busy} className="bg-red px-5 py-3 text-sm font-semibold hover:bg-red-dark disabled:opacity-60">{busy ? "Reading…" : "Add files"}</button>
-              {loaded.length > 0 && <button onClick={() => { setData({}); setLoaded([]); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
+              {loaded.length > 0 && <button onClick={() => { setData({}); setLoaded([]); setStatement(null); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
             </div>
-            <input ref={input} type="file" accept=".csv,.xls,text/csv,application/vnd.ms-excel" multiple hidden onChange={(e) => add(e.target.files)} />
+            <input ref={input} type="file" accept=".csv,.xls,.pdf,text/csv,application/vnd.ms-excel,application/pdf" multiple hidden onChange={(e) => add(e.target.files)} />
           </div>
           <ul className="mt-4 grid gap-1.5 text-xs sm:grid-cols-2 lg:grid-cols-4">
-            {fileKinds.map((k) => (
+            {[...fileKinds, { key: "statement", label: "Remuneration statement (PDF)" }].map((k) => (
               <li key={k.key} className={loaded.includes(k.key) ? "text-emerald-300" : "text-white/45"}>{loaded.includes(k.key) ? "✓" : "○"} {k.label}</li>
             ))}
           </ul>
@@ -684,6 +697,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
               </>
             )}
             {tab === "parcels" && <ParcelsTab data={data} />}
+            {tab === "growth" && <GrowthPlanner data={data} statement={statement} />}
             {tab === "quick" && rules && <QuickTab rules={rules} />}
           </div>
         )}

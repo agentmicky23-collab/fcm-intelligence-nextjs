@@ -2,12 +2,12 @@
 
 import { useMemo, useRef, useState } from "react";
 import { employerCost } from "@/lib/employer-cost";
-import { breakdown, combine, demoStatement, levers, NotAStatement, parseStatement, services, type Lever, type Statement, type TextPage } from "@/lib/remuneration";
+import { breakdown, combine, demoStatement, levers, NotAStatement, parseStatement, services, type Lever, type Statement } from "@/lib/remuneration";
+import { readPdf } from "@/lib/pdf-text";
 import { ukRates } from "@/lib/uk-rates";
 import { Protected } from "./Protected";
 import { StaffingView, type ServiceSettings, type StaffSettings } from "./StaffingView";
 
-const WORKER = "/vendor/pdf.worker-6.4.299.min.mjs";
 
 const streamColour: Record<string, string> = {
   Mail: "#e0241b",
@@ -21,24 +21,6 @@ const colourFor = (name: string, i: number) => streamColour[name] ?? ["#D85A30",
 
 const gbp = (n: number, dp = 0) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "");
-
-/** Reads the PDFs in this browser with pdf.js. Nothing is uploaded. */
-async function readPdf(file: File): Promise<TextPage[]> {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  pdfjs.GlobalWorkerOptions.workerSrc = WORKER;
-  const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-  const pages: TextPage[] = [];
-  for (let p = 1; p <= doc.numPages; p++) {
-    const page = await doc.getPage(p);
-    const tc = await page.getTextContent();
-    pages.push({
-      width: page.getViewport({ scale: 1 }).width,
-      items: tc.items.flatMap((i) => ("str" in i ? [{ str: i.str, x: i.transform[4] as number, y: i.transform[5] as number }] : [])),
-    });
-  }
-  await doc.cleanup();
-  return pages;
-}
 
 type Active = Extract<Lever, { weekly: unknown }>;
 
