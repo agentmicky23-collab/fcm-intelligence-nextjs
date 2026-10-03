@@ -113,7 +113,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
       setSaved("saved");
       setConfirming(false);
       if (mode === "mik") {
-        router.push(`/admin/orders/${encodeURIComponent(orderId)}`);
+        router.push("/admin");
         router.refresh();
       } else window.scrollTo({ top: 0, behavior: "smooth" });
     } else setSaved("error");
