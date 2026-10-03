@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "cfb": "^1.2.2",
     "gray-matter": "^4.0.3",
     "maplibre-gl": "^5.24.0",
     "motion": "^13.4.4",
