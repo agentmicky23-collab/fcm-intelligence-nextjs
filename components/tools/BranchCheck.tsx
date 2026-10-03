@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fileKinds, financialYear, merge, periodViews, quickScore, readBranchFile, type BranchData, type OeiRules } from "@/lib/branch-hub";
+import { StaffingPlanner } from "./BranchPlanner";
 import { CashWatch, CounterAccuracy } from "./BranchWatch";
 import { Protected } from "./Protected";
 
@@ -627,7 +628,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     ["oei", "Operational Excellence"],
     ["cash", "Cash and losses"],
     ["counter", "Counter accuracy"],
-    ["hours", "Busy hours"],
+    ["hours", "Busy hours and staffing"],
     ["parcels", "Parcels and footfall"],
     ["quick", "Quick check"],
   ];
@@ -676,7 +677,12 @@ export function BranchCheck({ viewer }: { viewer: string }) {
             {tab === "oei" && rules && <OeiTab data={data} rules={rules} />}
             {tab === "cash" && <CashTab data={data} />}
             {tab === "counter" && <CounterAccuracy data={data} />}
-            {tab === "hours" && <HoursTab data={data} />}
+            {tab === "hours" && (
+              <>
+                <HoursTab data={data} />
+                <StaffingPlanner data={data} />
+              </>
+            )}
             {tab === "parcels" && <ParcelsTab data={data} />}
             {tab === "quick" && rules && <QuickTab rules={rules} />}
           </div>
