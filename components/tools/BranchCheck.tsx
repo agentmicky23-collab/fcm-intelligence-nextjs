@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fileKinds, financialYear, merge, periodViews, quickScore, readBranchFile, type BranchData, type OeiRules } from "@/lib/branch-hub";
+import { CashWatch, CounterAccuracy } from "./BranchWatch";
 import { Protected } from "./Protected";
 
 const gbp = (n: number, dp = 0) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
@@ -337,17 +338,10 @@ function CashTab({ data }: { data: BranchData }) {
   const pouchYears = byYear(data.pouches ?? []);
   const bigPouches = [...(data.pouches ?? [])].sort((a, b) => b.amount - a.amount).slice(0, 5);
   const rollMiss = (data.rollovers ?? []).filter((r) => r.completed === "no");
-  const opsYear = (type: string) => {
-    const y = new Map<string, number>();
-    for (const o of data.ops ?? []) if (o.type === type) y.set(o.year, (y.get(o.year) ?? 0) + o.value);
-    return [...y].sort();
-  };
-  const tcLoss = opsYear("Transaction Corrections - Debit Loss Value");
-  const tcGain = opsYear("Transaction Corrections - Credit Gain Value");
-  const rollResult = opsYear("Trading Period Rollover Result");
 
   return (
     <>
+      <CashWatch data={data} />
       <Section title="Excess cash, day by day" sub="Lower is better: excess cash costs points and it's cash at risk in the branch. Look for the red runs: they usually start with a collection where too little was returned.">
         {days.length ? <ExcessCashCalendar days={days} /> : <Empty what="Daily cash and declarations" />}
       </Section>
@@ -406,91 +400,7 @@ function CashTab({ data }: { data: BranchData }) {
           <p className="mt-2 text-xs text-white/55">Coming up: {data.rollovers.filter((r) => r.completed === "not due").map((r) => `${r.window} (group ${r.group})`).join("; ")}.</p>
         )}
       </Section>
-      {(tcLoss.length > 0 || rollResult.length > 0) && (
-        <Section title="Corrections and balance results by year" sub="From your operational reporting. Debit losses are corrections taken from the branch; credit gains are corrections in its favour.">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[520px] text-sm">
-              <thead>
-                <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-white/45">
-                  <th className="py-2 font-medium">Year</th>
-                  <th className="py-2 text-right font-medium">Debit losses</th>
-                  <th className="py-2 text-right font-medium">Credit gains</th>
-                  <th className="py-2 text-right font-medium">Balance results</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...new Set([...tcLoss, ...tcGain, ...rollResult].map(([y]) => y))].sort().map((y) => (
-                  <tr key={y} className="border-t border-white/10">
-                    <td className="py-2">{y}</td>
-                    <td className="py-2 text-right tabular-nums">{gbp(tcLoss.find(([k]) => k === y)?.[1] ?? 0)}</td>
-                    <td className="py-2 text-right tabular-nums">{gbp(tcGain.find(([k]) => k === y)?.[1] ?? 0)}</td>
-                    <td className="py-2 text-right tabular-nums">{gbp(rollResult.find(([k]) => k === y)?.[1] ?? 0)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Section>
-      )}
     </>
-  );
-}
-
-// ── Counter accuracy ───────────────────────────────────────────────────────────────────────────
-
-const counterMeasures = [
-  ["Rejected Postage Labels", "Rejected Postage Labels Value", "Rejected postage labels"],
-  ["Spoilt Postage Labels", "Spoilt Postage Labels Value", "Spoilt postage labels"],
-  ["Reversals", "Reversals Value", "Reversals"],
-  ["Underpaid Mail", null, "Underpaid mail"],
-  ["Prohibited and Restricted Mail Items", null, "Prohibited or restricted items"],
-  ["Customer Complaints", null, "Customer complaints"],
-] as const;
-
-function CounterTab({ data }: { data: BranchData }) {
-  const ops = data.ops ?? [];
-  if (!ops.length) return <Empty what="Operational reporting" />;
-  const years = [...new Set(ops.map((o) => o.year))].sort().slice(-4);
-  const sum = (type: string, y: string) => ops.filter((o) => o.type === type && o.year === y).reduce((a, o) => a + o.value, 0);
-  const avg = (type: string, y: string) => {
-    const v = ops.filter((o) => o.type === type && o.year === y);
-    return v.length ? v.reduce((a, o) => a + o.value, 0) / v.length : null;
-  };
-  return (
-    <Section title="Counter accuracy by year" sub="Mistakes that cost money or time. Falling numbers mean training is working. The latest year is the year so far.">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] text-sm">
-          <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-white/45">
-              <th className="py-2 font-medium">Measure</th>
-              {years.map((y) => <th key={y} className="py-2 text-right font-medium">{y}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {counterMeasures.map(([vol, val, label]) => (
-              <tr key={vol} className="border-t border-white/10">
-                <td className="py-2">{label}</td>
-                {years.map((y) => (
-                  <td key={y} className="py-2 text-right tabular-nums">
-                    {int(sum(vol, y))}
-                    {val && <span className="block text-xs text-white/45">{gbp(sum(val, y))}</span>}
-                  </td>
-                ))}
-              </tr>
-            ))}
-            {["Cash Declarations Completed", "Cash Declaration Accuracy"].map((t) => (
-              <tr key={t} className="border-t border-white/10">
-                <td className="py-2">{t.replace("Cash Declarations", "Declarations").replace("Cash Declaration", "Declaration")}</td>
-                {years.map((y) => {
-                  const a = avg(t, y);
-                  return <td key={y} className="py-2 text-right tabular-nums">{a === null ? "–" : `${Math.round(a)}%`}</td>;
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Section>
   );
 }
 
@@ -715,7 +625,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
 
   const tabs: [Tab, string][] = [
     ["oei", "Operational Excellence"],
-    ["cash", "Cash"],
+    ["cash", "Cash and losses"],
     ["counter", "Counter accuracy"],
     ["hours", "Busy hours"],
     ["parcels", "Parcels and footfall"],
@@ -765,7 +675,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
           <div className="mt-2">
             {tab === "oei" && rules && <OeiTab data={data} rules={rules} />}
             {tab === "cash" && <CashTab data={data} />}
-            {tab === "counter" && <CounterTab data={data} />}
+            {tab === "counter" && <CounterAccuracy data={data} />}
             {tab === "hours" && <HoursTab data={data} />}
             {tab === "parcels" && <ParcelsTab data={data} />}
             {tab === "quick" && rules && <QuickTab rules={rules} />}

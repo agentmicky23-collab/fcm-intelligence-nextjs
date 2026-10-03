@@ -270,3 +270,40 @@ export function quickScore(rules: OeiRules, input: { start: string; eligible: nu
     eligibleNote: s.eligible,
   };
 }
+
+// ── Monthly series from operational reporting ───────────────────────────────────────────────────
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "2025/26" + "Nov" → "2025-11"; "2025/26" + "Feb" → "2026-02". */
+export function opsMonth(year: string, month: string) {
+  const i = MONTHS.indexOf(month.slice(0, 3));
+  const y = Number(year.slice(0, 4));
+  if (i < 0 || !y) return null;
+  return `${i >= 3 ? y : y + 1}-${String(i + 1).padStart(2, "0")}`;
+}
+
+/** One measure as a month-by-month series (months with no row count as 0 between the first and last). */
+export function opsSeries(ops: OpsRow[], type: string) {
+  const m = new Map<string, number>();
+  for (const o of ops) {
+    if (o.type !== type) continue;
+    const k = opsMonth(o.year, o.month);
+    if (k) m.set(k, (m.get(k) ?? 0) + o.value);
+  }
+  return [...m].sort((a, b) => a[0].localeCompare(b[0])).map(([month, value]) => ({ month, value }));
+}
+
+/** Totals for the last 12 months and the 12 before, from a monthly series, ending at `end` (yyyy-mm). */
+export function lastTwelve(series: { month: string; value: number }[], end: string) {
+  const back = (n: number) => {
+    const d = new Date(end + "-15T12:00:00Z");
+    d.setUTCMonth(d.getUTCMonth() - n);
+    return d.toISOString().slice(0, 7);
+  };
+  const from = back(11);
+  const prevFrom = back(23);
+  const now = series.filter((s) => s.month >= from && s.month <= end).reduce((a, s) => a + s.value, 0);
+  const before = series.filter((s) => s.month >= prevFrom && s.month < from).reduce((a, s) => a + s.value, 0);
+  return { now, before, from };
+}
