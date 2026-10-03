@@ -157,3 +157,9 @@ body {
 .rem-range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 999px; background: var(--color-red); border: 3px solid #fff; cursor: pointer; }
 .rem-range-small::-webkit-slider-thumb { width: 16px; height: 16px; background: #fff; border-width: 2px; border-color: var(--color-red); box-shadow: none; }
 .rem-added { background: repeating-linear-gradient(135deg, var(--color-red) 0 6px, var(--color-red-light) 6px 12px); }
+
+/* Members' tools can't be printed */
+@media print {
+  .rem-protected { display: none !important; }
+  .rem-print-note { display: block !important; }
+}

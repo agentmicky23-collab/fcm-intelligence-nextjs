@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { employerCost } from "@/lib/employer-cost";
 import { breakdown, combine, demoStatement, levers, NotAStatement, parseStatement, services, type Lever, type Statement, type TextPage } from "@/lib/remuneration";
 import { ukRates } from "@/lib/uk-rates";
+import { Protected } from "./Protected";
 import { StaffingView, type ServiceSettings, type StaffSettings } from "./StaffingView";
 
 const WORKER = "/vendor/pdf.worker-6.4.299.min.mjs";
@@ -78,7 +79,7 @@ function Slider({ lever, value, extra, onChange, staffHours, staffCost }: { leve
   );
 }
 
-export function RemunerationAnalyser() {
+export function RemunerationAnalyser({ viewer }: { viewer: string }) {
   const [statements, setStatements] = useState<Statement[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -140,6 +141,7 @@ export function RemunerationAnalyser() {
   const totalShareBar = b.streams.filter((x) => x.exc > 0);
 
   return (
+    <Protected viewer={viewer} onIdle={() => { setStatements([]); setValues({}); setSvc({}); }}>
     <div className="rem text-white">
       {/* Load */}
       <div
@@ -330,5 +332,6 @@ export function RemunerationAnalyser() {
         <p>Only the lines and totals are read. The branch, remuneration and VAT numbers, names and addresses on the statement are ignored, and nothing leaves this device.</p>
       </div>
     </div>
+    </Protected>
   );
 }
