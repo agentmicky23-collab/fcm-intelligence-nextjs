@@ -102,3 +102,32 @@ export function cleanData(input: unknown): FactFindData | null {
   }
   return out;
 }
+
+/** Days after a report is delivered that its fact find (answers and documents) is deleted. */
+export const RETENTION_DAYS = 90;
+
+/**
+ * Deletes fact-find documents and answers for orders delivered more than RETENTION_DAYS ago.
+ * The storage policy only lets the site delete files that have expired, so nothing newer can go.
+ * Run daily by the cron. Returns what was deleted, by order.
+ */
+export async function purgeExpiredFactFinds() {
+  const due = (await call<{ order_id: string; paths: string[] }[]>("expired_fact_finds", {})) ?? [];
+  const done: { order: string; files: number; ok: boolean }[] = [];
+  for (const d of due) {
+    let ok = true;
+    if (d.paths.length) {
+      const res = await fetch(storageBase(), {
+        method: "DELETE",
+        headers: { apikey: publishableKey(), "Content-Type": "application/json" },
+        body: JSON.stringify({ prefixes: d.paths }),
+        cache: "no-store",
+      }).catch(() => null);
+      const deleted = res?.ok ? ((await res.json().catch(() => [])) as unknown[]).length : 0;
+      ok = deleted === d.paths.length;
+    }
+    if (ok) ok = (await call<boolean>("fact_find_purge", { p_order_id: d.order_id })) !== null;
+    done.push({ order: d.order_id, files: d.paths.length, ok });
+  }
+  return done;
+}

@@ -290,6 +290,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
                 <li><b className="text-white">Only for your report.</b> Only Mikesh and FCM&apos;s own report system open them, to check the figures for this report. They are never shared with the Post Office, the seller, the broker or anyone else.</li>
                 <li><b className="text-white">Behind your private link.</b> This page only opens from the link sent to you (or for Mikesh, signed in). No one else can see what you add here.</li>
                 <li><b className="text-white">Cover up what we don&apos;t need.</b> We only need the figures. You&apos;re welcome to black out account numbers, branch codes and personal details before you upload.</li>
+                <li><b className="text-white">Deleted after 90 days.</b> Your answers and documents are deleted automatically 90 days after your report is delivered.</li>
                 <li><b className="text-white">You stay in control.</b> Until you send the fact find, you can remove anything you&apos;ve added with the Remove button.</li>
               </ul>
             </div>

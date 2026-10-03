@@ -119,7 +119,7 @@ export default function Page() {
             <li>Enquiries: up to two years after we last spoke, unless we go on to work together.</li>
             <li>Orders and invoices: six years from the end of the financial year of the order, as UK tax law requires.</li>
             <li>Your delivered report: twelve months, in case you need it sent again.</li>
-            <li>Documents you send for a report, such as accounts or a lease: deleted within 30 days of delivering the report.</li>
+            <li>Your fact find and the documents you send for a report, such as accounts, Post Office statements or a lease: deleted automatically 90 days after the report is delivered, so I can answer any follow-up questions. They&apos;re kept in private, encrypted storage until then and used only for your report.</li>
             <li>Membership: until you unsubscribe. After that I keep only your email address, so you&apos;re not emailed again by mistake.</li>
             <li>Security records: the scrambled IP address for the day it was used.</li>
           </ul>
