@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { completeness, documentKinds, factFindSections, sources, type FactFindData, type FactFindFile } from "@/lib/fact-find";
 
@@ -16,7 +18,8 @@ type Props = {
 const slug = (s: string) => s.normalize("NFKD").replace(/[^\w.-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").slice(-80) || "file";
 const size = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
 
-export function FactFindForm({ orderId, token, mode, initial, upload, dark = false, requested = [] }: Props) {
+export function FactFindForm({ orderId, token, mode, initial, upload, dark = false, requested: asked = [] }: Props) {
+  const router = useRouter();
   const [data, setData] = useState<FactFindData>(initial.data ?? {});
   const [files, setFiles] = useState<FactFindFile[]>(initial.files ?? []);
   const [status, setStatus] = useState(initial.status);
@@ -25,11 +28,17 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
   const [uploading, setUploading] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [confirming, setConfirming] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [editing, setEditing] = useState(false);
+  // Once sent, the list of what was asked for has been answered.
+  const requested = sent ? [] : asked;
   const dirty = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const done = completeness(data, files);
   const locked = mode === "client" && status === "submitted" && !requested.length;
+  // Mik sees a submitted fact find read-only, with an Edit button, so it can't be changed by accident.
+  const readOnly = mode === "mik" && status === "submitted" && !requested.length && !editing;
 
   const post = async (body: Record<string, unknown>) => {
     const res = await fetch(`/api/fact-find/${encodeURIComponent(orderId)}`, {
@@ -99,9 +108,14 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
     const r = await post({ action: "submit", data });
     if (r.ok) {
       setStatus("submitted");
+      setSent(true);
+      setEditing(false);
       setSaved("saved");
       setConfirming(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (mode === "mik") {
+        router.push(`/admin/orders/${encodeURIComponent(orderId)}`);
+        router.refresh();
+      } else window.scrollTo({ top: 0, behavior: "smooth" });
     } else setSaved("error");
   }
 
@@ -147,8 +161,12 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
             <div className="h-full rounded-full bg-red transition-all" style={{ width: `${Math.round((done.answered / done.total) * 100)}%` }} />
           </div>
         </div>
-        {status === "submitted" && mode === "mik" && !requested.length ? (
-          <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold text-emerald-500">Submitted</span>
+        {readOnly ? (
+          <span className="flex flex-wrap items-center gap-3">
+            <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold text-emerald-500">Submitted: report queued</span>
+            <button type="button" onClick={() => setEditing(true)} className={`border px-4 py-2 text-xs ${dark ? "border-white/20 text-white hover:bg-white/10" : "border-line text-navy"}`}>Edit</button>
+            <Link href={`/admin/orders/${encodeURIComponent(orderId)}`} className="bg-red px-4 py-2 text-xs font-semibold text-white hover:bg-red-dark">Back to the order</Link>
+          </span>
         ) : (
           <button type="button" onClick={() => setConfirming(true)} className="bg-red px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-dark">
             {mode === "mik" ? "Done: start the report" : "Send it to us"}
@@ -177,8 +195,8 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
             <p className={`font-semibold ${t.heading}`}>Everything we need is here.</p>
           )}
           <div className="mt-4 flex flex-wrap gap-3">
-            <button type="button" onClick={submit} className="bg-red px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-dark">
-              {mode === "mik" ? "Start the report" : "Send it"}
+            <button type="button" onClick={submit} disabled={saved === "saving"} className="bg-red disabled:opacity-60 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-dark">
+              {saved === "saving" ? "Sending…" : mode === "mik" ? (status === "submitted" ? "Save and requeue" : "Start the report") : "Send it"}
             </button>
             <button type="button" onClick={() => setConfirming(false)} className={`border px-5 py-2.5 text-sm ${dark ? "border-white/20 text-white" : "border-line text-navy"}`}>
               Keep editing
@@ -188,7 +206,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
       )}
 
       {factFindSections.map((s) => (
-        <fieldset key={s.key} className={`rounded-xl border p-5 sm:p-6 ${t.card}`}>
+        <fieldset key={s.key} disabled={readOnly} className={`rounded-xl border p-5 sm:p-6 ${t.card} ${readOnly ? "opacity-80" : ""}`}>
           <legend className="sr-only">{s.title}</legend>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -244,14 +262,14 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
         </fieldset>
       ))}
 
-      <section className={`rounded-xl border p-5 sm:p-6 ${t.card}`}>
+      <fieldset disabled={readOnly} className={`rounded-xl border p-5 sm:p-6 ${t.card}`}>
         <p className={`font-display text-lg font-bold ${t.heading}`}>Documents</p>
         <p className={`text-sm ${t.muted}`}>Anything the seller or broker gave you: accounts, Post Office statements, the lease, the sales pack, photos. PDFs, photos and spreadsheets are all fine (up to 50 MB each).</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <select value={kind} onChange={(e) => setKind(e.target.value)} className={`rounded-md border px-3 py-2.5 text-sm ${t.input}`}>
             {documentKinds.map((k) => <option key={k}>{k}</option>)}
           </select>
-          <label className="cursor-pointer bg-navy px-5 py-2.5 text-sm font-semibold text-white hover:bg-red">
+          <label className={`bg-navy ${readOnly ? "pointer-events-none opacity-50" : "cursor-pointer"} px-5 py-2.5 text-sm font-semibold text-white hover:bg-red`}>
             Choose files
             <input type="file" multiple className="sr-only" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
           </label>
@@ -275,7 +293,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
             ))}
           </ul>
         )}
-      </section>
+      </fieldset>
     </div>
   );
 }

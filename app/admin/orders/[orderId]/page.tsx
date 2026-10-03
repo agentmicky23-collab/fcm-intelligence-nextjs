@@ -103,7 +103,13 @@ export default async function OrderPage({ params }: { params: Promise<{ orderId:
       {(o.status === "needs_info" || (o.requested?.length ?? 0) > 0) && o.status !== "delivered" && (
         <section className={`mt-6 rounded-2xl border p-5 ${o.status === "needs_info" ? "glow border-red/50 bg-red/[0.08]" : "border-white/10 bg-white/[0.03]"}`}>
           <p className="font-display text-lg font-bold">{o.status === "needs_info" ? "Paused: information needed to finish" : "Information the agents asked for"}</p>
-          <p className="mt-1 text-sm text-white/60">Only the client or seller can provide these. The agents won&apos;t guess them.</p>
+          <p className="mt-1 text-sm text-white/60">
+            {o.status === "needs_info"
+              ? "Only the client or seller can provide these. The agents won't guess them."
+              : o.timeline?.accept_gaps
+                ? "You chose to finish without these: the report will show them as gaps."
+                : "The fact find has been sent back with what you had. The next run uses it; anything still missing is shown as a gap."}
+          </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {(o.requested ?? []).map((r, i) => (
               <li key={i} className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm">
