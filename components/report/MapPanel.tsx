@@ -63,8 +63,9 @@ export function MapPanel({ lat, lng, rings, markers = [], label, className = "",
               className="absolute inset-0 h-full w-full grayscale-[85%]"
               tabIndex={-1}
             />
-            {/* Holds the map still so the rings stay true to scale */}
-            <div className="absolute inset-0" aria-hidden />
+            {/* Holds the map still so the rings stay true to scale, leaving Google's "Open in Maps" button (top left) tappable */}
+            <div className="absolute inset-y-0 left-[190px] right-0" aria-hidden />
+            <div className="absolute bottom-0 left-0 top-[64px] w-[190px]" aria-hidden />
           </>
         ) : (
           <div className="no-print absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center justify-between gap-3 border-t border-line bg-white/95 px-4 py-3 text-xs text-muted">
