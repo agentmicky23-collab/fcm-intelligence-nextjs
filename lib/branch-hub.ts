@@ -169,8 +169,17 @@ function recognise(t: Table): Partial<BranchData> | null {
   return null;
 }
 
-/** Reads one export. Returns what it recognised, or null if it isn't a Branch Hub file we know. */
-export async function readBranchFile(name: string, bytes: Uint8Array): Promise<Partial<BranchData> | null> {
+/** The branch code(s) in a file, if it has a branch-code column (not every export does). */
+function branchCodes(t: Table) {
+  const i = t.head.findIndex((h) => h === "fad code" || h === "fad");
+  if (i < 0) return [];
+  return [...new Set(t.rows.map((r) => txt(r[i] ?? null)).filter(Boolean))];
+}
+
+export type ReadResult = { data: Partial<BranchData>; branches: string[] };
+
+/** Reads one export. Returns what it recognised (and its branch code, if any), or null if it isn't a file we know. */
+export async function readBranchFile(name: string, bytes: Uint8Array): Promise<ReadResult | null> {
   let rows: Cell[][];
   const isXls = bytes[0] === 0xd0 && bytes[1] === 0xcf;
   const isZip = bytes[0] === 0x50 && bytes[1] === 0x4b;
@@ -182,12 +191,47 @@ export async function readBranchFile(name: string, bytes: Uint8Array): Promise<P
     rows = readCsv(text.replace(/^﻿/, ""));
   } else return null;
   const t = table(rows);
-  return t ? recognise(t) : null;
+  if (!t) return null;
+  const data = recognise(t);
+  return data ? { data, branches: branchCodes(t) } : null;
 }
 
-/** Adds what a file contains to what's already loaded (a newer file of the same kind replaces the older). */
+/** How rows of each kind are told apart, so the same row from two overlapping files counts once. */
+const rowKey: { [K in keyof BranchData]-?: (r: NonNullable<BranchData[K]>[number]) => string } = {
+  periods: (r) => r.start,
+  days: (r) => r.date,
+  pouches: (r) => `${r.date}|${r.amount}|${r.type}`,
+  rollovers: (r) => r.start,
+  ops: (r) => `${r.type}|${r.year}|${r.month}`,
+  hours: (r) => `${r.category}|${r.weekday}|${r.hour}`,
+  parcels: (r) => `${r.week}|${r.product}`,
+  sessions: (r) => `${r.year}|${r.week}`,
+  hourSessions: (r) => `${r.weekday}|${r.hour}`,
+};
+
+/**
+ * Adds a file to what's already loaded. Files of the same kind are combined: rows that appear in both
+ * (same date, period, week or slot) count once, with the newer file's figure kept. The hourly reports
+ * have no dates, so a second one of those replaces the first rather than being added on top.
+ */
 export function merge(into: BranchData, add: Partial<BranchData>): BranchData {
-  return { ...into, ...add };
+  const out: BranchData = { ...into };
+  for (const k of Object.keys(add) as (keyof BranchData)[]) {
+    const incoming = add[k] as unknown[] | undefined;
+    if (!incoming) continue;
+    if (k === "hours" || k === "hourSessions" || !out[k]) {
+      (out as Record<string, unknown>)[k] = incoming;
+      continue;
+    }
+    const key = rowKey[k] as (r: unknown) => string;
+    const m = new Map<string, unknown>();
+    for (const r of out[k] as unknown[]) m.set(key(r), r);
+    for (const r of incoming) m.set(key(r), r);
+    const rows = [...m.values()];
+    const sortKey = (r: unknown) => String((r as { start?: string; date?: string; week?: string | number }).start ?? (r as { date?: string }).date ?? (r as { week?: string }).week ?? "");
+    (out as Record<string, unknown>)[k] = k === "sessions" || k === "ops" ? rows : rows.sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+  }
+  return out;
 }
 
 // ── Operational Excellence (needs the rules) ────────────────────────────────────────────────────

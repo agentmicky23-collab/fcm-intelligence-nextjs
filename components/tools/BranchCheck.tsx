@@ -590,6 +590,8 @@ export function BranchCheck({ viewer }: { viewer: string }) {
   const [data, setData] = useState<BranchData>({});
   const [statement, setStatement] = useState<Statement | null>(null);
   const [loaded, setLoaded] = useState<string[]>([]);
+  const [branch, setBranch] = useState<string | null>(null);
+  const [seen, setSeen] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<Tab>("plan");
@@ -607,7 +609,11 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     setBusy(true);
     setProblem("");
     const skipped: string[] = [];
+    const dupes: string[] = [];
+    const otherBranch: string[] = [];
     let next = data;
+    let thisBranch = branch;
+    const fingerprints = [...seen];
     const names: string[] = [];
     for (const f of [...files].slice(0, 20)) {
       if (/\.pdf$/i.test(f.name)) {
@@ -624,18 +630,39 @@ export function BranchCheck({ viewer }: { viewer: string }) {
         continue;
       }
       try {
-        const got = await readBranchFile(f.name, new Uint8Array(await f.arrayBuffer()));
-        if (got) {
-          next = merge(next, got);
-          names.push(...Object.keys(got));
-        } else skipped.push(f.name);
+        const bytes = new Uint8Array(await f.arrayBuffer());
+        const digest = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (b) => b.toString(16).padStart(2, "0")).join("");
+        if (fingerprints.includes(digest)) {
+          dupes.push(f.name);
+          continue;
+        }
+        const got = await readBranchFile(f.name, bytes);
+        if (!got) {
+          skipped.push(f.name);
+          continue;
+        }
+        if (got.branches.length > 1 || (thisBranch && got.branches.length && got.branches[0] !== thisBranch)) {
+          otherBranch.push(`${f.name} (branch ${got.branches.join(", ")})`);
+          continue;
+        }
+        if (got.branches.length) thisBranch = got.branches[0];
+        fingerprints.push(digest);
+        next = merge(next, got.data);
+        names.push(...Object.keys(got.data));
       } catch {
         skipped.push(f.name);
       }
     }
     setData(next);
+    setBranch(thisBranch);
+    setSeen(fingerprints);
     setLoaded((l) => [...new Set([...l, ...names])]);
-    if (skipped.length) setProblem(`Not recognised: ${skipped.join(", ")}. Use the CSV, XLS or XLSX exports from Branch Hub, or your remuneration statement PDF.`);
+    const notes = [
+      skipped.length ? `Not recognised: ${skipped.join(", ")}. Use the CSV, XLS or XLSX exports from Branch Hub, or your remuneration statement PDF.` : "",
+      dupes.length ? `Already added, so skipped: ${dupes.join(", ")}.` : "",
+      otherBranch.length ? `From a different branch, so not added: ${otherBranch.join("; ")}. Branch Check looks at one branch at a time (${thisBranch}): press Clear to switch branch.` : "",
+    ].filter(Boolean);
+    if (notes.length) setProblem(notes.join(" "));
     setBusy(false);
     if (input.current) input.current.value = "";
   }
@@ -652,7 +679,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
   ];
 
   return (
-    <Protected viewer={viewer} onIdle={() => { setData({}); setLoaded([]); setStatement(null); }}>
+    <Protected viewer={viewer} onIdle={() => { setData({}); setLoaded([]); setStatement(null); setBranch(null); setSeen([]); }}>
       <div className="text-white">
         <div
           className="rounded-2xl border border-dashed border-white/20 bg-white/[0.03] p-5"
@@ -664,13 +691,13 @@ export function BranchCheck({ viewer }: { viewer: string }) {
         >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="font-display text-lg font-bold">{loaded.length ? "Your Branch Hub files" : "Add your Branch Hub exports"}</p>
+              <p className="font-display text-lg font-bold">{loaded.length ? `Your Branch Hub files${branch ? ` · branch ${branch}` : ""}` : "Add your Branch Hub exports"}</p>
               <p className="text-sm text-white/60">Drop in the CSV, XLS or XLSX files (as many as you like, all at once) and your remuneration statement PDF. Each one is recognised automatically.</p>
               <p className="mt-1 text-xs text-emerald-300">Read on this device only. Never uploaded or stored.</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => input.current?.click()} disabled={busy} className="bg-red px-5 py-3 text-sm font-semibold hover:bg-red-dark disabled:opacity-60">{busy ? "Reading…" : "Add files"}</button>
-              {loaded.length > 0 && <button onClick={() => { setData({}); setLoaded([]); setStatement(null); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
+              {loaded.length > 0 && <button onClick={() => { setData({}); setLoaded([]); setStatement(null); setBranch(null); setSeen([]); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
             </div>
             <input ref={input} type="file" accept=".csv,.xls,.xlsx,.pdf,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" multiple hidden onChange={(e) => add(e.target.files)} />
           </div>
