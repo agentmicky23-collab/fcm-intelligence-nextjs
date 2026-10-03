@@ -85,7 +85,7 @@ export function RemunerationAnalyser() {
   const [values, setValues] = useState<Record<string, { n: number; e: number }>>({});
   const [open, setOpen] = useState<string | null>(null);
   const [tab, setTab] = useState<"grow" | "staff">("grow");
-  const [staff, setStaff] = useState<StaffSettings>({ rate: ukRates.minimumWage.age21plus, hoursPerDay: 8.5, daysPerWeek: 5, daysOpen: 6 });
+  const [staff, setStaff] = useState<StaffSettings>({ rate: ukRates.minimumWage.age21plus, hoursPerDay: 8.5, daysPerWeek: 5, daysOpen: 6, hoursOpen: 8.5 });
   const [svc, setSvc] = useState<ServiceSettings>({});
   const input = useRef<HTMLInputElement>(null);
 

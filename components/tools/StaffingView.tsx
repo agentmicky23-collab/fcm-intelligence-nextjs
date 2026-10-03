@@ -6,7 +6,7 @@ import type { Breakdown, Service, Statement } from "@/lib/remuneration";
 const gbp = (n: number, dp = 0) => `£${n.toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 const hrs = (h: number) => (h < 1 ? `${Math.round(h * 60)} min` : `${h.toFixed(1)} h`);
 
-export type StaffSettings = { rate: number; hoursPerDay: number; daysPerWeek: number; daysOpen: number };
+export type StaffSettings = { rate: number; hoursPerDay: number; daysPerWeek: number; daysOpen: number; hoursOpen: number };
 export type ServiceSettings = Record<string, { minutes: number; extra?: number }>;
 
 function Num({ label, value, onChange, step = 1, min = 0, max = 1000, prefix }: { label: string; value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; prefix?: string }) {
@@ -47,7 +47,7 @@ export function StaffingView({
   // Everything below is for one staff day or one staff hour, as chosen.
   const span = per === "day" ? staff.hoursPerDay : 1;
   const spanCost = costPerHour * span;
-  const spanIncome = (perDay / staff.hoursPerDay) * span;
+  const spanIncome = per === "day" ? perDay : perDay / staff.hoursOpen;
   const spanName = per === "day" ? "day" : "hour";
   const spanOf = per === "day" ? `the ${staff.hoursPerDay} h` : "the hour";
   const count = (n: number) => (per === "hour" && n < 10 ? n.toLocaleString("en-GB", { maximumFractionDigits: 1 }) : Math.ceil(n).toLocaleString("en-GB"));
@@ -91,11 +91,12 @@ export function StaffingView({
   return (
     <div>
       {/* Settings */}
-      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:grid-cols-3 lg:grid-cols-5">
         <Num label="Hourly pay" prefix="£" step={0.01} max={60} value={staff.rate} onChange={(rate) => setStaff({ ...staff, rate })} />
-        <Num label="Hours a day" step={0.5} max={14} value={staff.hoursPerDay} onChange={(hoursPerDay) => setStaff({ ...staff, hoursPerDay })} />
+        <Num label="Staff hours a day" step={0.5} max={14} value={staff.hoursPerDay} onChange={(hoursPerDay) => setStaff({ ...staff, hoursPerDay })} />
         <Num label="Days a week (staff)" step={1} min={1} max={7} value={staff.daysPerWeek} onChange={(daysPerWeek) => setStaff({ ...staff, daysPerWeek })} />
         <Num label="Days you open a week" step={1} min={1} max={7} value={staff.daysOpen} onChange={(daysOpen) => setStaff({ ...staff, daysOpen })} />
+        <Num label="Hours you open a day" step={0.5} min={1} max={24} value={staff.hoursOpen} onChange={(hoursOpen) => setStaff({ ...staff, hoursOpen })} />
       </div>
 
       {/* Day or hour */}
@@ -120,7 +121,7 @@ export function StaffingView({
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
           <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Your average {spanName} brings in</p>
           <p className="mt-1 font-display text-3xl font-bold">{gbp(spanIncome, 2)}</p>
-          <p className="text-xs text-white/45">Remuneration before VAT over {openDays} opening days{per === "hour" ? ` of ${staff.hoursPerDay} h` : ""}</p>
+          <p className="text-xs text-white/45">Remuneration before VAT over {openDays} opening days{per === "hour" ? ` of ${staff.hoursOpen} h` : ""}</p>
         </div>
         <div className={`rounded-2xl border p-5 ${spanIncome >= spanCost ? "border-emerald-400/40 bg-emerald-400/[0.07]" : "border-red/50 bg-red/[0.1]"}`}>
           <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">After one staff {spanName}</p>
@@ -199,7 +200,7 @@ export function StaffingView({
                   <tr key={x.name} className="border-t border-white/10">
                     <td className="py-2">{x.name}</td>
                     <td className="py-2 text-right tabular-nums">{gbp(d, 2)}</td>
-                    <td className="py-2 text-right tabular-nums text-white/70">{gbp(d / staff.hoursPerDay, 2)}</td>
+                    <td className="py-2 text-right tabular-nums text-white/70">{gbp(d / staff.hoursOpen, 2)}</td>
                     <td className="py-2 text-right tabular-nums text-white/70">{Math.round((d / dayCost) * 100)}%</td>
                   </tr>
                 );
