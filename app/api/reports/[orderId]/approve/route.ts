@@ -1,4 +1,5 @@
 import { sendEmail } from "@/lib/server/email";
+import { logSiteEvent } from "@/lib/server/admin";
 import { logoAttachment } from "@/lib/server/emails/layout";
 import { reportReadyEmail } from "@/lib/server/emails/report";
 import { checkToken, getReport, markDelivered, reportPath } from "@/lib/server/reports";
@@ -28,6 +29,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ orderId: strin
     url: new URL(reportPath(orderId, "view"), site.url).toString(),
   });
   const sent = await sendEmail({ ...email, replyTo: site.contactEmail, attachments: [logoAttachment] });
+  await logSiteEvent({ order_id: orderId, agent: "mik", stage: "delivered", kind: sent ? "done" : "error", message: sent ? "Mik approved: report emailed to the customer" : "Mik approved but the email to the customer failed" });
   if (!sent) return new Response("The email to the customer failed, so the report wasn't marked as sent. Please try again.", { status: 502 });
 
   await markDelivered(orderId, null);

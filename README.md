@@ -42,5 +42,6 @@ npm run build
 - `POST /api/reports/[orderId]/check` (OpenClaw key) returns the check. `POST /api/reports/[orderId]/ready` emails Mikesh only when there are no critical issues (`?notify=0` returns the review link without emailing).
 - `GET /api/tools/employer-cost?rate=12.71&hours=30` returns the true cost of an employee.
 - Update `lib/uk-rates.ts` every April.
+- Control room: `/admin` (sign-in link emailed to `ADMIN_EMAIL`, else `ENQUIRY_NOTIFY_TO`). Shows every order, each agent's live state and checklist, the automatic check and the event feed. OpenClaw reports steps to `POST /api/pipeline/events` (ops key); the site logs its own check, review email and approval.
 - Maps: `components/report/live/SiteMap.tsx` draws the location, competition, footfall and crime maps from the coordinates in the report (MapLibre on OpenStreetMap). Street View is shown live (`StreetView.tsx`). No Google photos, Street View or map images are stored or shown; the check blocks them.
 

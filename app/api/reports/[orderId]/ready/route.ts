@@ -1,4 +1,5 @@
 import { sendEmail } from "@/lib/server/email";
+import { logSiteEvent } from "@/lib/server/admin";
 import { logoAttachment } from "@/lib/server/emails/layout";
 import { reportReviewEmail } from "@/lib/server/emails/report";
 import { checkOpsKey, getReport, reportPath } from "@/lib/server/reports";
@@ -37,6 +38,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ orderId: strin
     summary: approvalSummary(stored.report),
   });
   const sent = await sendEmail({ to: notifyTo, ...email, attachments: [logoAttachment] });
+  await logSiteEvent({ order_id: orderId, agent: "website", stage: "ready", kind: sent ? "waiting" : "error", message: sent ? "Review email sent to Mik: waiting for Approve & send" : "The review email to Mik failed to send" });
   return Response.json({ ok: sent, review_url: reviewUrl, status: stored.status }, { status: sent ? 200 : 502 });
 }
 

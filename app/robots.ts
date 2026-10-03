@@ -18,7 +18,7 @@ const aiCrawlers = [
   "meta-externalagent",
 ];
 
-const privatePaths = ["/api/", "/account/confirm", "/account/unsubscribe"];
+const privatePaths = ["/api/", "/admin", "/account/confirm", "/account/unsubscribe", "/report/"];
 
 export default function robots(): MetadataRoute.Robots {
   if (!site.indexable) return { rules: { userAgent: "*", disallow: "/" } };
