@@ -2,7 +2,7 @@
 // Runs in the browser. No scheme rules live here: anything that needs them takes `rules` as an argument,
 // fetched from the server only for members (see lib/server/oei-rules.ts).
 
-import { readCsv, readXls, type Cell } from "@/lib/xls";
+import { readCsv, readXls, readXlsx, type Cell } from "@/lib/xls";
 
 export type DayRow = { date: string; weekday: string; declared: "done" | "not complete" | "no activity" | "other"; time: string | null; service: string; cashReturned: number | null; excessCash: number | null };
 export type PeriodRow = { period: string; start: string; balanceWeek: string; balanced: "yes" | "no" | "not due"; failedDeclarations: number; declarationPoints: number; avgExcessCash: number; excessCashPoints: number; pouchErrors: number; pouchPoints: number; avgExcessStock: number | null; stockPoints: number; totalPoints: number; percent: number; eligible: number; earned: number };
@@ -12,6 +12,7 @@ export type OpsRow = { type: string; unit: string; year: string; month: string; 
 export type HourRow = { category: string; hour: string; weekday: string; transactions: number };
 export type ParcelRow = { week: string; product: string; volume: number };
 export type SessionRow = { year: string; week: number; sessions: number };
+export type HourSessionRow = { hour: string; weekday: string; sessions: number };
 
 export type BranchData = {
   periods?: PeriodRow[];
@@ -22,6 +23,7 @@ export type BranchData = {
   hours?: HourRow[];
   parcels?: ParcelRow[];
   sessions?: SessionRow[];
+  hourSessions?: HourSessionRow[];
 };
 
 export const fileKinds: { key: keyof BranchData; label: string }[] = [
@@ -33,6 +35,7 @@ export const fileKinds: { key: keyof BranchData; label: string }[] = [
   { key: "hours", label: "Transactions by hour" },
   { key: "parcels", label: "Parcel drop-offs and pick-ups" },
   { key: "sessions", label: "Customer sessions by week" },
+  { key: "hourSessions", label: "Customer sessions by hour" },
 ];
 
 // ── cells ───────────────────────────────────────────────────────────────────────────────────────
@@ -151,6 +154,9 @@ function recognise(t: Table): Partial<BranchData> | null {
       ops: t.rows.map((r) => ({ type: txt(g(r, "type")), unit: txt(g(r, "unit of measure")), year: txt(g(r, yr)), month: txt(g(r, "range")), value: n0(g(r, "measure")) })).filter((o) => o.type),
     };
   }
+  if (has(t, "hourly intervals", "week day", "sessions")) {
+    return { hourSessions: t.rows.map((r) => ({ hour: txt(g(r, "hourly intervals")).slice(0, 5), weekday: txt(g(r, "week day")), sessions: n0(g(r, "sessions")) })).filter((s) => s.hour && s.weekday) };
+  }
   if (has(t, "hourly intervals", "week day", "transactions")) {
     return { hours: t.rows.map((r) => ({ category: txt(g(r, "category")), hour: txt(g(r, "hourly intervals")).slice(0, 5), weekday: txt(g(r, "week day")), transactions: n0(g(r, "transactions")) })) };
   }
@@ -164,10 +170,12 @@ function recognise(t: Table): Partial<BranchData> | null {
 }
 
 /** Reads one export. Returns what it recognised, or null if it isn't a Branch Hub file we know. */
-export function readBranchFile(name: string, bytes: Uint8Array): Partial<BranchData> | null {
+export async function readBranchFile(name: string, bytes: Uint8Array): Promise<Partial<BranchData> | null> {
   let rows: Cell[][];
   const isXls = bytes[0] === 0xd0 && bytes[1] === 0xcf;
+  const isZip = bytes[0] === 0x50 && bytes[1] === 0x4b;
   if (isXls) rows = readXls(bytes);
+  else if (isZip) rows = await readXlsx(bytes);
   else if (/\.csv$/i.test(name) || !isXls) {
     let text = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
     if (text.includes("�")) text = new TextDecoder("windows-1252").decode(bytes);

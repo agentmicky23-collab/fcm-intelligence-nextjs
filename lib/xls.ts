@@ -210,3 +210,67 @@ export function readCsv(text: string): Cell[][] {
   }
   return rows.filter((r) => r.some((c) => c !== ""));
 }
+
+// ── .xlsx (a zip of XML files) ──────────────────────────────────────────────────────────────────
+
+async function inflate(data: Uint8Array): Promise<Uint8Array> {
+  const stream = new Blob([data as BlobPart]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+/** The files inside a zip, by name (only the ones we ask for are decompressed). */
+async function unzip(bytes: Uint8Array, want: (name: string) => boolean): Promise<Map<string, string>> {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let end = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { end = i; break; }
+  if (end < 0) throw new Error("xlsx: not a zip");
+  const count = dv.getUint16(end + 10, true);
+  let p = dv.getUint32(end + 16, true);
+  const out = new Map<string, string>();
+  const dec = new TextDecoder("utf-8");
+  for (let n = 0; n < count; n++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true);
+    const size = dv.getUint32(p + 20, true);
+    const nameLen = dv.getUint16(p + 28, true);
+    const extraLen = dv.getUint16(p + 30, true);
+    const commentLen = dv.getUint16(p + 32, true);
+    const local = dv.getUint32(p + 42, true);
+    const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
+    p += 46 + nameLen + extraLen + commentLen;
+    if (!want(name)) continue;
+    const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+    const raw = bytes.subarray(start, start + size);
+    out.set(name, dec.decode(method === 0 ? raw : await inflate(raw)));
+  }
+  return out;
+}
+
+const xmlText = (s: string) => s.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+
+/** The first worksheet of an .xlsx as rows of cells. Runs in the browser; nothing leaves the device. */
+export async function readXlsx(bytes: Uint8Array): Promise<Cell[][]> {
+  const files = await unzip(bytes, (n) => n === "xl/sharedStrings.xml" || /^xl\/worksheets\/sheet1\.xml$/.test(n));
+  const sheet = files.get("xl/worksheets/sheet1.xml");
+  if (!sheet) throw new Error("xlsx: no worksheet");
+  const shared = [...(files.get("xl/sharedStrings.xml") ?? "").matchAll(/<si>([\s\S]*?)<\/si>/g)].map((m) => xmlText(m[1]));
+  const rows: Cell[][] = [];
+  for (const rm of sheet.matchAll(/<row[^>]*?(?:\/>|>([\s\S]*?)<\/row>)/g)) {
+    const row: Cell[] = [];
+    for (const cm of (rm[1] ?? "").matchAll(/<c ([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+      const ref = cm[1].match(/r="([A-Z]+)\d+"/)?.[1] ?? "";
+      const col = [...ref].reduce((a, ch) => a * 26 + ch.charCodeAt(0) - 64, 0) - 1;
+      const type = cm[1].match(/t="([^"]+)"/)?.[1];
+      const body = cm[2] ?? "";
+      const v = body.match(/<v>([\s\S]*?)<\/v>/)?.[1];
+      let val: Cell = null;
+      if (type === "inlineStr") val = xmlText(body.match(/<is>([\s\S]*?)<\/is>/)?.[1] ?? "");
+      else if (type === "s" && v !== undefined) val = shared[Number(v)] ?? "";
+      else if (type === "str" && v !== undefined) val = xmlText(v);
+      else if (v !== undefined) val = Number.isFinite(Number(v)) ? Number(v) : xmlText(v);
+      if (col >= 0) row[col] = val;
+    }
+    rows.push(Array.from(row, (c) => c ?? null));
+  }
+  return rows;
+}

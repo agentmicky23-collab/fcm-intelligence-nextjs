@@ -410,11 +410,13 @@ function CashTab({ data }: { data: BranchData }) {
 // ── Busy hours ─────────────────────────────────────────────────────────────────────────────────
 
 function HoursTab({ data }: { data: BranchData }) {
-  const [cat, setCat] = useState("All");
-  const rows = data.hours ?? [];
-  if (!rows.length) return <Empty what="Transactions by hour" />;
-  const cats = ["All", ...new Set(rows.map((r) => r.category))];
-  const use = rows.filter((r) => cat === "All" || r.category === cat);
+  const customers = (data.hourSessions ?? []).map((s) => ({ category: "Customers", hour: s.hour, weekday: s.weekday, transactions: s.sessions }));
+  const [cat, setCat] = useState(customers.length ? "Customers" : "All");
+  const txns = data.hours ?? [];
+  const rows = [...customers, ...txns];
+  if (!rows.length) return <Empty what="Transactions by hour or Customer sessions by hour" />;
+  const cats = [...(customers.length ? ["Customers"] : []), ...(txns.length ? ["All", ...new Set(txns.map((r) => r.category))] : [])];
+  const use = cat === "Customers" ? customers : txns.filter((r) => cat === "All" || r.category === cat);
   const grid = new Map<string, number>();
   for (const r of use) grid.set(`${r.weekday}|${r.hour}`, (grid.get(`${r.weekday}|${r.hour}`) ?? 0) + r.transactions);
   const hours = [...new Set(rows.filter((r) => rows.some((x) => x.hour === r.hour && x.transactions > 0)).map((r) => r.hour))].sort();
@@ -427,11 +429,12 @@ function HoursTab({ data }: { data: BranchData }) {
   const scale = (v: number) => (sorted.length < 2 ? 1 : sorted.lastIndexOf(v) / (sorted.length - 1));
   const total = [...grid.values()].reduce((a, b) => a + b, 0);
   const busiest = [...grid].sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const unit = cat === "Customers" ? "customers" : "transactions";
   return (
-    <Section title="When the counter is busy" sub="Transactions by day and hour for the period you exported. Red is busiest, blue is quietest: plan two people for the red slots and one for the blue.">
+    <Section title="When the counter is busy" sub="Customers (or transactions) by day and hour for the period you exported. Red is busiest, blue is quietest: plan two people for the red slots and one for the blue.">
       <div role="radiogroup" aria-label="Category" className="mb-4 flex flex-wrap gap-2">
         {cats.map((c) => (
-          <button key={c} role="radio" aria-checked={cat === c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1.5 text-xs ${cat === c ? "bg-white font-semibold text-[#06173a]" : "border border-white/15 text-white/70"}`}>{c}</button>
+          <button key={c} role="radio" aria-checked={cat === c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1.5 text-xs ${cat === c ? "bg-white font-semibold text-[#06173a]" : "border border-white/15 text-white/70"}`}>{c === "Customers" ? "Customers (sessions)" : c === "All" ? "All transactions" : c}</button>
         ))}
       </div>
       <div className="overflow-x-auto">
@@ -450,7 +453,7 @@ function HoursTab({ data }: { data: BranchData }) {
                   const v = grid.get(`${d}|${h}`) ?? 0;
                   return (
                     <td key={h} className="p-0.5">
-                      <div title={`${d} ${h}: ${int(v)} transactions`} className="flex h-10 w-12 items-center justify-center rounded-[4px] font-semibold tabular-nums" style={{ background: v ? heat(scale(v)) : "rgba(255,255,255,0.03)", color: v && Math.abs(scale(v) - 0.5) < 0.22 ? "#06173a" : "#fff" }}>
+                      <div title={`${d} ${h}: ${int(v)} ${unit}`} className="flex h-10 w-12 items-center justify-center rounded-[4px] font-semibold tabular-nums" style={{ background: v ? heat(scale(v)) : "rgba(255,255,255,0.03)", color: v && Math.abs(scale(v) - 0.5) < 0.22 ? "#06173a" : "#fff" }}>
                         {v ? int(v) : ""}
                       </div>
                     </td>
@@ -466,7 +469,7 @@ function HoursTab({ data }: { data: BranchData }) {
         <span className="h-3 w-48 rounded-full" style={{ background: `linear-gradient(90deg, ${heat(0)}, ${heat(0.5)}, ${heat(1)})` }} />
         <span>Busier ({int(max)})</span>
       </div>
-      <p className="mt-3 text-sm text-white/65">{int(total)} transactions in this export. Busiest: {busiest.map(([k, v]) => `${k.split("|")[0]} ${k.split("|")[1]} (${int(v)})`).join(", ")}.</p>
+      <p className="mt-3 text-sm text-white/65">{int(total)} {unit} in this export. Busiest: {busiest.map(([k, v]) => `${k.split("|")[0]} ${k.split("|")[1]} (${int(v)})`).join(", ")}.</p>
     </Section>
   );
 }
@@ -615,12 +618,12 @@ export function BranchCheck({ viewer }: { viewer: string }) {
         }
         continue;
       }
-      if (!/\.(csv|xls)$/i.test(f.name)) {
+      if (!/\.(csv|xlsx?)$/i.test(f.name)) {
         skipped.push(f.name);
         continue;
       }
       try {
-        const got = readBranchFile(f.name, new Uint8Array(await f.arrayBuffer()));
+        const got = await readBranchFile(f.name, new Uint8Array(await f.arrayBuffer()));
         if (got) {
           next = merge(next, got);
           names.push(...Object.keys(got));
@@ -631,7 +634,7 @@ export function BranchCheck({ viewer }: { viewer: string }) {
     }
     setData(next);
     setLoaded((l) => [...new Set([...l, ...names])]);
-    if (skipped.length) setProblem(`Not recognised: ${skipped.join(", ")}. Use the CSV or XLS exports from Branch Hub, or your remuneration statement PDF.`);
+    if (skipped.length) setProblem(`Not recognised: ${skipped.join(", ")}. Use the CSV, XLS or XLSX exports from Branch Hub, or your remuneration statement PDF.`);
     setBusy(false);
     if (input.current) input.current.value = "";
   }
@@ -660,14 +663,14 @@ export function BranchCheck({ viewer }: { viewer: string }) {
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="font-display text-lg font-bold">{loaded.length ? "Your Branch Hub files" : "Add your Branch Hub exports"}</p>
-              <p className="text-sm text-white/60">Drop in the CSV or XLS files (as many as you like, all at once) and your remuneration statement PDF. Each one is recognised automatically.</p>
+              <p className="text-sm text-white/60">Drop in the CSV, XLS or XLSX files (as many as you like, all at once) and your remuneration statement PDF. Each one is recognised automatically.</p>
               <p className="mt-1 text-xs text-emerald-300">Read on this device only. Never uploaded or stored.</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => input.current?.click()} disabled={busy} className="bg-red px-5 py-3 text-sm font-semibold hover:bg-red-dark disabled:opacity-60">{busy ? "Reading…" : "Add files"}</button>
               {loaded.length > 0 && <button onClick={() => { setData({}); setLoaded([]); setStatement(null); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
             </div>
-            <input ref={input} type="file" accept=".csv,.xls,.pdf,text/csv,application/vnd.ms-excel,application/pdf" multiple hidden onChange={(e) => add(e.target.files)} />
+            <input ref={input} type="file" accept=".csv,.xls,.xlsx,.pdf,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" multiple hidden onChange={(e) => add(e.target.files)} />
           </div>
           <ul className="mt-4 grid gap-1.5 text-xs sm:grid-cols-2 lg:grid-cols-4">
             {[...fileKinds, { key: "statement", label: "Remuneration statement (PDF)" }].map((k) => (

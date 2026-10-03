@@ -27,12 +27,27 @@ function Num({ label, value, onChange, step = 1, min = 0, max = 1000, prefix, su
   );
 }
 
-const defaultMinutes = (category: string) => (/mail/i.test(category) ? 2.5 : /bank/i.test(category) ? 2 : 1.5);
+const defaultMinutes = (category: string) => (/customer/i.test(category) ? 2 : /mail/i.test(category) ? 2.5 : /bank/i.test(category) ? 2 : 1.5);
 
 export function StaffingPlanner({ data }: { data: BranchData }) {
-  const rows = useMemo(() => data.hours ?? [], [data.hours]);
+  const hasCustomers = (data.hourSessions?.length ?? 0) > 0;
+  const [source, setSource] = useState<"customers" | "transactions">(hasCustomers ? "customers" : "transactions");
+  const useCustomers = source === "customers" && hasCustomers;
+  const rows = useMemo(
+    () => (useCustomers ? (data.hourSessions ?? []).map((s) => ({ category: "Customer", hour: s.hour, weekday: s.weekday, transactions: s.sessions })) : (data.hours ?? [])),
+    [useCustomers, data.hourSessions, data.hours],
+  );
   const categories = useMemo(() => [...new Set(rows.map((r) => r.category))], [rows]);
-  const [weeks, setWeeks] = useState(4);
+  // How many weeks the hourly export covers: measured against the weekly customer counts if we have them.
+  const measuredWeeks = useMemo(() => {
+    const hourly = (data.hourSessions ?? []).reduce((a, s) => a + s.sessions, 0);
+    const weekly = (data.sessions ?? []).filter((s) => s.sessions > 300).sort((a, b) => (a.year + String(a.week).padStart(2, "0")).localeCompare(b.year + String(b.week).padStart(2, "0"))).slice(-8);
+    if (!hourly || weekly.length < 4) return null;
+    const avg = weekly.reduce((a, s) => a + s.sessions, 0) / weekly.length;
+    return Math.max(1, Math.round((hourly / avg) * 2) / 2);
+  }, [data.hourSessions, data.sessions]);
+  const [weeksTyped, setWeeks] = useState<number | null>(null);
+  const weeks = weeksTyped ?? measuredWeeks ?? 1;
   const [busy, setBusy] = useState(75);
   const [rate, setRate] = useState<number>(ukRates.minimumWage.age21plus);
   const [current, setCurrent] = useState(0);
@@ -77,18 +92,33 @@ export function StaffingPlanner({ data }: { data: BranchData }) {
   return (
     <section className="mt-10">
       <h2 className="font-display text-xl font-bold">Staffing planner</h2>
-      <p className="mt-1 max-w-3xl text-sm text-white/55">How many people you need on the counter each hour to serve your customers without queues building, from your own transaction counts. Change the minutes to what your counter really takes.</p>
+      <p className="mt-1 max-w-3xl text-sm text-white/55">How many people you need on the counter each hour to serve your customers without queues building, from your own customer and transaction counts. Set the minutes to what your counter really takes: if you know how many staff hours you have now, enter them and adjust the minutes until busy times look right.</p>
 
+      {hasCustomers && (data.hours?.length ?? 0) > 0 && (
+        <div role="radiogroup" aria-label="Plan from" className="mt-4 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-sm">
+          {(["customers", "transactions"] as const).map((k) => (
+            <button key={k} role="radio" aria-checked={source === k} onClick={() => setSource(k)} className={`rounded-full px-4 py-1.5 ${source === k ? "bg-white font-semibold text-[#06173a]" : "text-white/65"}`}>
+              {k === "customers" ? "Plan from customers" : "Plan from transactions"}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 md:grid-cols-4">
-        <Num label="Weeks this export covers" value={weeks} min={1} max={60} onChange={setWeeks} />
+        <Num label="Weeks this export covers" value={weeks} min={1} max={60} step={0.5} onChange={setWeeks} />
         <Num label="Time serving per hour" value={busy} min={30} max={100} step={5} onChange={setBusy} suffix="%" />
         <Num label="Hourly pay" value={rate} min={1} max={60} step={0.01} prefix="£" onChange={setRate} />
         <Num label="Staff hours you have now (a week)" value={current} min={0} max={500} step={0.5} onChange={setCurrent} />
         {categories.map((c) => (
-          <Num key={c} label={`Minutes per ${c.toLowerCase()} transaction`} value={mins(c)} min={0.5} max={20} step={0.5} onChange={(v) => setMinutes({ ...minutes, [c]: v })} />
+          <Num key={c} label={c === "Customer" ? "Minutes per customer" : `Minutes per ${c.toLowerCase()} transaction`} value={mins(c)} min={0.5} max={20} step={0.5} onChange={(v) => setMinutes({ ...minutes, [c]: v })} />
         ))}
       </div>
 
+      <p className="mt-2 text-xs text-white/50">
+        {measuredWeeks && weeksTyped === null
+          ? `Your hourly export matches about ${measuredWeeks} week${measuredWeeks === 1 ? "" : "s"} of customers (checked against your weekly customer counts).`
+          : "Branch Hub's hourly reports usually cover one week. Change this if yours covers more."}
+        {useCustomers ? " Planning from customer visits: each one is someone at the counter." : ""}
+      </p>
       <div className="mt-5 overflow-x-auto">
         <table className="text-xs">
           <thead>
