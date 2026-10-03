@@ -40,9 +40,17 @@ export function StaffingView({
   setSvc: (v: ServiceSettings) => void;
   costPerHour: number;
 }) {
+  const [per, setPer] = useState<"day" | "hour">("day");
   const dayCost = costPerHour * staff.hoursPerDay;
   const openDays = s.weeks * staff.daysOpen;
   const perDay = b.total / openDays;
+  // Everything below is for one staff day or one staff hour, as chosen.
+  const span = per === "day" ? staff.hoursPerDay : 1;
+  const spanCost = costPerHour * span;
+  const spanIncome = (perDay / staff.hoursPerDay) * span;
+  const spanName = per === "day" ? "day" : "hour";
+  const spanOf = per === "day" ? `the ${staff.hoursPerDay} h` : "the hour";
+  const count = (n: number) => (per === "hour" && n < 10 ? n.toLocaleString("en-GB", { maximumFractionDigits: 1 }) : Math.ceil(n).toLocaleString("en-GB"));
 
   const rows = svcs
     .map((x) => {
@@ -50,10 +58,10 @@ export function StaffingView({
       const extra = svc[x.id]?.extra ?? x.extra?.value ?? 0;
       const pay = x.pay(extra);
       const perHour = minutes > 0 ? (pay * 60) / minutes : 0;
-      const itemsForDay = pay > 0 ? Math.ceil(dayCost / pay) : Infinity;
-      const hoursNeeded = (itemsForDay * minutes) / 60;
-      const flatOut = perHour * staff.hoursPerDay;
-      return { x, minutes, extra, pay, perHour, itemsForDay, hoursNeeded, flatOut, pays: perHour >= costPerHour };
+      const items = pay > 0 ? spanCost / pay : Infinity;
+      const hoursNeeded = (items * minutes) / 60;
+      const flatOut = perHour * span;
+      return { x, minutes, extra, pay, perHour, items, hoursNeeded, flatOut, pays: perHour >= costPerHour };
     })
     .sort((a, b) => b.perHour - a.perHour);
 
@@ -90,22 +98,34 @@ export function StaffingView({
         <Num label="Days you open a week" step={1} min={1} max={7} value={staff.daysOpen} onChange={(daysOpen) => setStaff({ ...staff, daysOpen })} />
       </div>
 
+      {/* Day or hour */}
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <span className="text-xs text-white/50">Show it for</span>
+        <div role="radiogroup" aria-label="Show figures for one staff day or one staff hour" className="inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-sm">
+          {(["day", "hour"] as const).map((k) => (
+            <button key={k} role="radio" aria-checked={per === k} onClick={() => setPer(k)} className={`rounded-full px-4 py-1.5 transition-colors ${per === k ? "bg-white font-semibold text-[#06173a]" : "text-white/65 hover:text-white"}`}>
+              {k === "day" ? "One staff day" : "One staff hour"}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Headline */}
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">One staff day costs</p>
-          <p className="mt-1 font-display text-3xl font-bold">{gbp(dayCost, 2)}</p>
-          <p className="text-xs text-white/45">{gbp(costPerHour, 2)} an hour with holiday pay, employer NI and pension, for {staff.hoursPerDay} hours</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">One staff {spanName} costs</p>
+          <p className="mt-1 font-display text-3xl font-bold">{gbp(spanCost, 2)}</p>
+          <p className="text-xs text-white/45">{per === "day" ? `${gbp(costPerHour, 2)} an hour for ${staff.hoursPerDay} hours, with holiday pay, employer NI and pension` : `${gbp(staff.rate, 2)} pay plus holiday pay, employer NI and pension`}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Your average day brings in</p>
-          <p className="mt-1 font-display text-3xl font-bold">{gbp(perDay, 2)}</p>
-          <p className="text-xs text-white/45">Remuneration before VAT over {openDays} opening days</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Your average {spanName} brings in</p>
+          <p className="mt-1 font-display text-3xl font-bold">{gbp(spanIncome, 2)}</p>
+          <p className="text-xs text-white/45">Remuneration before VAT over {openDays} opening days{per === "hour" ? ` of ${staff.hoursPerDay} h` : ""}</p>
         </div>
-        <div className={`rounded-2xl border p-5 ${perDay >= dayCost ? "border-emerald-400/40 bg-emerald-400/[0.07]" : "border-red/50 bg-red/[0.1]"}`}>
-          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">After one staff day</p>
-          <p className="mt-1 font-display text-3xl font-bold">{gbp(perDay - dayCost, 2)}</p>
-          <p className="text-xs text-white/45">Your remuneration pays for {(perDay / dayCost).toFixed(1)} staff days a day</p>
+        <div className={`rounded-2xl border p-5 ${spanIncome >= spanCost ? "border-emerald-400/40 bg-emerald-400/[0.07]" : "border-red/50 bg-red/[0.1]"}`}>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">After one staff {spanName}</p>
+          <p className="mt-1 font-display text-3xl font-bold">{gbp(spanIncome - spanCost, 2)}</p>
+          <p className="text-xs text-white/45">Your remuneration pays for {(perDay / dayCost).toFixed(1)} members of staff at a time</p>
         </div>
       </div>
 
@@ -134,10 +154,10 @@ export function StaffingView({
                 <p className="leading-relaxed">
                   Pays {gbp(r.pay, r.pay < 1 ? 3 : 2)} a {r.x.item} ({r.x.how}).{" "}
                   {r.pays ? (
-                    <b className="text-white">To pay for one staff day: {r.itemsForDay.toLocaleString("en-GB")} {r.x.item}s, about {hrs(r.hoursNeeded)} of the {staff.hoursPerDay} h.</b>
+                    <b className="text-white">To pay for one staff {spanName}: {count(r.items)} {r.x.item}s, about {hrs(r.hoursNeeded)} of {spanOf}.</b>
                   ) : (
                     <b className="text-white">
-                      Can&apos;t pay for a staff day on its own: {r.itemsForDay === Infinity ? "it pays nothing" : `it would take ${r.itemsForDay.toLocaleString("en-GB")} ${r.x.item}s (${hrs(r.hoursNeeded)})`}. Flat out all day it earns {gbp(r.flatOut)} of the {gbp(dayCost)}.
+                      Can&apos;t pay for a staff {spanName} on its own: {r.items === Infinity ? "it pays nothing" : `it would take ${count(r.items)} ${r.x.item}s (${hrs(r.hoursNeeded)})`}. Flat out {per === "day" ? "all day" : "for the hour"} it earns {gbp(r.flatOut, per === "hour" ? 2 : 0)} of the {gbp(spanCost, per === "hour" ? 2 : 0)}.
                     </b>
                   )}
                 </p>
@@ -169,7 +189,7 @@ export function StaffingView({
                 <th className="py-2 font-medium">Stream</th>
                 <th className="py-2 text-right font-medium">A day</th>
                 <th className="py-2 text-right font-medium">An hour open</th>
-                <th className="py-2 text-right font-medium">Of one staff day</th>
+                <th className="py-2 text-right font-medium">Of what a member of staff costs</th>
               </tr>
             </thead>
             <tbody>
