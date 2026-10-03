@@ -26,6 +26,8 @@ export const ukRates = {
     multipliers: { smallRHL: 0.382, standardRHL: 0.43, smallNonRHL: 0.432, standardNonRHL: 0.48, large: 0.508 },
     smallThreshold: 51000,
     largeThreshold: 500000,
+    smallBusinessRelief: { full: 12000, none: 15000, onlyProperty: true },
+    list: "2026 rating list (from 1 April 2026)",
   },
   sources: [
     "https://www.gov.uk/national-minimum-wage-rates",
@@ -33,6 +35,8 @@ export const ukRates = {
     "https://www.thepensionsregulator.gov.uk/employers/new-employers/im-an-employer-who-has-to-provide-a-pension/declare-your-compliance/ongoing-duties-for-employers/earnings-thresholds",
     "https://www.gov.uk/statutory-sick-pay",
     "https://www.gov.uk/vat-registration",
+    "https://www.gov.uk/business-rates-relief/small-business-rate-relief",
+    "https://www.gov.uk/correct-your-business-rates",
   ],
 } as const;
 
