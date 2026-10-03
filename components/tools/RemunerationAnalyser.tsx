@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { breakdown, combine, demoStatement, levers, NotAStatement, parseStatement, type Lever, type Statement, type TextPage } from "@/lib/remuneration";
+import { employerCost } from "@/lib/employer-cost";
+import { breakdown, combine, demoStatement, levers, NotAStatement, parseStatement, services, type Lever, type Statement, type TextPage } from "@/lib/remuneration";
+import { ukRates } from "@/lib/uk-rates";
+import { StaffingView, type ServiceSettings, type StaffSettings } from "./StaffingView";
 
 const WORKER = "/vendor/pdf.worker-6.4.299.min.mjs";
 
@@ -38,8 +41,9 @@ async function readPdf(file: File): Promise<TextPage[]> {
 
 type Active = Extract<Lever, { weekly: unknown }>;
 
-function Slider({ lever, value, extra, onChange }: { lever: Active; value: number; extra: number; onChange: (v: number, e: number) => void }) {
+function Slider({ lever, value, extra, onChange, staffHours, staffCost }: { lever: Active; value: number; extra: number; onChange: (v: number, e: number) => void; staffHours: number | null; staffCost: number }) {
   const weekly = lever.weekly(value, extra);
+  const net = weekly - staffCost;
   return (
     <div className={`rounded-xl border p-4 transition-colors ${value ? "border-red/50 bg-red/[0.06]" : "border-white/10 bg-white/[0.03]"}`}>
       <div className="flex items-start justify-between gap-3">
@@ -64,6 +68,11 @@ function Slider({ lever, value, extra, onChange }: { lever: Active; value: numbe
           <input type="range" min={lever.extra.min} max={lever.extra.max} step={lever.extra.step} value={extra} onChange={(e) => onChange(value, Number(e.target.value))} className="rem-range rem-range-small mt-1.5 w-full" aria-label={lever.extra.label} />
         </label>
       )}
+      {value > 0 && staffHours !== null && (
+        <p className={`mt-3 rounded-md px-3 py-2 text-xs ${net >= 0 ? "bg-emerald-400/10 text-emerald-200" : "bg-red/15 text-red-light"}`}>
+          Takes about <b>{staffHours < 1 ? `${Math.round(staffHours * 60)} min` : `${staffHours.toFixed(1)} h`}</b> of staff time a week ({gbp(staffCost, 2)}), so it {net >= 0 ? "leaves" : "loses"} <b>{gbp(Math.abs(net) * 52)}</b> a year {net >= 0 ? "after" : "once you pay for"} that time.
+        </p>
+      )}
       <p className="mt-3 text-[11px] leading-relaxed text-white/45">{lever.how}</p>
     </div>
   );
@@ -75,6 +84,9 @@ export function RemunerationAnalyser() {
   const [busy, setBusy] = useState(false);
   const [values, setValues] = useState<Record<string, { n: number; e: number }>>({});
   const [open, setOpen] = useState<string | null>(null);
+  const [tab, setTab] = useState<"grow" | "staff">("grow");
+  const [staff, setStaff] = useState<StaffSettings>({ rate: ukRates.minimumWage.age21plus, hoursPerDay: 8.5, daysPerWeek: 5, daysOpen: 6 });
+  const [svc, setSvc] = useState<ServiceSettings>({});
   const input = useRef<HTMLInputElement>(null);
 
   const demo = statements.length === 0;
@@ -82,8 +94,19 @@ export function RemunerationAnalyser() {
   const b = useMemo(() => breakdown(s), [s]);
   const ls = useMemo(() => levers(s), [s]);
   const active = ls.filter((l): l is Active => "weekly" in l);
+  const svcs = useMemo(() => services(s), [s]);
+  const costPerHour = employerCost({ hourlyRate: staff.rate, hoursPerWeek: staff.hoursPerDay * staff.daysPerWeek }).perWorkedHour.total;
+  /** Staff hours a week a lever's extra business takes, using the minutes set on the staffing tab. */
+  const staffHoursFor = (l: Active) => {
+    const sv = svcs.find((x) => x.id === l.service);
+    if (!sv || !l.items) return null;
+    const minutes = svc[sv.id]?.minutes ?? sv.minutes;
+    const svcExtra = svc[sv.id]?.extra ?? sv.extra?.value ?? 0;
+    return (l.items(values[l.id]?.n ?? 0, extraFor(l), svcExtra) * minutes) / 60;
+  };
 
   const extraFor = (l: Active) => values[l.id]?.e ?? l.extra?.value ?? 1;
+  const staffWeekly = active.reduce((a, l) => a + (staffHoursFor(l) ?? 0) * costPerHour, 0);
   const addedWeekly = (l: Active) => l.weekly(values[l.id]?.n ?? 0, extraFor(l));
   const addedByStream = new Map<string, number>();
   for (const l of active) addedByStream.set(l.stream, (addedByStream.get(l.stream) ?? 0) + addedWeekly(l) * 52);
@@ -149,6 +172,21 @@ export function RemunerationAnalyser() {
         {error && <p className="w-full rounded-lg border border-red/40 bg-red/10 px-3 py-2 text-sm text-red-light">{error}</p>}
       </div>
 
+      {/* Tabs */}
+      <div role="tablist" className="mt-6 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-sm">
+        {([["grow", "Income and growth"], ["staff", "Staffing: what pays for a seat"]] as const).map(([k, label]) => (
+          <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`rounded-full px-4 py-2 transition-colors ${tab === k ? "bg-red font-semibold text-white" : "text-white/65 hover:text-white"}`}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "staff" ? (
+        <div className="mt-6">
+          <StaffingView s={s} b={b} svcs={svcs} staff={staff} setStaff={setStaff} svc={svc} setSvc={setSvc} costPerHour={costPerHour} />
+        </div>
+      ) : (
+      <>
       {/* Headline numbers */}
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
@@ -256,7 +294,7 @@ export function RemunerationAnalyser() {
                 <div className="grid gap-3">
                   {ls.filter((l) => l.stream === stream).map((l) =>
                     "weekly" in l ? (
-                      <Slider key={l.id} lever={l} value={values[l.id]?.n ?? 0} extra={extraFor(l)} onChange={(n, e) => setValues((v) => ({ ...v, [l.id]: { n, e } }))} />
+                      <Slider key={l.id} lever={l} value={values[l.id]?.n ?? 0} extra={extraFor(l)} onChange={(n, e) => setValues((v) => ({ ...v, [l.id]: { n, e } }))} staffHours={staffHoursFor(l)} staffCost={(staffHoursFor(l) ?? 0) * costPerHour} />
                     ) : (
                       <p key={l.id} className="rounded-xl border border-white/10 px-4 py-3 text-xs text-white/45">{l.label}: {l.missing}</p>
                     ),
@@ -274,10 +312,17 @@ export function RemunerationAnalyser() {
         {added > 0 && (
           <p className="font-display text-xl font-bold sm:text-2xl">
             +{gbp(added)} <span className="text-sm font-normal text-white/60">a year<span className="hidden sm:inline"> · +{gbp(added / 52, 2)} a week · {gbp(b.perYear + added)} in total</span></span>
+            {staffWeekly > 0 && (
+              <span className={`block text-xs font-normal ${added - staffWeekly * 52 >= 0 ? "text-emerald-300" : "text-red-light"}`}>
+                {gbp(added - staffWeekly * 52)} a year after the staff time it takes ({gbp(staffWeekly * 52)} at {gbp(costPerHour, 2)} an hour)
+              </span>
+            )}
           </p>
         )}
         {added > 0 && <button onClick={() => setValues({})} className="text-xs text-white/60 underline">Reset</button>}
       </div>
+      </>
+      )}
 
       <div className="mt-8 grid gap-3 text-xs leading-relaxed text-white/45 md:grid-cols-3">
         <p>All figures are before VAT. The yearly figure is the weekly average × 52, so one statement can over- or under-state a year: travel money peaks in summer and mail before Christmas. Add a full year of statements for the truest picture.</p>

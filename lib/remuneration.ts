@@ -226,6 +226,10 @@ export type Lever = {
   /** £ a week, ex VAT, for the slider value(s). */
   weekly: (n: number, extra: number) => number;
   how: string;
+  /** The service (see services()) whose staff time this uses, and how many items a week the slider means.
+   * `svcExtra` is that service's own setting (for travel, the average sale). */
+  service?: string;
+  items?: (n: number, extra: number, svcExtra: number) => number;
 } | {
   id: string;
   stream: string;
@@ -255,6 +259,8 @@ export function levers(s: Statement): Lever[] {
       step: 1,
       extra: { label: "Visits each a week", unit: "visits", min: 1, max: 7, step: 1, value: 1 },
       weekly: (n, visits) => n * visits * (dep.rate + avgDeposit * v),
+      service: "deposit",
+      items: (n, visits) => n * visits,
       how: `Each deposit pays ${gbp(dep.rate, 3)}${v ? ` plus ${pct(v)} of the cash (your average deposit is ${gbp(avgDeposit, 0)}, so about ${gbp(dep.rate + avgDeposit * v)} a deposit)` : ""}.`,
     });
   } else out.push({ id: "deposits", stream: "Banking", label: "More banking customers paying in", missing: "Your statement doesn't show cash deposits." });
@@ -269,6 +275,8 @@ export function levers(s: Statement): Lever[] {
       max: 200,
       step: 5,
       weekly: (n) => n * wd.rate,
+      service: "withdrawal",
+      items: (n) => n,
       how: `Each withdrawal pays ${gbp(wd.rate, 3)}.`,
     });
 
@@ -283,6 +291,8 @@ export function levers(s: Statement): Lever[] {
       max: 10000,
       step: 100,
       weekly: (n) => n * fx.rate,
+      service: "travel",
+      items: (n, _e, sale) => (sale > 0 ? n / sale : 0),
       how: `You earn ${pct(fx.rate)} of the currency sold (your mix of on-demand and discounted rates).`,
     });
   else out.push({ id: "travel", stream: "Travel", label: "More currency sold", missing: "Your statement doesn't show travel money sales." });
@@ -299,6 +309,8 @@ export function levers(s: Statement): Lever[] {
       step: 1,
       extra: { label: "Average postage per parcel", unit: "£", min: 1, max: 30, step: 0.5, value: 5, money: true },
       weekly: (n, avg) => n * avg * parcels.rate,
+      service: "parcel",
+      items: (n) => n,
       how: `You earn ${pct(parcels.rate)} of the postage on these (your mix of parcel services). Set the average postage to what your customers usually pay.`,
     });
   const prepaid = perItem(s, /tracked online .*parcels|home shopping returns|drop off|returns|lfbf|accept only|prepaid/i);
@@ -311,6 +323,8 @@ export function levers(s: Statement): Lever[] {
       max: 500,
       step: 5,
       weekly: (n) => n * prepaid.rate,
+      service: "prepaid",
+      items: (n) => n,
       how: `Prepaid labels and returns pay about ${gbp(prepaid.rate, 3)} each on your statement (Royal Mail and other carriers).`,
     });
   const collect = perItem(s, /click (and|&) collect|local collect/i);
@@ -323,6 +337,8 @@ export function levers(s: Statement): Lever[] {
       max: 300,
       step: 5,
       weekly: (n) => n * collect.rate,
+      service: "collect",
+      items: (n) => n,
       how: `Collections pay about ${gbp(collect.rate, 3)} each.`,
     });
   if (!parcels && !prepaid && !collect) out.push({ id: "parcels", stream: "Mail", label: "More parcels", missing: "Your statement doesn't show parcel services." });
@@ -330,15 +346,15 @@ export function levers(s: Statement): Lever[] {
   // Government and identity.
   const passport = perItem(s, /passport/i);
   if (passport)
-    out.push({ id: "passport", stream: "Government & Identity services", label: "More passport check & send", unit: "extra a week", max: 30, step: 1, weekly: (n) => n * passport.rate, how: `Each one pays about ${gbp(passport.rate)}.` });
+    out.push({ id: "passport", stream: "Government & Identity services", label: "More passport check & send", unit: "extra a week", max: 30, step: 1, weekly: (n) => n * passport.rate, service: "passport", items: (n) => n, how: `Each one pays about ${gbp(passport.rate)}.` });
   const dvla = perItem(s, /dvla/i);
   if (dvla)
-    out.push({ id: "dvla", stream: "Government & Identity services", label: "More DVLA transactions", unit: "extra a week", max: 50, step: 1, weekly: (n) => n * dvla.rate, how: `Each one pays about ${gbp(dvla.rate)}.` });
+    out.push({ id: "dvla", stream: "Government & Identity services", label: "More DVLA transactions", unit: "extra a week", max: 50, step: 1, weekly: (n) => n * dvla.rate, service: "dvla", items: (n) => n, how: `Each one pays about ${gbp(dvla.rate)}.` });
 
   // Bill payments.
   const bills = perItem(s, /utility|resellers|telecoms|bill/i);
   if (bills)
-    out.push({ id: "bills", stream: "Bill Payments", label: "More bill payments", unit: "extra a week", max: 300, step: 5, weekly: (n) => n * bills.rate, how: `Each bill payment pays about ${gbp(bills.rate, 3)}.` });
+    out.push({ id: "bills", stream: "Bill Payments", label: "More bill payments", unit: "extra a week", max: 300, step: 5, weekly: (n) => n * bills.rate, service: "bills", items: (n) => n, how: `Each bill payment pays about ${gbp(bills.rate, 3)}.` });
 
   return out;
 }
@@ -392,3 +408,54 @@ export const demoStatement: Statement = {
   ],
   statedExc: null,
 };
+
+// ── Staffing: what each service earns for an hour of staff time ─────────────────────────────────
+// Pay per item comes from the statement. Minutes per item are the user's own estimates (defaults
+// are a starting point, clearly labelled, and editable).
+
+export type Service = {
+  id: string;
+  stream: string;
+  label: string;
+  /** What one item is, e.g. "passport", "deposit". */
+  item: string;
+  /** £ paid per item (ex VAT); `extra` is the service's own setting (average sale or postage). */
+  pay: (extra: number) => number;
+  extra?: { label: string; min: number; max: number; step: number; value: number };
+  minutes: number;
+  how: string;
+};
+
+export function services(s: Statement): Service[] {
+  const out: Service[] = [];
+  const dep = perItem(s, /auto cash deposits/i);
+  const depValue = percent(s, /cash deposits \(value\)/i);
+  const depCount = s.lines.filter((l) => l.by === "Volume" && /(auto|manual) cash deposits/i.test(l.name)).reduce((a, l) => a + l.sales, 0);
+  const depSales = s.lines.filter((l) => /cash deposits \(value\)/i.test(l.name)).reduce((a, l) => a + l.sales, 0);
+  const avgDeposit = depCount ? depSales / depCount : 0;
+  if (dep) {
+    const per = dep.rate + avgDeposit * (depValue?.rate ?? 0);
+    out.push({ id: "deposit", stream: "Banking", label: "Cash deposit", item: "deposit", pay: () => per, minutes: 2, how: `${gbp(dep.rate, 3)} each${depValue ? ` + ${pct(depValue.rate)} of your average ${gbp(avgDeposit, 0)} deposit` : ""}` });
+  }
+  const wd = perItem(s, /auto cash withdrawals/i);
+  if (wd) out.push({ id: "withdrawal", stream: "Banking", label: "Cash withdrawal", item: "withdrawal", pay: () => wd.rate, minutes: 1.5, how: `${gbp(wd.rate, 3)} each` });
+  const fx = percent(s, /travel money - (on demand|discounted)|bureau|currency/i);
+  if (fx)
+    out.push({ id: "travel", stream: "Travel", label: "Travel money sale", item: "sale", pay: (sale) => sale * fx.rate, extra: { label: "Average sale", min: 50, max: 2000, step: 50, value: 400 }, minutes: 5, how: `${pct(fx.rate)} of the currency sold` });
+  const parcels = percent(s, /parcels|^rm tracked (24|48)$|pf express/i);
+  if (parcels)
+    out.push({ id: "parcel", stream: "Mail", label: "Parcel paid at the counter", item: "parcel", pay: (avg) => avg * parcels.rate, extra: { label: "Average postage", min: 1, max: 30, step: 0.5, value: 5 }, minutes: 3, how: `${pct(parcels.rate)} of the postage` });
+  const prepaid = perItem(s, /tracked online .*parcels|home shopping returns|drop off|returns|lfbf|accept only|prepaid/i);
+  if (prepaid) out.push({ id: "prepaid", stream: "Mail", label: "Prepaid parcel or return drop-off", item: "parcel", pay: () => prepaid.rate, minutes: 2.5, how: `about ${gbp(prepaid.rate, 3)} each` });
+  const collect = perItem(s, /click (and|&) collect|local collect/i);
+  if (collect) out.push({ id: "collect", stream: "Mail", label: "Click & collect parcel", item: "parcel", pay: () => collect.rate, minutes: 1.5, how: `about ${gbp(collect.rate, 3)} each` });
+  const passport = perItem(s, /passport/i);
+  if (passport) out.push({ id: "passport", stream: "Government & Identity services", label: "Passport check & send", item: "passport", pay: () => passport.rate, minutes: 12, how: `about ${gbp(passport.rate)} each` });
+  const dvla = perItem(s, /dvla/i);
+  if (dvla) out.push({ id: "dvla", stream: "Government & Identity services", label: "DVLA transaction", item: "transaction", pay: () => dvla.rate, minutes: 4, how: `about ${gbp(dvla.rate)} each` });
+  const idv = perItem(s, /id verif|identity|sia/i);
+  if (idv) out.push({ id: "id", stream: "Government & Identity services", label: "ID check", item: "check", pay: () => idv.rate, minutes: 5, how: `about ${gbp(idv.rate)} each` });
+  const bills = perItem(s, /utility|resellers|telecoms|bill/i);
+  if (bills) out.push({ id: "bills", stream: "Bill Payments", label: "Bill payment", item: "payment", pay: () => bills.rate, minutes: 1.5, how: `about ${gbp(bills.rate, 3)} each` });
+  return out;
+}
