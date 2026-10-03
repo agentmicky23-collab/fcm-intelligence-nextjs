@@ -83,6 +83,69 @@ function ColumnLabels({ rows }: { rows: { label: string; value: number }[] }) {
   );
 }
 
+/** Excess cash calendar: one row per month, one square per day; blue = none, red = £10k or more. */
+function ExcessCashCalendar({ days }: { days: { date: string; excessCash: number | null; declared: string }[] }) {
+  const byMonth = new Map<string, Map<number, { v: number | null; declared: string }>>();
+  for (const d of days) {
+    const m = d.date.slice(0, 7);
+    const row = byMonth.get(m) ?? new Map();
+    row.set(Number(d.date.slice(8, 10)), { v: d.excessCash, declared: d.declared });
+    byMonth.set(m, row);
+  }
+  const months = [...byMonth].sort((a, b) => a[0].localeCompare(b[0])).slice(-15);
+  const RED_AT = 10000;
+  return (
+    <div>
+      <div className="overflow-x-auto">
+        <table className="text-[10px]">
+          <thead>
+            <tr>
+              <th />
+              {Array.from({ length: 31 }, (_, i) => <th key={i} className="pb-1 font-normal text-white/40">{i + 1}</th>)}
+              <th className="pb-1 pl-3 text-left font-normal text-white/50">Daily average</th>
+            </tr>
+          </thead>
+          <tbody>
+            {months.map(([m, row]) => {
+              const vals = [...row.values()].map((x) => x.v).filter((v): v is number => v !== null);
+              const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+              return (
+                <tr key={m}>
+                  <td className="whitespace-nowrap pr-2 text-xs text-white/60">{monthName(m + "-15")}</td>
+                  {Array.from({ length: 31 }, (_, i) => {
+                    const c = row.get(i + 1);
+                    const v = c?.v ?? null;
+                    const t = v === null ? 0 : Math.min(1, v / RED_AT);
+                    return (
+                      <td key={i} className="p-[1.5px]">
+                        <div
+                          title={c ? `${m.slice(5)}/${i + 1}: ${v === null ? "no figure" : gbp(v)} excess cash${c.declared === "not complete" ? " · declaration not completed" : ""}` : undefined}
+                          className={`flex h-7 w-7 items-center justify-center rounded-[3px] font-semibold tabular-nums ${c?.declared === "not complete" ? "ring-2 ring-white" : ""}`}
+                          style={{ background: !c || v === null ? "rgba(255,255,255,0.03)" : heat(t), color: v !== null && Math.abs(t - 0.5) < 0.22 ? "#06173a" : "#fff" }}
+                        >
+                          {v && v >= 500 ? Math.round(v / 1000) : ""}
+                        </div>
+                      </td>
+                    );
+                  })}
+                  <td className={`whitespace-nowrap pl-3 text-xs font-semibold tabular-nums ${avg >= 5000 ? "text-red-light" : avg < 1000 ? "text-emerald-300" : "text-white/80"}`}>{gbp(avg)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-white/60" aria-hidden>
+        <span>None</span>
+        <span className="h-3 w-48 rounded-full" style={{ background: `linear-gradient(90deg, ${heat(0)}, ${heat(0.5)}, ${heat(1)})` }} />
+        <span>£10k or more</span>
+        <span className="ml-4 inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px] ring-2 ring-white" /> Declaration not completed</span>
+      </div>
+      <p className="mt-2 text-xs text-white/50">Numbers are £ thousands held over after a collection, carried each day until the next one. Every £1,000 of the daily average over a trading period costs a point (rows here are calendar months, so their averages differ slightly from Branch Hub&apos;s).</p>
+    </div>
+  );
+}
+
 function Empty({ what }: { what: string }) {
   return <p className="rounded-xl border border-dashed border-white/15 p-6 text-sm text-white/55">Add your {what} export from Branch Hub to see this.</p>;
 }
@@ -209,9 +272,6 @@ function OeiTab({ data, rules }: { data: BranchData; rules: OeiRules }) {
 
 function CashTab({ data }: { data: BranchData }) {
   const days = data.days ?? [];
-  const months = new Map<string, number[]>();
-  for (const d of days) if (d.excessCash !== null) months.set(d.date.slice(0, 7), [...(months.get(d.date.slice(0, 7)) ?? []), d.excessCash]);
-  const monthRows = [...months].slice(-15).map(([m, v]) => ({ label: monthName(m + "-15"), value: v.reduce((a, b) => a + b, 0) / v.length }));
   const missed = days.filter((d) => d.declared === "not complete");
   const byYear = (rows: { date: string; amount: number; type: string }[]) => {
     const y = new Map<string, { short: number; shortN: number; surplus: number; surplusN: number }>();
@@ -243,8 +303,8 @@ function CashTab({ data }: { data: BranchData }) {
 
   return (
     <>
-      <Section title="Excess cash, month by month" sub="Average daily excess cash after collections. Lower is better: it costs points and it's cash at risk in the branch.">
-        {monthRows.length ? <Bars rows={monthRows} tone="#C9A227" /> : <Empty what="Daily cash and declarations" />}
+      <Section title="Excess cash, day by day" sub="Lower is better: excess cash costs points and it's cash at risk in the branch. Look for the red runs: they usually start with a collection where too little was returned.">
+        {days.length ? <ExcessCashCalendar days={days} /> : <Empty what="Daily cash and declarations" />}
       </Section>
       <Section title="Declarations">
         {days.length ? (
