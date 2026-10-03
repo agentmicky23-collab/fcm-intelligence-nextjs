@@ -86,6 +86,7 @@ export function RemunerationAnalyser({ viewer }: { viewer: string }) {
   const [values, setValues] = useState<Record<string, { n: number; e: number }>>({});
   const [open, setOpen] = useState<string | null>(null);
   const [tab, setTab] = useState<"grow" | "staff">("grow");
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const [staff, setStaff] = useState<StaffSettings>({ rate: ukRates.minimumWage.age21plus, hoursPerDay: 8.5, daysPerWeek: 5, daysOpen: 6, hoursOpen: 8.5 });
   const [svc, setSvc] = useState<ServiceSettings>({});
   const input = useRef<HTMLInputElement>(null);
@@ -164,11 +165,33 @@ export function RemunerationAnalyser({ viewer }: { viewer: string }) {
             Read on this device only. Your statement is never uploaded or stored.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button onClick={() => input.current?.click()} disabled={busy} className="bg-red px-5 py-3 text-sm font-semibold hover:bg-red-dark disabled:opacity-60">
-            {busy ? "Reading…" : demo ? "Add my statement" : "Use different statements"}
-          </button>
+        <div className="flex w-full flex-wrap items-start gap-2 sm:w-auto">
+          <div className="group relative">
+            <button onClick={() => input.current?.click()} disabled={busy} aria-describedby="rem-privacy" className="bg-red px-5 py-3 text-sm font-semibold hover:bg-red-dark disabled:opacity-60">
+              {busy ? "Reading…" : demo ? "Add my statement" : "Use different statements"}
+            </button>
+            <div
+              id="rem-privacy"
+              role="tooltip"
+              className={`absolute left-0 top-full z-50 sm:left-auto sm:right-0 mt-3 w-[min(380px,calc(100vw-2.5rem))] rounded-xl border border-emerald-400/30 bg-[#04122b] p-5 text-left shadow-2xl transition-opacity duration-150 ${showPrivacy ? "visible opacity-100" : "invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"}`}
+            >
+              <p className="flex items-center gap-2 font-display text-base font-bold text-white">
+                <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 fill-emerald-300"><path d="M8 1 2 3.5v4C2 11 4.6 14.2 8 15c3.4-.8 6-4 6-7.5v-4L8 1Zm-1 10L4.5 8.5l1-1L7 9l3.5-3.5 1 1L7 11Z" /></svg>
+                Your statement stays with you
+              </p>
+              <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-white/75">
+                <li><b className="text-white">Read on this device only.</b> Your statement is opened in your own browser. It is never uploaded to us or sent anywhere else.</li>
+                <li><b className="text-white">Nothing is saved.</b> Not by us, not in your browser. Close the page, or leave it for 15 minutes, and it&apos;s gone.</li>
+                <li><b className="text-white">Only the figures are read.</b> The lines and totals. Your branch code, remuneration, statement and VAT numbers, names and addresses are ignored.</li>
+                <li><b className="text-white">Kept on screen, for your eyes.</b> The figures can&apos;t be copied, printed or saved from this page, and they hide when you switch away.</li>
+                <li><b className="text-white">Members only.</b> No one else can open this tool. Your name is faintly marked across it, so nothing shown here can be passed on without it being traceable.</li>
+              </ul>
+            </div>
+          </div>
           {!demo && <button onClick={() => { setStatements([]); setValues({}); }} className="border border-white/25 px-5 py-3 text-sm hover:bg-white/10">Clear</button>}
+          <button type="button" onClick={() => setShowPrivacy((v) => !v)} aria-expanded={showPrivacy} className="basis-full text-left text-xs text-emerald-300 underline underline-offset-2">
+            {showPrivacy ? "Hide" : "How your statement is protected"}
+          </button>
         </div>
         <input ref={input} type="file" accept="application/pdf" multiple hidden onChange={(e) => load(e.target.files)} />
         {error && <p className="w-full rounded-lg border border-red/40 bg-red/10 px-3 py-2 text-sm text-red-light">{error}</p>}
