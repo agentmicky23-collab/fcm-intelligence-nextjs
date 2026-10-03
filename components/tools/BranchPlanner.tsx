@@ -38,38 +38,45 @@ export function StaffingPlanner({ data }: { data: BranchData }) {
     [useCustomers, data.hourSessions, data.hours],
   );
   const categories = useMemo(() => [...new Set(rows.map((r) => r.category))], [rows]);
-  // How many weeks the hourly export covers: measured against the weekly customer counts if we have them.
-  const measuredWeeks = useMemo(() => {
+
+  // The period is fixed by the export. Branch Hub's hourly reports cover one week; if the weekly customer
+  // counts are loaded we check that, and say how this week compares with a normal one.
+  const check = useMemo(() => {
     const hourly = (data.hourSessions ?? []).reduce((a, s) => a + s.sessions, 0);
     const weekly = (data.sessions ?? []).filter((s) => s.sessions > 300).sort((a, b) => (a.year + String(a.week).padStart(2, "0")).localeCompare(b.year + String(b.week).padStart(2, "0"))).slice(-8);
-    if (!hourly || weekly.length < 4) return null;
-    const avg = weekly.reduce((a, s) => a + s.sessions, 0) / weekly.length;
-    return Math.max(1, Math.round((hourly / avg) * 2) / 2);
+    const normal = weekly.length >= 4 ? weekly.reduce((a, s) => a + s.sessions, 0) / weekly.length : null;
+    const weeks = hourly && normal ? Math.max(1, Math.round((hourly / normal) * 2) / 2) : 1;
+    return { hourly, normal, weeks };
   }, [data.hourSessions, data.sessions]);
-  const [weeksTyped, setWeeks] = useState<number | null>(null);
-  const weeks = weeksTyped ?? measuredWeeks ?? 1;
-  const [busy, setBusy] = useState(75);
+  const weeks = check.weeks;
+
+  const [have, setHave] = useState(0);
+  const [change, setChange] = useState(0);
   const [rate, setRate] = useState<number>(ukRates.minimumWage.age21plus);
-  const [current, setCurrent] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(75);
   const [minutes, setMinutes] = useState<Record<string, number>>({});
   if (!rows.length) return null;
 
   const mins = (c: string) => minutes[c] ?? defaultMinutes(c);
-  const load = new Map<string, number>(); // serving minutes per average week, by day|hour
+  const load = new Map<string, number>(); // minutes of serving in the week, by day|hour
   for (const r of rows) {
     if (!r.transactions) continue;
     const k = `${r.weekday}|${r.hour}`;
-    load.set(k, (load.get(k) ?? 0) + (r.transactions * mins(r.category)) / Math.max(1, weeks));
+    load.set(k, (load.get(k) ?? 0) + (r.transactions * mins(r.category)) / weeks);
   }
   const hours = [...new Set(rows.filter((r) => r.transactions > 0).map((r) => r.hour))].sort();
   const days = DAYS.filter((d) => rows.some((r) => r.weekday === d && r.transactions > 0));
   const capacity = 60 * (busy / 100);
   const need = (k: string) => (load.has(k) ? Math.max(1, Math.ceil((load.get(k) ?? 0) / capacity)) : 0);
-  const staffHours = [...load.keys()].reduce((a, k) => a + need(k), 0);
-  const costPerHour = employerCost({ hourlyRate: rate, hoursPerWeek: Math.max(1, staffHours) }).perWorkedHour.total;
-  const weekCost = staffHours * costPerHour;
+  const counterHours = [...load.keys()].reduce((a, k) => a + need(k), 0);
+  const needed = counterHours;
+  const costPerHour = employerCost({ hourlyRate: rate, hoursPerWeek: Math.max(1, needed) }).perWorkedHour.total;
+  const weekCost = needed * costPerHour;
+  const planned = Math.max(0, have + change);
+  const plannedGap = planned - needed;
 
-  // Plain-English rota: runs of hours on each day where two or more are needed.
+  // Busiest hours (where two or more are needed) and what's lost if the plan falls short.
   const doubles: string[] = [];
   for (const d of days) {
     let start: string | null = null;
@@ -88,77 +95,35 @@ export function StaffingPlanner({ data }: { data: BranchData }) {
     }
     flush(`${String(Number(hours.at(-1)!.slice(0, 2)) + 1).padStart(2, "0")}:00`);
   }
+  const unit = useCustomers ? "customers" : "transactions";
+  const total = rows.reduce((a, r) => a + r.transactions, 0);
 
   return (
     <section className="mt-10">
       <h2 className="font-display text-xl font-bold">Staffing planner</h2>
-      <p className="mt-1 max-w-3xl text-sm text-white/55">How many people you need on the counter each hour to serve your customers without queues building, from your own customer and transaction counts. Set the minutes to what your counter really takes: if you know how many staff hours you have now, enter them and adjust the minutes until busy times look right.</p>
+      <p className="mt-1 max-w-3xl text-sm text-white/55">How many staff hours your counter really needs, against what you have now, and what changing them would save or cost.</p>
 
-      {hasCustomers && (data.hours?.length ?? 0) > 0 && (
-        <div role="radiogroup" aria-label="Plan from" className="mt-4 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-sm">
-          {(["customers", "transactions"] as const).map((k) => (
-            <button key={k} role="radio" aria-checked={source === k} onClick={() => setSource(k)} className={`rounded-full px-4 py-1.5 ${source === k ? "bg-white font-semibold text-[#06173a]" : "text-white/65"}`}>
-              {k === "customers" ? "Plan from customers" : "Plan from transactions"}
-            </button>
-          ))}
-        </div>
-      )}
-      <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 md:grid-cols-4">
-        <Num label="Weeks this export covers" value={weeks} min={1} max={60} step={0.5} onChange={setWeeks} />
-        <Num label="Time serving per hour" value={busy} min={30} max={100} step={5} onChange={setBusy} suffix="%" />
-        <Num label="Hourly pay" value={rate} min={1} max={60} step={0.01} prefix="£" onChange={setRate} />
-        <Num label="Staff hours you have now (a week)" value={current} min={0} max={500} step={0.5} onChange={setCurrent} />
-        {categories.map((c) => (
-          <Num key={c} label={c === "Customer" ? "Minutes per customer" : `Minutes per ${c.toLowerCase()} transaction`} value={mins(c)} min={0.5} max={20} step={0.5} onChange={(v) => setMinutes({ ...minutes, [c]: v })} />
-        ))}
-      </div>
-
-      <p className="mt-2 text-xs text-white/50">
-        {measuredWeeks && weeksTyped === null
-          ? `Your hourly export matches about ${measuredWeeks} week${measuredWeeks === 1 ? "" : "s"} of customers (checked against your weekly customer counts).`
-          : "Branch Hub's hourly reports usually cover one week. Change this if yours covers more."}
-        {useCustomers ? " Planning from customer visits: each one is someone at the counter." : ""}
-      </p>
-      <div className="mt-5 overflow-x-auto">
-        <table className="text-xs">
-          <thead>
-            <tr>
-              <th />
-              {hours.map((h) => <th key={h} className="px-0.5 pb-1 font-normal text-white/50">{h.slice(0, 2)}</th>)}
-              <th className="pl-3 pb-1 text-left font-normal text-white/50">Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            {days.map((d) => (
-              <tr key={d}>
-                <td className="pr-2 text-white/60">{d.slice(0, 3)}</td>
-                {hours.map((h) => {
-                  const k = `${d}|${h}`;
-                  const n = need(k);
-                  return (
-                    <td key={h} className="p-0.5">
-                      <div title={`${d} ${h}: about ${int(load.get(k) ?? 0)} minutes of serving a week → ${n} ${n === 1 ? "person" : "people"}`} className="flex h-10 w-12 items-center justify-center rounded-[4px] font-semibold" style={{ background: n ? peopleColour(n) : "rgba(255,255,255,0.03)", color: n === 2 ? "#06173a" : "#fff" }}>
-                        {n || ""}
-                      </div>
-                    </td>
-                  );
-                })}
-                <td className="pl-3 font-semibold tabular-nums">{hours.reduce((a, h) => a + need(`${d}|${h}`), 0)}</td>
-              </tr>
+      <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/75">
+        <b className="text-white">Based on the week in your export:</b> {int(total / weeks)} {unit}
+        {check.normal ? `, ${Math.abs(check.hourly / weeks / check.normal - 1) < 0.1 ? "a normal week for you" : check.hourly / weeks > check.normal ? "busier than your normal week" : "quieter than your normal week"} (you average about ${int(check.normal)} customers a week)` : ""}.
+        {hasCustomers && (data.hours?.length ?? 0) > 0 && (
+          <span className="ml-2 inline-flex rounded-full border border-white/15 p-0.5 align-middle text-xs">
+            {(["customers", "transactions"] as const).map((k) => (
+              <button key={k} onClick={() => setSource(k)} aria-pressed={source === k} className={`rounded-full px-2.5 py-1 ${source === k ? "bg-white font-semibold text-[#06173a]" : "text-white/65"}`}>{k === "customers" ? "Customers" : "Transactions"}</button>
             ))}
-          </tbody>
-        </table>
+          </span>
+        )}
       </div>
-      <div className="mt-3 flex flex-wrap gap-4 text-xs text-white/60">
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(1) }} /> One person</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(2) }} /> Two people</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(3) }} /> Three or more</span>
+
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Num label="Staff hours you have now (a week, including you)" value={have} min={0} max={500} step={0.5} onChange={(v) => { setHave(v); setChange(0); }} />
+        <Num label="Hourly pay" value={rate} min={1} max={60} step={0.01} prefix="£" onChange={setRate} />
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
           <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Counter hours needed a week</p>
-          <p className="mt-1 font-display text-3xl font-bold">{int(staffHours)}</p>
+          <p className="mt-1 font-display text-3xl font-bold">{int(needed)}</p>
           <p className="text-xs text-white/50">Including you, during opening hours</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
@@ -166,12 +131,12 @@ export function StaffingPlanner({ data }: { data: BranchData }) {
           <p className="mt-1 font-display text-3xl font-bold">{gbp(weekCost)}</p>
           <p className="text-xs text-white/50">a week at {gbp(costPerHour, 2)} an hour with holiday pay, NI and pension (if all paid staff)</p>
         </div>
-        <div className={`rounded-2xl border p-5 ${current ? (current > staffHours * 1.1 ? "border-[#C9A227]/50 bg-[#C9A227]/[0.07]" : current < staffHours * 0.9 ? "border-red/50 bg-red/[0.08]" : "border-emerald-400/40 bg-emerald-400/[0.06]") : "border-white/10 bg-white/[0.04]"}`}>
+        <div className={`rounded-2xl border p-5 ${have ? (have > needed * 1.1 ? "border-[#C9A227]/50 bg-[#C9A227]/[0.07]" : have < needed * 0.9 ? "border-red/50 bg-red/[0.08]" : "border-emerald-400/40 bg-emerald-400/[0.06]") : "border-white/10 bg-white/[0.04]"}`}>
           <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Against what you have now</p>
-          {current ? (
+          {have ? (
             <>
-              <p className="mt-1 font-display text-3xl font-bold">{current > staffHours ? "+" : "−"}{int(Math.abs(current - staffHours))} h</p>
-              <p className="text-xs text-white/50">{current > staffHours ? `About ${gbp((current - staffHours) * costPerHour)} a week more than the counter needs. Use the time for back office, stock and selling.` : `About ${int(staffHours - current)} hours short: expect queues at the busy times.`}</p>
+              <p className="mt-1 font-display text-3xl font-bold">{have > needed ? "+" : "−"}{int(Math.abs(have - needed))} h</p>
+              <p className="text-xs text-white/50">{have > needed ? `About ${gbp((have - needed) * costPerHour)} a week more than the counter needs. Use the time for back office, stock and selling.` : `About ${int(needed - have)} hours short: expect queues at the busy times.`}</p>
             </>
           ) : (
             <p className="mt-1 text-sm text-white/55">Enter the staff hours you have now to compare.</p>
@@ -179,13 +144,97 @@ export function StaffingPlanner({ data }: { data: BranchData }) {
         </div>
       </div>
 
-      {doubles.length > 0 && (
-        <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
-          <p className="font-semibold">When to have two or more on the counter</p>
-          <p className="mt-1 text-white/70">{doubles.join(" · ")}</p>
+      {have > 0 && (
+        <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <p className="font-semibold">What if you changed your hours?</p>
+          <label className="mt-3 block">
+            <span className="flex flex-wrap justify-between gap-2 text-sm text-white/70">
+              <span>{change === 0 ? "No change" : change < 0 ? `Cut ${int(-change)} hours a week` : `Add ${int(change)} hours a week`}</span>
+              <span className="tabular-nums">New total: <b className="text-white">{int(planned)} h</b></span>
+            </span>
+            <input type="range" min={-Math.round(have)} max={Math.round(Math.max(20, needed - have + 10))} step={1} value={change} onChange={(e) => setChange(Number(e.target.value))} className="rem-range mt-2 w-full" aria-label="Change in staff hours a week" />
+          </label>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">New weekly cost</p>
+              <p className="mt-1 font-display text-2xl font-bold">{gbp(planned * costPerHour)}</p>
+            </div>
+            <div className={`rounded-xl border p-4 ${change < 0 ? "border-emerald-400/40 bg-emerald-400/[0.06]" : change > 0 ? "border-[#C9A227]/50 bg-[#C9A227]/[0.06]" : "border-white/10 bg-black/20"}`}>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">{change <= 0 ? "Saving" : "Extra cost"}</p>
+              <p className="mt-1 font-display text-2xl font-bold">{gbp(Math.abs(change) * costPerHour * 52)} <span className="text-sm font-normal text-white/55">a year</span></p>
+              <p className="text-xs text-white/50">{gbp(Math.abs(change) * costPerHour)} a week, straight onto profit</p>
+            </div>
+            <div className={`rounded-xl border p-4 ${plannedGap < -2 ? "border-red/50 bg-red/[0.08]" : "border-emerald-400/40 bg-emerald-400/[0.06]"}`}>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Against what&apos;s needed</p>
+              <p className="mt-1 font-display text-2xl font-bold">{Math.abs(plannedGap) <= 2 ? "About right" : plannedGap > 0 ? `${int(plannedGap)} h spare` : `${int(-plannedGap)} h short`}</p>
+              <p className="text-xs text-white/50">{plannedGap < -2 ? "Too far: customers will queue" : "The counter is still covered"}</p>
+            </div>
+          </div>
+          {plannedGap < -2 && doubles.length > 0 && <p className="mt-3 text-sm text-red-light">Keep enough people on at the busy times: {doubles.join(" · ")}.</p>}
         </div>
       )}
-      <p className="mt-3 text-xs text-white/45">Counter time only: back-office work (declarations, pouches, stock, balancing) needs time on top. The minutes per transaction are averages you can change.</p>
+
+      <div className="mt-6">
+        <p className="font-semibold">People needed on the counter, hour by hour</p>
+        <p className="text-xs text-white/50">For your week. Use it to build the rota: these are the hours that decide how many staff you need.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="text-xs">
+            <thead>
+              <tr>
+                <th />
+                {hours.map((h) => <th key={h} className="px-0.5 pb-1 font-normal text-white/50">{h.slice(0, 2)}</th>)}
+                <th className="pl-3 pb-1 text-left font-normal text-white/50">Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              {days.map((d) => (
+                <tr key={d}>
+                  <td className="pr-2 text-white/60">{d.slice(0, 3)}</td>
+                  {hours.map((h) => {
+                    const k = `${d}|${h}`;
+                    const n = need(k);
+                    return (
+                      <td key={h} className="p-0.5">
+                        <div title={`${d} ${h}: ${n} ${n === 1 ? "person" : "people"}`} className="flex h-10 w-12 items-center justify-center rounded-[4px] font-semibold" style={{ background: n ? peopleColour(n) : "rgba(255,255,255,0.03)", color: n === 2 ? "#06173a" : "#fff" }}>
+                          {n || ""}
+                        </div>
+                      </td>
+                    );
+                  })}
+                  <td className="pl-3 font-semibold tabular-nums">{hours.reduce((a, h) => a + need(`${d}|${h}`), 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-4 text-xs text-white/60">
+          <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(1) }} /> One person</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(2) }} /> Two people</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-[2px]" style={{ background: peopleColour(3) }} /> Three or more</span>
+        </div>
+        {doubles.length > 0 && <p className="mt-3 text-sm text-white/70"><b className="text-white">Two or more on the counter:</b> {doubles.join(" · ")}</p>}
+      </div>
+
+      <div className="mt-6 rounded-xl border border-white/10">
+        <button onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold">
+          Adjust the assumptions
+          <span className="text-white/50">{open ? "−" : "+"}</span>
+        </button>
+        {open && (
+          <div className="grid gap-3 border-t border-white/10 p-4 sm:grid-cols-3">
+            {categories.map((c) => (
+              <div key={c}>
+                <Num label={c === "Customer" ? "Minutes per customer" : `Minutes per ${c.toLowerCase()} transaction`} value={mins(c)} min={0.5} max={20} step={0.5} onChange={(v) => setMinutes({ ...minutes, [c]: v })} />
+                <p className="mt-1 text-[11px] text-white/45">How long a typical one takes at your counter, on average.</p>
+              </div>
+            ))}
+            <div>
+              <Num label="Time serving per hour" value={busy} min={30} max={100} step={5} onChange={setBusy} suffix="%" />
+              <p className="mt-1 text-[11px] text-white/45">How much of each hour one person can spend serving before queues build (75% leaves room for gaps between customers).</p>
+            </div>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
