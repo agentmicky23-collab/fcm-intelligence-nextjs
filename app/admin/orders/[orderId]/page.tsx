@@ -100,6 +100,32 @@ export default async function OrderPage({ params }: { params: Promise<{ orderId:
         )}
       </section>
 
+      {(o.status === "needs_info" || (o.requested?.length ?? 0) > 0) && o.status !== "delivered" && (
+        <section className={`mt-6 rounded-2xl border p-5 ${o.status === "needs_info" ? "glow border-red/50 bg-red/[0.08]" : "border-white/10 bg-white/[0.03]"}`}>
+          <p className="font-display text-lg font-bold">{o.status === "needs_info" ? "Paused: information needed to finish" : "Information the agents asked for"}</p>
+          <p className="mt-1 text-sm text-white/60">Only the client or seller can provide these. The agents won&apos;t guess them.</p>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {(o.requested ?? []).map((r, i) => (
+              <li key={i} className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                <b>{r.label}</b>
+                {r.why && <span className="block text-xs text-white/55">{r.why}</span>}
+              </li>
+            ))}
+          </ul>
+          {o.status === "needs_info" && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Link href={`/admin/orders/${o.id}/fact-find`} className="bg-red px-4 py-2.5 text-sm font-semibold hover:bg-red-dark">Type it in or upload it</Link>
+              <form action={`/api/admin/fact-find/${o.id}/send`} method="post">
+                <button className="border border-white/25 px-4 py-2.5 text-sm hover:bg-white/10">Email the client for these</button>
+              </form>
+              <form action={`/api/admin/orders/${o.id}/proceed`} method="post">
+                <button className="border border-white/25 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10">Finish without them</button>
+              </form>
+            </div>
+          )}
+        </section>
+      )}
+
       <section className="mt-8 overflow-x-auto">
         <ol className="grid min-w-[760px] grid-cols-6">
           {agents.map((a, i) => {

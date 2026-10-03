@@ -66,6 +66,7 @@ export type AdminOrder = {
   overall_grade: string | null;
   overall_verdict: string | null;
   approval_summary: Record<string, unknown> | null;
+  requested: { item: string; label: string; why?: string; section?: string }[] | null;
 };
 
 export type PipelineEvent = {

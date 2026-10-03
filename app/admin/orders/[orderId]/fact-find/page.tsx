@@ -44,7 +44,7 @@ export default async function AdminFactFind({ params, searchParams }: { params: 
         </div>
       </div>
       <div className="mt-8">
-        <FactFindForm orderId={orderId} token={null} mode="mik" dark initial={{ data: ff.data, files: ff.files, status: ff.status }} upload={{ base: storageBase(), key: ff.upload_key, apikey: publishableKey() }} />
+        <FactFindForm orderId={orderId} token={null} mode="mik" dark initial={{ data: ff.data, files: ff.files, status: ff.status }} requested={['needs_info'].includes(ff.order.status) ? ff.requested ?? [] : []} upload={{ base: storageBase(), key: ff.upload_key, apikey: publishableKey() }} />
       </div>
     </div>
   );

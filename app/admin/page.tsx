@@ -69,11 +69,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const sentThisMonth = orders.filter((o) => o.status === "delivered" && (o.delivered_at ?? o.updated_at).startsWith(month)).length;
   const queued = orders.filter((o) => o.status === "received");
   const factFinds = orders.filter((o) => o.status === "fact_find");
+  const needsInfo = orders.filter((o) => o.status === "needs_info");
   const identityQuestions = events.filter((e) => e.kind === "waiting" && e.item === "identity" && orders.some((o) => o.id === e.order_id && o.status !== "delivered"));
 
   const stats = [
     { label: "In progress", value: active.length, note: stalled.length ? `${stalled.length} may have stalled` : "All moving", warn: stalled.length > 0 },
-    { label: "Waiting for you", value: waiting.length, note: waiting.length ? "Read and approve" : "Nothing to approve", warn: waiting.length > 0 },
+    { label: "Waiting for you", value: waiting.length + needsInfo.length, note: needsInfo.length ? `${needsInfo.length} need information` : waiting.length ? "Read and approve" : "Nothing to approve", warn: waiting.length + needsInfo.length > 0 },
     { label: "Stopped", value: stopped.length, note: stopped.length ? "Need a look" : "No errors", warn: stopped.length > 0 },
     { label: "Queued", value: queued.length, note: factFinds.length ? `+ ${factFinds.length} waiting for a fact find` : "Next run 07:00", warn: false },
     { label: "Sent this month", value: sentThisMonth, note: "Delivered to customers", warn: false },
@@ -91,7 +92,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         ))}
       </section>
 
-      {(waiting.length > 0 || stopped.length > 0 || identityQuestions.length > 0 || factFinds.length > 0) && (
+      {(waiting.length > 0 || stopped.length > 0 || identityQuestions.length > 0 || factFinds.length > 0 || needsInfo.length > 0) && (
         <section className="glow mt-6 rounded-2xl border border-red/40 bg-red/[0.07] p-5">
           <p className="font-display text-lg font-bold">Needs you</p>
           <ul className="mt-3 space-y-3 text-sm">
@@ -110,6 +111,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                   <a href={reportPath(o.id, "review")} className="bg-red px-4 py-2 text-xs font-semibold hover:bg-red-dark">Read and approve</a>
                   <Link href={`/admin/orders/${o.id}`} className="border border-white/20 px-4 py-2 text-xs hover:bg-white/10">How it was made</Link>
                 </span>
+              </li>
+            ))}
+            {needsInfo.map((o) => (
+              <li key={`ni-${o.id}`} className="flex flex-wrap items-center justify-between gap-3">
+                <span><b>{o.business_name}</b> is paused: needs {(o.requested ?? []).map((r) => r.label).slice(0, 3).join(", ")}{(o.requested?.length ?? 0) > 3 ? "…" : ""}</span>
+                <Link href={`/admin/orders/${o.id}`} className="bg-red px-4 py-2 text-xs font-semibold hover:bg-red-dark">Add it or decide</Link>
               </li>
             ))}
             {factFinds.map((o) => (

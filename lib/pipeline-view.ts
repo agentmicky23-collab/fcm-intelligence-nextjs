@@ -24,6 +24,7 @@ export const stationFor: Record<string, AgentId | "paid" | "sent" | "error"> = {
   validating: "sentinel",
   qa: "oracle",
   awaiting_approval: "mik",
+  needs_info: "mik",
   delivered: "sent",
   error: "error",
 };
@@ -36,6 +37,7 @@ export const statusLabel: Record<string, string> = {
   validating: "Sentinel is checking",
   qa: "Oracle's final read",
   awaiting_approval: "Waiting for you",
+  needs_info: "Needs information",
   delivered: "Sent to the customer",
   error: "Stopped: needs attention",
 };

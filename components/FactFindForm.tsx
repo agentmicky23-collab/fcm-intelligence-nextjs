@@ -8,6 +8,7 @@ type Props = {
   token: string | null; // the client's link token; null when Mik is signed in
   mode: "mik" | "client";
   initial: { data: FactFindData; files: FactFindFile[]; status: string };
+  requested?: { label: string; why?: string }[];
   upload: { base: string; key: string; apikey: string };
   dark?: boolean;
 };
@@ -15,7 +16,7 @@ type Props = {
 const slug = (s: string) => s.normalize("NFKD").replace(/[^\w.-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").slice(-80) || "file";
 const size = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
 
-export function FactFindForm({ orderId, token, mode, initial, upload, dark = false }: Props) {
+export function FactFindForm({ orderId, token, mode, initial, upload, dark = false, requested = [] }: Props) {
   const [data, setData] = useState<FactFindData>(initial.data ?? {});
   const [files, setFiles] = useState<FactFindFile[]>(initial.files ?? []);
   const [status, setStatus] = useState(initial.status);
@@ -28,7 +29,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const done = completeness(data, files);
-  const locked = mode === "client" && status === "submitted";
+  const locked = mode === "client" && status === "submitted" && !requested.length;
 
   const post = async (body: Record<string, unknown>) => {
     const res = await fetch(`/api/fact-find/${encodeURIComponent(orderId)}`, {
@@ -146,7 +147,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
             <div className="h-full rounded-full bg-red transition-all" style={{ width: `${Math.round((done.answered / done.total) * 100)}%` }} />
           </div>
         </div>
-        {status === "submitted" && mode === "mik" ? (
+        {status === "submitted" && mode === "mik" && !requested.length ? (
           <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold text-emerald-500">Submitted</span>
         ) : (
           <button type="button" onClick={() => setConfirming(true)} className="bg-red px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-dark">
@@ -154,6 +155,16 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
           </button>
         )}
       </div>
+
+      {requested.length > 0 && (
+        <div className={`rounded-xl border-2 border-red/50 p-5 ${dark ? "bg-red/10" : "bg-red/5"}`}>
+          <p className={`font-display text-lg font-bold ${t.heading}`}>Still needed to finish the report</p>
+          <ul className={`mt-2 list-disc space-y-1 pl-5 text-sm ${t.label}`}>
+            {requested.map((r, i) => <li key={i}>{r.label}{r.why ? <span className={t.muted}> ({r.why})</span> : null}</li>)}
+          </ul>
+          <p className={`mt-2 text-xs ${t.muted}`}>Add them below (or upload the documents), then press {mode === "mik" ? "Done" : "Send it to us"}.</p>
+        </div>
+      )}
 
       {confirming && (
         <div className={`rounded-xl border-2 border-red/50 p-5 ${dark ? "bg-red/10" : "bg-red/5"}`}>

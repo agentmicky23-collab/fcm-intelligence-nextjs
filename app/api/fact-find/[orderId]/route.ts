@@ -24,7 +24,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ orderId: strin
   if (action === "save" || action === "submit") {
     const data = cleanData(body.data);
     if (!data) return Response.json({ ok: false, error: "bad data" }, { status: 400 });
-    if (who === "client" && ff.status === "submitted" && action === "save") return Response.json({ ok: false, error: "already submitted" }, { status: 409 });
+    if (who === "client" && ff.status === "submitted" && ff.order.status !== "needs_info" && action === "save") return Response.json({ ok: false, error: "already submitted" }, { status: 409 });
     const saved = await saveFactFind(orderId, data, action === "submit", who);
     if (!saved) return Response.json({ ok: false, error: "save failed" }, { status: 502 });
     if (action === "submit") {

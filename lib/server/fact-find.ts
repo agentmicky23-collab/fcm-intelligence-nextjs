@@ -29,6 +29,8 @@ export type FactFind = {
   status: "draft" | "sent" | "submitted";
   data: FactFindData;
   files: FactFindFile[];
+  requested: RequestedItem[];
+  requested_at: string | null;
   upload_key: string;
   sent_at: string | null;
   submitted_at: string | null;
@@ -56,12 +58,34 @@ export const saveFactFind = (orderId: string, data: FactFindData, submit: boolea
 export const markFactFindSent = (orderId: string) => call<null>("fact_find_mark_sent", { p_order_id: orderId });
 export const updateFactFindFiles = (orderId: string, file: FactFindFile | null, remove: string | null) =>
   call<FactFindFile[]>("fact_find_files", { p_order_id: orderId, p_file: file, p_remove: remove });
+export const requestInfo = (orderId: string, items: RequestedItem[]) => call<null>("request_info", { p_order_id: orderId, p_items: items });
+export const adminProceed = (orderId: string) => call<null>("admin_proceed", { p_order_id: orderId });
 export const createAdminOrder = (order: Record<string, unknown>) => call<string>("admin_create_order", { p_order: order });
 
 /** Where a fact-find file lives in storage (private bucket; the upload key is in the path). */
 export const storagePath = (orderId: string, uploadKey: string, name: string) => `fact-finds/${orderId}/${uploadKey}/${name}`;
 export const storageBase = () => `${process.env.SUPABASE_URL ?? "https://dykudrjpcliuyahjuiag.supabase.co"}/storage/v1/object/report-documents`;
 export const publishableKey = () => process.env.SUPABASE_PUBLISHABLE_KEY ?? "sb_publishable_nuvi3t_j2k7XMv57L1YWhw_wAn1r-lu";
+
+export type RequestedItem = { item: string; label: string; why?: string; section?: string };
+
+/** Checks the list of missing items the agents send. */
+export function cleanRequested(input: unknown): RequestedItem[] | null {
+  if (!Array.isArray(input) || !input.length || input.length > 40) return null;
+  const out: RequestedItem[] = [];
+  for (const raw of input) {
+    if (!raw || typeof raw !== "object") return null;
+    const r = raw as Record<string, unknown>;
+    if (typeof r.label !== "string" || !r.label.trim()) return null;
+    out.push({
+      item: typeof r.item === "string" ? r.item.slice(0, 60) : "other",
+      label: r.label.slice(0, 200),
+      ...(typeof r.why === "string" && { why: r.why.slice(0, 400) }),
+      ...(typeof r.section === "string" && { section: r.section.slice(0, 40) }),
+    });
+  }
+  return out;
+}
 
 /** Cleans what the form sends: known shape, strings only, sensible lengths. */
 export function cleanData(input: unknown): FactFindData | null {

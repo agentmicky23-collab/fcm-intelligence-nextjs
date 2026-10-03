@@ -24,7 +24,7 @@ export default async function ClientFactFind({ params, searchParams }: { params:
           Leave blank anything you don&apos;t have: we never guess figures, the report will say what&apos;s still needed.
         </p>
         <div className="mt-10">
-          <FactFindForm orderId={orderId} token={t ?? null} mode="client" initial={{ data: ff.data, files: ff.files, status: ff.status }} upload={{ base: storageBase(), key: ff.upload_key, apikey: publishableKey() }} />
+          <FactFindForm orderId={orderId} token={t ?? null} mode="client" initial={{ data: ff.data, files: ff.files, status: ff.status }} requested={['needs_info'].includes(ff.order.status) ? ff.requested ?? [] : []} upload={{ base: storageBase(), key: ff.upload_key, apikey: publishableKey() }} />
         </div>
       </Container>
     </section>
