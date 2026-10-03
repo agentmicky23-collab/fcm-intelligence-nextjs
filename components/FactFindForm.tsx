@@ -196,7 +196,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
           )}
           <div className="mt-4 flex flex-wrap gap-3">
             <button type="button" onClick={submit} disabled={saved === "saving"} className="bg-red disabled:opacity-60 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-dark">
-              {saved === "saving" ? "Sending…" : mode === "mik" ? (status === "submitted" ? "Save and requeue" : "Start the report") : "Send it"}
+              {saved === "saving" ? "Sending…" : mode === "mik" ? (status === "submitted" ? "Save changes" : "Start the report") : "Send it"}
             </button>
             <button type="button" onClick={() => setConfirming(false)} className={`border px-5 py-2.5 text-sm ${dark ? "border-white/20 text-white" : "border-line text-navy"}`}>
               Keep editing
