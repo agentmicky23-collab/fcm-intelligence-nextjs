@@ -24,7 +24,7 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
   const [files, setFiles] = useState<FactFindFile[]>(initial.files ?? []);
   const [status, setStatus] = useState(initial.status);
   const [saved, setSaved] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [kind, setKind] = useState(documentKinds[0]);
+  const [kind, setKind] = useState("");
   const [uploading, setUploading] = useState<string[]>([]);
   const [problem, setProblem] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -267,11 +267,12 @@ export function FactFindForm({ orderId, token, mode, initial, upload, dark = fal
         <p className={`text-sm ${t.muted}`}>Anything the seller or broker gave you: accounts, Post Office statements, the lease, the sales pack, photos. PDFs, photos and spreadsheets are all fine (up to 50 MB each).</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <select value={kind} onChange={(e) => setKind(e.target.value)} className={`rounded-md border px-3 py-2.5 text-sm ${t.input}`}>
+            <option value="">What is it? Choose first</option>
             {documentKinds.map((k) => <option key={k}>{k}</option>)}
           </select>
-          <label className={`bg-navy ${readOnly ? "pointer-events-none opacity-50" : "cursor-pointer"} px-5 py-2.5 text-sm font-semibold text-white hover:bg-red`}>
+          <label title={kind ? undefined : "Choose what the document is first"} className={`bg-navy ${readOnly || !kind ? "pointer-events-none opacity-50" : "cursor-pointer"} px-5 py-2.5 text-sm font-semibold text-white hover:bg-red`}>
             Choose files
-            <input type="file" multiple className="sr-only" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+            <input type="file" multiple disabled={!kind} className="sr-only" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
           </label>
         </div>
         {problem && <p className="mt-3 text-sm text-red">{problem}</p>}
