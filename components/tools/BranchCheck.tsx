@@ -50,6 +50,39 @@ function Bars({ rows, unit = "£", tone = "#378ADD" }: { rows: { label: string; 
   );
 }
 
+/** Each carrier keeps the same colour in every chart. */
+const carrierColour = (name: string) =>
+  /evri/i.test(name) ? "#7F77DD" : /royal mail/i.test(name) ? "#e0241b" : /amazon/i.test(name) ? "#C9A227" : /dpd/i.test(name) ? "#D85A30" : /dhl/i.test(name) ? "#1D9E75" : /parcelforce/i.test(name) ? "#4fb3bf" : "#8a93a6";
+
+function Columns({ rows }: { rows: { label: string; value: number }[] }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  const total = rows.reduce((a, r) => a + r.value, 0) || 1;
+  return (
+    <div className="flex h-64 items-end gap-3 border-b border-white/15 pt-6">
+      {rows.map((r) => (
+        <div key={r.label} className="flex h-full min-w-0 flex-1 flex-col justify-end text-center" title={`${r.label}: ${int(r.value)} a week (${Math.round((r.value / total) * 100)}%)`}>
+          <p className="font-display text-lg font-bold tabular-nums">{int(r.value)}</p>
+          <div className="mx-auto w-full max-w-[64px] rounded-t-[4px] transition-all duration-500" style={{ height: `${Math.max(2, (r.value / max) * 170)}px`, background: carrierColour(r.label) }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ColumnLabels({ rows }: { rows: { label: string; value: number }[] }) {
+  const total = rows.reduce((a, r) => a + r.value, 0) || 1;
+  return (
+    <div className="mt-2 flex gap-3">
+      {rows.map((r) => (
+        <div key={r.label} className="min-w-0 flex-1 text-center">
+          <p className="text-xs leading-tight text-white/80 [overflow-wrap:anywhere]" title={r.label}>{r.label.replace(/^Royal Mail /, "RM ")}</p>
+          <p className="text-[11px] text-white/45">{Math.round((r.value / total) * 100)}%</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Empty({ what }: { what: string }) {
   return <p className="rounded-xl border border-dashed border-white/15 p-6 text-sm text-white/55">Add your {what} export from Branch Hub to see this.</p>;
 }
@@ -428,8 +461,12 @@ function ParcelsTab({ data }: { data: BranchData }) {
   const byProduct = new Map<string, number>();
   for (const p of parcels) byProduct.set(p.product, (byProduct.get(p.product) ?? 0) + p.volume);
   const rows = [...byProduct].map(([label, v]) => ({ label, value: v / activeWeeks })).filter((r) => r.value >= 0.5).sort((a, b) => b.value - a.value);
-  const drop = rows.filter((r) => /drop off/i.test(r.label)).reduce((a, r) => a + r.value, 0);
-  const pick = rows.filter((r) => /pick up/i.test(r.label)).reduce((a, r) => a + r.value, 0);
+  const carrier = (label: string) => label.replace(/^customer\s+(drop[\s-]?off|pick[\s-]?up)\s*-\s*/i, "");
+  const dropRows = rows.filter((r) => /drop[\s-]?off/i.test(r.label)).map((r) => ({ ...r, label: carrier(r.label) }));
+  const pickRows = rows.filter((r) => /pick[\s-]?up/i.test(r.label)).map((r) => ({ ...r, label: carrier(r.label) }));
+  const otherRows = rows.filter((r) => !/drop[\s-]?off|pick[\s-]?up/i.test(r.label));
+  const drop = dropRows.reduce((a, r) => a + r.value, 0);
+  const pick = pickRows.reduce((a, r) => a + r.value, 0);
 
   const sessions = data.sessions ?? [];
   const years = new Map<string, number[]>();
@@ -449,11 +486,19 @@ function ParcelsTab({ data }: { data: BranchData }) {
       <Section title="Parcels a week" sub={`Average over ${activeWeeks} week${activeWeeks === 1 ? "" : "s"}. Pair this with the Staffing tab in the Remuneration Analyser to see what this volume earns per staff hour.`}>
         {rows.length ? (
           <>
-            <div className="mb-4 grid gap-3 sm:grid-cols-2">
-              <Card label="Drop-offs a week" value={int(drop)} />
-              <Card label="Pick-ups a week" value={int(pick)} />
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Customer drop-offs</p>
+                <p className="mt-1 font-display text-3xl font-bold">{int(drop)} <span className="text-base font-normal text-white/55">a week</span></p>
+                <div className="mt-2">{dropRows.length ? <><Columns rows={dropRows} /><ColumnLabels rows={dropRows} /></> : <p className="text-sm text-white/50">None in this export.</p>}</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="text-[11px] uppercase tracking-[0.14em] text-white/50">Customer pick-ups</p>
+                <p className="mt-1 font-display text-3xl font-bold">{int(pick)} <span className="text-base font-normal text-white/55">a week</span></p>
+                <div className="mt-2">{pickRows.length ? <><Columns rows={pickRows} /><ColumnLabels rows={pickRows} /></> : <p className="text-sm text-white/50">None in this export.</p>}</div>
+              </div>
             </div>
-            <Bars rows={rows} unit="" tone="#7F77DD" />
+            {otherRows.length > 0 && <div className="mt-6"><Bars rows={otherRows} unit="" tone="#8a93a6" /></div>}
           </>
         ) : (
           <Empty what="parcel drop-offs and pick-ups" />
